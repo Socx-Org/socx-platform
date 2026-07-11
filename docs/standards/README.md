@@ -56,7 +56,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | ENG-030 | Testing                               | Draft    |
 | ENG-040 | CI/CD Pipelines                       | Draft    |
 | SEC-010 | Secrets Management                    | Draft    |
-| SEC-020 | Dependency & Vulnerability Management | Planned  |
+| SEC-020 | Dependency & Vulnerability Management | Draft    |
 | SEC-030 | Access Control                        | Planned  |
 | OPS-010 | Environments & Promotion              | Planned  |
 | OPS-020 | Infrastructure as Code                | Planned  |
