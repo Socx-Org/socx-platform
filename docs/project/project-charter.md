@@ -1,4 +1,3 @@
-
 # SOCX Platform Engineering Repository - Project Charter
 
 ## Purpose
@@ -109,29 +108,15 @@ A clean engineering platform ready to receive content.
 
 Define the engineering handbook.
 
-Topics are expected to include:
+Deliverable 2 consists of the Engineering Standards Handbook organised into the following categories:
 
-* Repository standards
-* Directory standards
-* Naming conventions
-* Documentation standards
-* ADR standards
-* Git workflow
-* Branching strategy
-* Versioning
-* Deployment standards
-* Nginx standards
-* systemd standards
-* GitHub Actions standards
-* Environment variables
-* Port allocation
-* Logging
-* Monitoring
-* Security
-* Secrets management
-* Backup strategy
+GEN
+ENG
+SEC
+OPS
+DOC
 
-The first task for Deliverable 2 is to agree the table of contents before writing any standards.
+See docs/standards/README.md for the authoritative table of contents.tt
 
 ---
 
