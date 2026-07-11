@@ -1,4 +1,3 @@
-
 # SOCX Platform
 
 ## Purpose
@@ -15,6 +14,8 @@ It contains:
 - Architecture Decision Records (ADRs)
 
 Application code does not belong here.
+
+`examples/` holds fully filled-out, worked instances of the content types above (e.g. a completed ADR, a populated runbook) — for reference and onboarding. This is distinct from `templates/`, which holds blank scaffolds meant to be copied and filled in.
 
 ## Related Repositories
 
