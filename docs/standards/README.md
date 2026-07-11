@@ -54,7 +54,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | ENG-010 | Version Control & Branching           | Approved |
 | ENG-020 | Code Quality & Review                 | Approved |
 | ENG-030 | Testing                               | Draft    |
-| ENG-040 | CI/CD Pipelines                       | Planned  |
+| ENG-040 | CI/CD Pipelines                       | Draft    |
 | SEC-010 | Secrets Management                    | Planned  |
 | SEC-020 | Dependency & Vulnerability Management | Planned  |
 | SEC-030 | Access Control                        | Planned  |
