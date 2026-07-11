@@ -61,7 +61,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | OPS-010 | Environments & Promotion              | Draft    |
 | OPS-020 | Infrastructure as Code                | Draft    |
 | OPS-030 | Release & Rollback                    | Draft    |
-| OPS-040 | Monitoring & Alerting                 | Planned  |
+| OPS-040 | Monitoring & Alerting                 | Draft    |
 | DOC-010 | Required Project Documentation        | Planned  |
 | DOC-020 | ADR Usage Criteria                    | Planned  |
 
