@@ -49,40 +49,7 @@ The repository should follow these principles:
 
 # Repository Structure
 
-Current top-level structure:
-
-```text
-socx-platform/
-
-├── .claude/
-├── .github/
-├── .vscode/
-
-├── docs/
-│   ├── adr/
-│   ├── architecture/
-│   ├── current-state/
-│   ├── diagrams/
-│   ├── onboarding/
-│   ├── runbooks/
-│   └── standards/
-
-├── reference/
-│
-├── templates/
-│
-├── scripts/
-│
-├── examples/
-│
-├── README.md
-├── CLAUDE.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── .editorconfig
-├── .gitignore
-└── SOCX.code-workspace
-```
+The live repository tree is the authoritative record of what exists. This section records *why* each directory exists, not a snapshot of its contents — a literal file listing here would duplicate the filesystem and drift out of sync as the repository grows.
 
 ## Directory Responsibilities
 

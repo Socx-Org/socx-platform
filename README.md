@@ -1,10 +1,12 @@
 # SOCX Platform
 
-## Purpose
-
 This repository is the engineering source of truth for the SOCX platform.
 
-It contains:
+Application code does not belong here.
+
+See [docs/project/project-charter.md](docs/project/project-charter.md) for full purpose, vision, engineering principles, roadmap, and related repositories.
+
+## Contents
 
 - architecture documentation
 - engineering standards
@@ -13,19 +15,4 @@ It contains:
 - operational runbooks
 - Architecture Decision Records (ADRs)
 
-Application code does not belong here.
-
 `examples/` holds fully filled-out, worked instances of the content types above (e.g. a completed ADR, a populated runbook) — for reference and onboarding. This is distinct from `templates/`, which holds blank scaffolds meant to be copied and filled in.
-
-## Related Repositories
-
-- socx-org-uk
-- ghs
-- rms
-
-## Goals
-
-- Production-ready engineering
-- Repeatable deployments
-- Consistent standards
-- Long-term maintainability
