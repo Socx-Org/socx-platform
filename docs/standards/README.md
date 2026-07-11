@@ -59,7 +59,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | SEC-020 | Dependency & Vulnerability Management | Draft    |
 | SEC-030 | Access Control                        | Draft    |
 | OPS-010 | Environments & Promotion              | Draft    |
-| OPS-020 | Infrastructure as Code                | Planned  |
+| OPS-020 | Infrastructure as Code                | Draft    |
 | OPS-030 | Release & Rollback                    | Planned  |
 | OPS-040 | Monitoring & Alerting                 | Planned  |
 | DOC-010 | Required Project Documentation        | Planned  |
