@@ -62,7 +62,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | OPS-020 | Infrastructure as Code                | Draft    |
 | OPS-030 | Release & Rollback                    | Draft    |
 | OPS-040 | Monitoring & Alerting                 | Draft    |
-| DOC-010 | Required Project Documentation        | Planned  |
+| DOC-010 | Required Project Documentation        | Draft    |
 | DOC-020 | ADR Usage Criteria                    | Planned  |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given standard is the `status` field in its own metadata, not this table; this column is kept in sync as a convenience index.
