@@ -48,22 +48,22 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 
 ## Table of Contents
 
-| ID      | Title                                 | Status  |
-| ------- | ------------------------------------- | ------- |
+| ID      | Title                                 | Status   |
+| ------- | ------------------------------------- | -------- |
 | GEN-010 | Standards Lifecycle & Governance      | Approved |
 | ENG-010 | Version Control & Branching           | Approved |
 | ENG-020 | Code Quality & Review                 | Approved |
-| ENG-030 | Testing                               | Planned |
-| ENG-040 | CI/CD Pipelines                       | Planned |
-| SEC-010 | Secrets Management                    | Planned |
-| SEC-020 | Dependency & Vulnerability Management | Planned |
-| SEC-030 | Access Control                        | Planned |
-| OPS-010 | Environments & Promotion              | Planned |
-| OPS-020 | Infrastructure as Code                | Planned |
-| OPS-030 | Release & Rollback                    | Planned |
-| OPS-040 | Monitoring & Alerting                 | Planned |
-| DOC-010 | Required Project Documentation        | Planned |
-| DOC-020 | ADR Usage Criteria                    | Planned |
+| ENG-030 | Testing                               | Draft    |
+| ENG-040 | CI/CD Pipelines                       | Planned  |
+| SEC-010 | Secrets Management                    | Planned  |
+| SEC-020 | Dependency & Vulnerability Management | Planned  |
+| SEC-030 | Access Control                        | Planned  |
+| OPS-010 | Environments & Promotion              | Planned  |
+| OPS-020 | Infrastructure as Code                | Planned  |
+| OPS-030 | Release & Rollback                    | Planned  |
+| OPS-040 | Monitoring & Alerting                 | Planned  |
+| DOC-010 | Required Project Documentation        | Planned  |
+| DOC-020 | ADR Usage Criteria                    | Planned  |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given standard is the `status` field in its own metadata, not this table; this column is kept in sync as a convenience index.
 
