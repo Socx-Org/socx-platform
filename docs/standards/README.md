@@ -52,7 +52,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | ------- | ------------------------------------- | ------- |
 | GEN-010 | Standards Lifecycle & Governance      | Approved |
 | ENG-010 | Version Control & Branching           | Approved |
-| ENG-020 | Code Quality & Review                 | Planned |
+| ENG-020 | Code Quality & Review                 | Approved |
 | ENG-030 | Testing                               | Planned |
 | ENG-040 | CI/CD Pipelines                       | Planned |
 | SEC-010 | Secrets Management                    | Planned |
