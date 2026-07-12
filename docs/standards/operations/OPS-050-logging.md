@@ -2,10 +2,10 @@
 id: OPS-050
 title: Logging
 category: Operations
-status: Draft
+status: Aproved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-12
 review_cycle: annual
 related:
@@ -16,7 +16,6 @@ related:
 supersedes: []
 superseded_by: null
 ---
-
 # OPS-050 — Logging
 
 ## Scope
@@ -48,6 +47,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Revision History
 
-| Version | Date | Change | Author |
-|---|---|---|---|
-| 0.1 | 2026-07-12 | Initial draft | Socx |
+| Version | Date       | Change        | Author |
+| ------- | ---------- | ------------- | ------ |
+| 0.1     | 2026-07-12 | Initial draft | Socx   |
+| 1.0     | 2026-07-12 | Approved      | Socx   |
