@@ -2,11 +2,11 @@
 id: OPS-030
 title: Release & Rollback
 category: Operations
-status: Draft
+status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "0.1"
-last_reviewed: 2026-07-11
+version: "1.1"
+last_reviewed: 2026-07-12
 review_cycle: annual
 related:
   adrs: []
@@ -30,7 +30,7 @@ A fast, well-understood rollback path is the single biggest lever for limiting t
 
 1. `OPS-030.1` — Every deployable artifact MUST be versioned using Semantic Versioning.
 2. `OPS-030.2` — A production deployment MUST be traceable to an exact commit or tag; deploying an unversioned or "latest" artifact to production MUST NOT be done.
-3. `OPS-030.3` — Every project MUST have a documented, tested rollback procedure capable of restoring the previous version without a full redeploy cycle from scratch.
+3. `OPS-030.3` — Every project MUST have a rollback procedure, documented in a Runbook (see `DOC-010.2`), capable of restoring the previous version without a full redeploy cycle from scratch.
 4. `OPS-030.4` — The rollback procedure MUST be exercised, not just written, at least once per `review_cycle`.
 5. `OPS-030.5` — Deployment to production MUST require explicit approval or an automated gate (a passing pipeline per `ENG-040.3`) — never an unreviewed push.
 
@@ -49,3 +49,5 @@ Per `GEN-010.9`–`GEN-010.10`.
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
+| 1.0     | 2026-07-11 | Approved      | Socx   |
+| 1.1     | 2026-07-12 | `OPS-030.3` now requires the rollback procedure to be documented in a Runbook specifically, not just "documented" | Socx |

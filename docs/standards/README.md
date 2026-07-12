@@ -48,22 +48,22 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 
 ## Table of Contents
 
-| ID      | Title                                 | Status   |
-| ------- | ------------------------------------- | -------- |
-| GEN-010 | Standards Lifecycle & Governance      | Approved |
-| ENG-010 | Version Control & Branching           | Approved |
-| ENG-020 | Code Quality & Review                 | Approved |
-| ENG-030 | Testing                               | Draft    |
-| ENG-040 | CI/CD Pipelines                       | Draft    |
-| SEC-010 | Secrets Management                    | Draft    |
-| SEC-020 | Dependency & Vulnerability Management | Draft    |
-| SEC-030 | Access Control                        | Draft    |
-| OPS-010 | Environments & Promotion              | Draft    |
-| OPS-020 | Infrastructure as Code                | Draft    |
-| OPS-030 | Release & Rollback                    | Draft    |
-| OPS-040 | Monitoring & Alerting                 | Draft    |
-| DOC-010 | Required Project Documentation        | Draft    |
-| DOC-020 | ADR Usage Criteria                    | Draft    |
+| ID      | Title                                 | Status    |
+| ------- | ------------------------------------- | --------- |
+| GEN-010 | Standards Lifecycle & Governance      | Approved  |
+| ENG-010 | Version Control & Branching           | Approved  |
+| ENG-020 | Code Quality & Review                 | Approved  |
+| ENG-030 | Testing                               | Approved  |
+| ENG-040 | CI/CD Pipelines                       | Approved  |
+| SEC-010 | Secrets Management                    | Approved  |
+| SEC-020 | Dependency & Vulnerability Management | Approved  |
+| SEC-030 | Access Control                        | Approved  |
+| OPS-010 | Environments & Promotion              | Approved  |
+| OPS-020 | Infrastructure as Code                | Approved  |
+| OPS-030 | Release & Rollback                    | Approved  |
+| OPS-040 | Monitoring & Alerting                 | Approved  |
+| DOC-010 | Required Project Documentation        | Approved  |
+| DOC-020 | ADR Usage Criteria                    | Approved  |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given standard is the `status` field in its own metadata, not this table; this column is kept in sync as a convenience index.
 

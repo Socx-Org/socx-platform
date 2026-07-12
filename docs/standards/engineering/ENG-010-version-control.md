@@ -5,8 +5,8 @@ category: Engineering
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "0.1"
-last_reviewed: 2026-07-11
+version: "1.1"
+last_reviewed: 2026-07-12
 review_cycle: annual
 related:
   adrs: []
@@ -35,7 +35,7 @@ A consistent branching and commit model lets branch-protection rules, release to
 2. `ENG-010.2` — All changes MUST be made on a short-lived branch and merged via pull request. Direct pushes to `main` MUST be disabled.
 3. `ENG-010.3` — Branch names MUST be prefixed by type — `feature/`, `fix/`, `chore/`, or `docs/` — followed by a short kebab-case description, e.g. `fix/login-timeout`.
 4. `ENG-010.4` — Commit messages MUST follow Conventional Commits (`type(scope): summary`), where `type` is one of `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`.
-5. `ENG-010.5` — `main` MUST be a protected branch requiring at least one approving review and a passing CI status check before merge.
+5. `ENG-010.5` — `main` MUST be a protected branch requiring at least one independent approving review and a passing CI status check before merge.
 6. `ENG-010.6` — A pull request MUST NOT be merged by its own author, unless the repository has only one contributor — in which case this requirement MAY be excepted per `GEN-010.9`.
 7. `ENG-010.7` — Force-pushes to `main` MUST be disabled at the branch-protection level.
 8. `ENG-010.8` — Branches MUST be deleted after merge, and MUST NOT be left idle for more than 30 days without either activity or deletion.
@@ -52,6 +52,8 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Revision History
 
-| Version | Date       | Change   | Author |
-| ------- | ---------- | -------- | ------ |
-| 0.1     | 2026-07-11 | Approved |        |
+| Version | Date       | Change        | Author |
+| ------- | ---------- | ------------- | ------ |
+| 0.1     | 2026-07-11 | Initial draft | Socx   |
+| 1.0     | 2026-07-11 | Approved      | Socx   |
+| 1.1     | 2026-07-12 | `ENG-010.5` now explicitly requires the approving review to be independent (non-author) | Socx |
