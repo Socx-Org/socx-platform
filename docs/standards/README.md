@@ -40,10 +40,10 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 
 | Code | Category      | Scope                                                                         |
 | ---- | ------------- | ----------------------------------------------------------------------------- |
-| GEN  | General       | How the handbook itself works: lifecycle, exceptions, template usage          |
-| ENG  | Engineering   | Source control, code quality, testing, CI/CD                                  |
+| GEN  | General       | How the handbook itself works: lifecycle, exceptions, template usage, shared terminology |
+| ENG  | Engineering   | Source control, code quality, testing, CI/CD, repository structure, naming conventions |
 | SEC  | Security      | Secrets management, dependency/vulnerability management, access control       |
-| OPS  | Operations    | Environments, infrastructure as code, release/rollback, monitoring & alerting |
+| OPS  | Operations    | Environments, infrastructure as code, release/rollback, monitoring & alerting, logging, backup & disaster recovery |
 | DOC  | Documentation | What every project must document, and when an ADR is required                 |
 
 ## Table of Contents
@@ -51,10 +51,13 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | ID      | Title                                 | Status    |
 | ------- | ------------------------------------- | --------- |
 | GEN-010 | Standards Lifecycle & Governance      | Approved  |
+| GEN-020 | Glossary                              | Draft     |
 | ENG-010 | Version Control & Branching           | Approved  |
 | ENG-020 | Code Quality & Review                 | Approved  |
 | ENG-030 | Testing                               | Approved  |
 | ENG-040 | CI/CD Pipelines                       | Approved  |
+| ENG-050 | Repository Structure                  | Draft     |
+| ENG-060 | Naming Conventions                    | Draft     |
 | SEC-010 | Secrets Management                    | Approved  |
 | SEC-020 | Dependency & Vulnerability Management | Approved  |
 | SEC-030 | Access Control                        | Approved  |
@@ -62,6 +65,8 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | OPS-020 | Infrastructure as Code                | Approved  |
 | OPS-030 | Release & Rollback                    | Approved  |
 | OPS-040 | Monitoring & Alerting                 | Approved  |
+| OPS-050 | Logging                               | Draft     |
+| OPS-060 | Backup & Disaster Recovery            | Draft     |
 | DOC-010 | Required Project Documentation        | Approved  |
 | DOC-020 | ADR Usage Criteria                    | Approved  |
 
