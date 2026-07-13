@@ -1,9 +1,9 @@
 ---
 id: ADR-150
 title: CI/CD platform
-status: Draft
+status: Approved
 category: Operations
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -29,19 +29,17 @@ superseded_by: null
 
 # ADR-150 — CI/CD platform
 
-> **Draft — decision not yet ratified.** The direction below is a recommendation grounded in observed reality; it requires explicit sign-off before this ADR moves to `Approved`.
-
 ## Context
 
 CI/CD needs one platform-wide provider so that `ENG-040` pipelines, the branch-protection status check required by `ADR-170`, and deploy automation are configured consistently rather than per repository. `CS-TEC-010` confirms **GitHub Actions is already in use** — `ghs` and `rms` both have committed `.github/workflows/ci.yml`. `REP-010` notes the repositories are mid-migration between the `github.com/socx/*` and `Socx-Org/*` organisations.
 
 ## Decision
 
-**Pending (confirmation).** Proposed direction, for ratification: confirm **GitHub Actions** as the platform's CI/CD provider, standardised through reusable workflow templates (`reference/github`, `templates/github`), targeting the `Socx-Org` organisation as the migration lands.
+**GitHub Actions** is confirmed as the platform's CI/CD provider, standardised through reusable workflow templates (`reference/github`, `templates/github`), targeting the `Socx-Org` organisation as the migration lands. The choice between GitHub-hosted and self-hosted runners is left to the workflow templates, not fixed here.
 
 ## Alternatives Considered
 
-- **GitHub Actions (recommended — confirm)** — already in use; native to where the code, issues, and project board live; no additional vendor or credential surface.
+- **GitHub Actions — selected.** Already in use; native to where the code, issues, and project board live; no additional vendor or credential surface.
 - **A standalone CI (CircleCI / GitLab CI / Jenkins)** — Rejected: introduces a second platform and credential set for no evidenced benefit, when the code and project already live on GitHub.
 - **GitHub-hosted vs self-hosted runners** — an implementation sub-choice deferred to the workflow templates, not settled in this ADR.
 
@@ -65,3 +63,4 @@ CI/CD needs one platform-wide provider so that `ENG-040` pipelines, the branch-p
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
