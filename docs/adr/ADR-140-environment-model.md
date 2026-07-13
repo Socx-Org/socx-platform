@@ -1,9 +1,9 @@
 ---
 id: ADR-140
 title: Environment model
-status: Draft
+status: Approved
 category: Operations
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -59,3 +59,4 @@ Every project has **at least two environment tiers** — a non-production enviro
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
