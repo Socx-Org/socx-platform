@@ -1,9 +1,9 @@
 ---
 id: ADR-080
 title: Single-writer data ownership
-status: Draft
+status: Approved
 category: Data
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -61,3 +61,4 @@ Each data domain has **exactly one owning system**, which is the only system per
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
