@@ -1,9 +1,9 @@
 ---
 id: ADR-170
 title: Trunk-based development & commit conventions
-status: Draft
+status: Approved
 category: Engineering Process
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -58,3 +58,4 @@ Every repository uses **trunk-based development** on a single long-lived default
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
