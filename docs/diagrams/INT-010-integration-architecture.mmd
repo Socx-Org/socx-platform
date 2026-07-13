@@ -1,0 +1,7 @@
+flowchart LR
+    ghs["ghs"] -->|HTTPS via edge| edge["Shared edge\n(do-nginx-infra)"]
+    rms["rms"] -->|HTTPS via edge| edge
+    socx["socx-org-uk"] -->|HTTPS via edge| edge
+    edge --> ghs
+    edge --> rms
+    edge --> socx

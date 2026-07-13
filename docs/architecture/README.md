@@ -67,14 +67,14 @@ Each document has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `CTX-010`.
 
 | ID      | Title                                   | Status  |
 | ------- | --------------------------------------- | ------- |
-| CTX-010 | Platform Context                        | Planned |
-| DOM-010 | System Landscape                        | Planned |
-| APP-010 | Application Reference Architecture      | Planned |
-| DAT-010 | Platform Data Architecture              | Planned |
-| INT-010 | Integration Architecture                | Planned |
-| TEC-010 | Approved Technology Stack               | Planned |
-| INF-010 | Target Infrastructure Topology          | Planned |
-| IAM-010 | Identity, Trust & Security Architecture | Planned |
+| CTX-010 | Platform Context                        | Draft   |
+| DOM-010 | System Landscape                        | Draft   |
+| APP-010 | Application Reference Architecture      | Draft   |
+| DAT-010 | Platform Data Architecture              | Draft   |
+| INT-010 | Integration Architecture                | Draft   |
+| TEC-010 | Approved Technology Stack               | Draft   |
+| INF-010 | Target Infrastructure Topology          | Draft   |
+| IAM-010 | Identity, Trust & Security Architecture | Draft   |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given document is the `status` field in its own metadata, not this table; this column is kept in sync as a convenience index.
 
