@@ -1,9 +1,9 @@
 ---
 id: ADR-050
 title: Shared nginx edge as sole ingress
-status: Draft
+status: Approved
 category: Infrastructure
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -61,3 +61,4 @@ A **single shared nginx edge is the sole ingress** for the platform. It terminat
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
