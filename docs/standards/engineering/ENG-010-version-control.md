@@ -5,11 +5,12 @@ category: Engineering
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-12
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-170
   reference:
     - reference/github
   templates:
@@ -47,7 +48,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 ## Related
 
 - Reference implementation(s): `reference/github` (branch-protection configuration, once populated)
-- ADR(s): none yet
+- ADR(s): `ADR-170`
 - Template(s): `templates/github` (once populated)
 
 ## Revision History
@@ -57,3 +58,4 @@ Per `GEN-010.9`–`GEN-010.10`.
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
 | 1.0     | 2026-07-11 | Approved      | Socx   |
 | 1.1     | 2026-07-12 | `ENG-010.5` now explicitly requires the approving review to be independent (non-author) | Socx |
+| 1.2     | 2026-07-14 | Added ADR cross-references | Socx   |

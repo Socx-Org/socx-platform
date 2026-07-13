@@ -5,11 +5,13 @@ category: Security
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-11
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-110
+    - ADR-120
   reference:
     - reference/security
     - reference/github
@@ -42,7 +44,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 ## Related
 
 - Reference implementation(s): `reference/security`, `reference/github`
-- ADR(s): none yet
+- ADR(s): `ADR-110`, `ADR-120`
 - Template(s): none yet
 
 ## Revision History
@@ -51,3 +53,4 @@ Per `GEN-010.9`–`GEN-010.10`.
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
 | 1.0     | 2026-07-11 | Approved      | Socx   |
+| 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |

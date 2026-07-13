@@ -5,11 +5,12 @@ category: Operations
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-12
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-040
   reference:
     - reference/monitoring
   templates: []
@@ -41,7 +42,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 ## Related
 
 - Reference implementation(s): `reference/monitoring`
-- ADR(s): none yet
+- ADR(s): `ADR-040`
 - Template(s): none yet
 
 ## Revision History
@@ -51,3 +52,4 @@ Per `GEN-010.9`–`GEN-010.10`.
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
 | 1.0     | 2026-07-11 | Approved      | Socx   |
 | 1.1     | 2026-07-12 | Removed duplicated log-format requirement from `OPS-040.3`; delegated to new `OPS-050` | Socx |
+| 1.2     | 2026-07-14 | Added ADR cross-references | Socx   |

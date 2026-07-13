@@ -5,11 +5,13 @@ category: Operations
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-12
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-040
+    - ADR-150
   reference:
     - reference/deployment
   templates: []
@@ -41,7 +43,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 ## Related
 
 - Reference implementation(s): `reference/deployment`
-- ADR(s): none yet
+- ADR(s): `ADR-040`, `ADR-150`
 - Template(s): none yet
 
 ## Revision History
@@ -51,3 +53,4 @@ Per `GEN-010.9`–`GEN-010.10`.
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
 | 1.0     | 2026-07-11 | Approved      | Socx   |
 | 1.1     | 2026-07-12 | `OPS-030.3` now requires the rollback procedure to be documented in a Runbook specifically, not just "documented" | Socx |
+| 1.2     | 2026-07-14 | Added ADR cross-references | Socx   |

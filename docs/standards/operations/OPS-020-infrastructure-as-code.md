@@ -5,11 +5,14 @@ category: Operations
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-12
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-040
+    - ADR-150
+    - ADR-160
   reference:
     - reference/nginx
     - reference/systemd
@@ -45,7 +48,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 ## Related
 
 - Reference implementation(s): `reference/nginx`, `reference/systemd`, `reference/deployment`
-- ADR(s): none yet
+- ADR(s): `ADR-040`, `ADR-150`, `ADR-160`
 - Template(s): `templates/nginx`, `templates/systemd`
 
 ## Revision History
@@ -55,3 +58,4 @@ Per `GEN-010.9`–`GEN-010.10`.
 | 0.1     | 2026-07-11 | Initial draft | Socx   |
 | 1.0     | 2026-07-11 | Approved      | Socx   |
 | 1.1     | 2026-07-12 | `OPS-020.2` now also requires backport before the next production deployment if that occurs within 24 hours | Socx |
+| 1.2     | 2026-07-14 | Added ADR cross-references | Socx   |

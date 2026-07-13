@@ -5,11 +5,14 @@ category: General
 status: Approved
 applies_to: All SOCX projects
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-11
 review_cycle: annual
 related:
-  adrs: []
+  adrs:
+    - ADR-010
+    - ADR-020
+    - ADR-030
   reference: []
   templates:
     - templates/standards/standard-template.md
@@ -49,7 +52,7 @@ This standard defines the exception process (`GEN-010.9`–`GEN-010.10`) used by
 ## Related
 
 - Reference implementation(s): none
-- ADR(s): none yet
+- ADR(s): `ADR-010`, `ADR-020`, `ADR-030`
 - Template(s): `templates/standards/standard-template.md`
 
 ## Revision History
@@ -58,3 +61,4 @@ This standard defines the exception process (`GEN-010.9`–`GEN-010.10`) used by
 |---|---|---|---|
 | 0.1 | 2026-07-11 | Initial draft | |
 | 1.0 | 2026-07-11 | Approved | |
+| 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |
