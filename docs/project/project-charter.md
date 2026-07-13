@@ -121,7 +121,7 @@ The table below records the current status of each deliverable. A deliverable is
 | Deliverable 2 – Engineering Standards Handbook       | ✅ Complete | 1.0     | `v0.2-standards`     |
 | Deliverable 3 – Architecture Documentation           | ✅ Complete | 1.0     | `v0.3-architecture`  |
 | Deliverable 4 – Current-State Documentation          | ✅ Complete | 1.0     | `v0.4-current-state` |
-| Deliverable 5 – Architecture Decision Records (ADRs) | 🚧 In Progress | —      | —                     |
+| Deliverable 5 – Architecture Decision Records (ADRs) | ✅ Complete | 1.0     | `v0.5-adr`           |
 | Deliverable 6 – Reference Implementations            | ⏳ Planned  | —      | —                     |
 | Deliverable 7 – Operational Runbooks                 | ⏳ Planned  | —      | —                     |
 | Deliverable 8 – Automation & Tooling                 | ⏳ Planned  | —      | —                     |
@@ -251,15 +251,36 @@ Together with the Engineering Standards Handbook and Architecture Documentation,
 
 ---
 
-## Deliverable 5 – Architecture Decision Records (ADRs) **🚧** In Progress
+## Deliverable 5 – Architecture Decision Records (ADRs) ✅ Complete
 
 ### Objective
 
 Capture the significant engineering and architectural decisions that shape the SOCX platform.
 
-### Expected Outcome
+### Outcome
 
-Establish a maintained collection of ADRs explaining why major technical decisions were made, with traceability to the Engineering Standards and Architecture Documentation.
+The Architecture Decision Records framework has been established under `docs/adr/`, with a catalogue of 17 ADRs, all Approved.
+
+The ADRs cover:
+
+* Platform & Governance – ADR-010 (ADR practice), ADR-020 (multi-repo topology & documentation model), ADR-030 (documentation-first philosophy)
+* Infrastructure – ADR-040 (hosting & runtime model), ADR-050 (shared nginx edge)
+* Application – ADR-060 (three-layer reference architecture), ADR-070 (language & framework)
+* Data – ADR-080 (single-writer ownership), ADR-090 (datastore)
+* Integration – ADR-100 (default integration style)
+* Security & Identity – ADR-110 (service-to-service trust), ADR-120 (end-user identity), ADR-130 (secret management)
+* Operations – ADR-140 (environments), ADR-150 (CI/CD), ADR-160 (infrastructure-as-code tooling)
+* Engineering Process – ADR-170 (trunk-based development)
+
+Supporting assets include:
+
+* ADR catalogue and index (`docs/adr/README.md`)
+* ADR template (`templates/adr/`)
+* Numbering scheme, lifecycle, and status model
+* ADR usage criteria (`DOC-020`)
+* Bidirectional cross-references wired into the Architecture Documentation and Engineering Standards Handbook — including `TEC-010` stack rows moved to Approved and `IAM-010`'s end-user identity model resolved
+
+The Architecture Decision Records capture the rationale behind the platform's significant technical decisions, with traceability to the Engineering Standards, Architecture Documentation, and Current-State inventories.
 
 ---
 
