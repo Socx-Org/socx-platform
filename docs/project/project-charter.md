@@ -121,7 +121,7 @@ The table below records the current status of each deliverable. A deliverable is
 | Deliverable 2 – Engineering Standards Handbook       | ✅ Complete | 1.0     | `v0.2-standards`     |
 | Deliverable 3 – Architecture Documentation           | ✅ Complete | 1.0     | `v0.3-architecture`  |
 | Deliverable 4 – Current-State Documentation          | ✅ Complete | 1.0     | `v0.4-current-state` |
-| Deliverable 5 – Architecture Decision Records (ADRs) | ⏳ Planned  | —      | —                     |
+| Deliverable 5 – Architecture Decision Records (ADRs) | 🚧 In Progress | —      | —                     |
 | Deliverable 6 – Reference Implementations            | ⏳ Planned  | —      | —                     |
 | Deliverable 7 – Operational Runbooks                 | ⏳ Planned  | —      | —                     |
 | Deliverable 8 – Automation & Tooling                 | ⏳ Planned  | —      | —                     |
@@ -251,7 +251,7 @@ Together with the Engineering Standards Handbook and Architecture Documentation,
 
 ---
 
-## Deliverable 5 – Architecture Decision Records (ADRs)
+## Deliverable 5 – Architecture Decision Records (ADRs) **🚧** In Progress
 
 ### Objective
 
