@@ -2,9 +2,9 @@
 id: IAM-010
 title: Identity, Trust & Security Architecture
 category: Identity
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -48,15 +48,17 @@ The choice affects `APP-010`'s interface layer (whether it validates its own cre
 
 Not yet assessed.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: `SEC-010`, `SEC-030`
-- ADR(s) behind this design: none yet — the end-user identity model decision is explicitly outstanding
-- Reference implementation(s): `reference/security` (currently empty)
-- Runbook(s): none yet
+- Standards: `SEC-010`, `SEC-030`
+- ADRs: none yet — the end-user identity model decision is explicitly outstanding
+- Reference Implementations: `reference/security` (currently empty)
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

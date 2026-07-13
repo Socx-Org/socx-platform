@@ -8,6 +8,11 @@ Significant changes to the target state should be recorded as an ADR under [docs
 
 ## Scope
 
+```scheme
+
+        - APP-010 — Application reference architecture
+```
+
 An architecture document describes the target design and the reasoning behind it. It does not restate:
 
 - **what** every project MUST do (that's an Engineering Standard)
@@ -16,7 +21,20 @@ An architecture document describes the target design and the reasoning behind it
 - **how to operate** something right now (that's a Runbook)
 - **what** is actually deployed today (that's Current-State documentation)
 
-An architecture document MUST link to the relevant standard, ADR, reference implementation, or runbook rather than duplicating its content.
+An architecture document MUST link to the relevant standard, ADR, reference implementation, runbook, or current-state document rather than duplicating its content.
+
+## Architecture Principles
+
+Every architecture document should default toward these unless a specific, recorded reason (an ADR) says otherwise:
+
+- **Simplicity** — the simplest design that satisfies the requirement; complexity has to earn its place.
+- **Secure by default** — the default configuration is the secure one; an insecure option requires explicit, documented justification.
+- **Infrastructure as code** — target designs assume infrastructure is defined and changed as code, never manually (see `OPS-020`).
+- **Externalised configuration** — configuration and secrets are supplied at runtime (see `SEC-010`), never hardcoded into a design.
+- **Stateless services where practical** — services hold no local state that would block horizontal scaling or complicate rollback (see `OPS-030`), except where a data-ownership need (`DAT-010`) genuinely requires it.
+- **Automation first** — a manual, repeatable operational step is a candidate for automation before it's accepted as a permanent runbook step.
+
+These are design biases, not testable rules. Where a principle and an Engineering Standard overlap, the standard is the enforceable bar — the principle just explains the default every architecture document should design toward.
 
 ## Separation of Concerns
 
@@ -63,24 +81,48 @@ Each document has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `CTX-010`.
 | INF  | Infrastructure | Target hosting/networking topology — conceptual only; MUST NOT contain deployment configuration, connection strings, ports, or other implementation detail (that's`reference/`) |
 | IAM  | Identity       | Target trust, authentication, and authorization model                                                                                                                              |
 
+## Architecture Decision Matrix
+
+| Document | Question it answers |
+|---|---|
+| `CTX-010` | Who or what is outside the platform boundary, and why does the platform exist? |
+| `DOM-010` | What systems make up the platform, and how do they relate? |
+| `APP-010` | How should any SOCX application be internally structured? |
+| `DAT-010` | Who owns which data, how does it flow, and how long is it kept? |
+| `INT-010` | How do systems communicate with each other? |
+| `TEC-010` | Which technologies are approved, and why? |
+| `INF-010` | What does the target hosting/networking shape look like? |
+| `IAM-010` | How is trust established between systems and users? |
+
 ## Table of Contents
 
-| ID      | Title                                   | Status  |
-| ------- | --------------------------------------- | ------- |
-| CTX-010 | Platform Context                        | Draft   |
-| DOM-010 | System Landscape                        | Draft   |
-| APP-010 | Application Reference Architecture      | Draft   |
-| DAT-010 | Platform Data Architecture              | Draft   |
-| INT-010 | Integration Architecture                | Draft   |
-| TEC-010 | Approved Technology Stack               | Draft   |
-| INF-010 | Target Infrastructure Topology          | Draft   |
-| IAM-010 | Identity, Trust & Security Architecture | Draft   |
+| ID      | Title                                   | Status |
+| ------- | --------------------------------------- | ------ |
+| CTX-010 | Platform Context                        | Approved  |
+| DOM-010 | System Landscape                        | Approved  |
+| APP-010 | Application Reference Architecture      | Approved  |
+| DAT-010 | Platform Data Architecture              | Approved  |
+| INT-010 | Integration Architecture                | Approved  |
+| TEC-010 | Approved Technology Stack               | Approved  |
+| INF-010 | Target Infrastructure Topology          | Approved  |
+| IAM-010 | Identity, Trust & Security Architecture | Approved  |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given document is the `status` field in its own metadata, not this table; this column is kept in sync as a convenience index.
 
 ## Diagrams
 
 Diagram source files live in [docs/diagrams](../diagrams), not in a nested `docs/architecture/diagrams/` — diagrams are a cross-cutting asset shared by architecture, runbooks, and ADRs alike. A diagram is ID-prefixed with the document that owns it (e.g. `docs/diagrams/CTX-010-platform-context.drawio`) and is embedded or linked from that document, never copied into it.
+
+## Repository Maturity / Roadmap
+
+| Deliverable | Status |
+|---|---|
+| 1 — Repository Foundation | Complete |
+| 2 — Engineering Standards | Complete — 19 standards Approved |
+| 3 — Architecture Documentation | In progress — 8 seed documents Drafted, pending review |
+| 4+ — ADRs, Claude Code Integration, Infrastructure Reference Assets, GitHub Standards, Diagram Library, Operational Runbooks, Automation Scripts, Reference Application, Production Readiness Review | Planned |
+
+Full deliverable roadmap and rationale: [docs/project/project-charter.md](../project/project-charter.md).
 
 ## Authoring a New Architecture Document
 

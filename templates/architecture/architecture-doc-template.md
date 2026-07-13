@@ -34,12 +34,13 @@ The to-be design itself. Diagrams live in `docs/diagrams/` as `<ID>-<slug>.<ext>
 
 How, or whether, this differs from what's actually deployed today (see `docs/current-state/`). Use "Not yet assessed" if this hasn't been compared.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies:
-- ADR(s) behind this design:
-- Reference implementation(s):
-- Runbook(s):
+- Standards:
+- ADRs:
+- Reference Implementations:
+- Runbooks:
+- Current-State documentation:
 
 ## Revision History
 

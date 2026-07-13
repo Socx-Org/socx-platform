@@ -2,9 +2,9 @@
 id: DAT-010
 title: Platform Data Architecture
 category: Data
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -53,15 +53,17 @@ With multiple systems (`socx-org-uk`, `ghs`, `rms`), the platform's biggest data
 
 Not yet assessed.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: `OPS-060`, `SEC-010`
-- ADR(s) behind this design: none yet
-- Reference implementation(s): `reference/deployment` (currently empty)
-- Runbook(s): none yet
+- Standards: `OPS-060`, `SEC-010`
+- ADRs: none yet
+- Reference Implementations: `reference/deployment` (currently empty)
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

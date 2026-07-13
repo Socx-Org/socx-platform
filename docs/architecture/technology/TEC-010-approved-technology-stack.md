@@ -2,9 +2,9 @@
 id: TEC-010
 title: Approved Technology Stack
 category: Technology
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -32,33 +32,46 @@ Repeatedly re-deciding "what database," "what process manager," "what CI provide
 
 **Open item:** the rows below reflect what can be inferred from this repository's existing structure (the `reference/` domains and related-repository naming) — they are not yet backed by an ADR and should be treated as proposed, not final, until confirmed and recorded.
 
+## Technology Lifecycle
+
+Every row in the table below carries exactly one of four statuses:
+
+| Status | Meaning |
+|---|---|
+| `Proposed` | A candidate target technology, not yet backed by an ADR |
+| `Under Evaluation` | Actively being assessed; no direction chosen yet |
+| `Approved` | Backed by an ADR; safe to build against |
+| `Deprecated` | Previously Approved, now being phased out — see the superseding ADR |
+
 ## Target Design
 
-| Layer | Approved technology | Status | ADR |
-|---|---|---|---|
-| Hosting | DigitalOcean droplet(s) | Proposed — inferred from `do-nginx-infra` naming | none yet |
-| Reverse proxy / edge | nginx | Proposed — inferred from `reference/nginx` | none yet |
-| Process management | systemd | Proposed — inferred from `reference/systemd` | none yet |
-| CI/CD | GitHub Actions | Proposed — inferred from `reference/github` | none yet |
-| Application language/framework | TBD — not yet confirmed | Undecided | none yet |
-| Primary data store | TBD — not yet confirmed | Undecided | none yet |
-| Identity provider | TBD — not yet confirmed | Undecided | none yet |
+| Layer | Technology | Status | Notes | ADR |
+|---|---|---|---|---|
+| Hosting | DigitalOcean droplet(s) | Proposed | Inferred from `platform-infra` repository naming | none yet |
+| Reverse proxy / edge | nginx | Proposed | Inferred from `reference/nginx` | none yet |
+| Process management | systemd | Proposed | Inferred from `reference/systemd` | none yet |
+| CI/CD | GitHub Actions | Proposed | Inferred from `reference/github` | none yet |
+| Application language/framework | Not yet identified | Under Evaluation | No signal yet in this repository or its related repositories | none yet |
+| Primary data store | Not yet identified | Under Evaluation | No signal yet | none yet |
+| Identity provider | Not yet identified | Under Evaluation | Tied to the open per-system vs. SSO decision in `IAM-010` | none yet |
 
-A row moves from `Proposed`/`Undecided` to `Approved` only once backed by an ADR recorded in `docs/adr/` (per `DOC-020`) — this table should never assert a technology is approved without a decision record behind it.
+A row moves to `Approved` only once backed by an ADR recorded in `docs/adr/` (per `DOC-020`) — this table should never assert a technology is `Approved` without a decision record behind it.
 
 ## Current-State Gap
 
 Not yet assessed — this table describes an inferred, not confirmed, target; there is no `docs/current-state/` entry yet to compare it against.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: none directly — this document informs other architecture documents rather than satisfying a standard itself
-- ADR(s) behind this design: none yet
-- Reference implementation(s): `reference/nginx`, `reference/systemd`, `reference/github` (all currently empty)
-- Runbook(s): none yet
+- Standards: none directly — this document informs other architecture documents rather than satisfying a standard itself
+- ADRs: none yet
+- Reference Implementations: `reference/nginx`, `reference/systemd`, `reference/github` (all currently empty)
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

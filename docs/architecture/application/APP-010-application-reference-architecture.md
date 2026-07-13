@@ -2,9 +2,9 @@
 id: APP-010
 title: Application Reference Architecture
 category: Application
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -49,15 +49,17 @@ Cross-cutting concerns are wired at the edges of these layers, not scattered thr
 
 Not yet assessed — no application in the platform has been checked against this pattern yet.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: `ENG-050`, `ENG-060`, `SEC-010`, `OPS-050`
-- ADR(s) behind this design: none yet
-- Reference implementation(s): none yet
-- Runbook(s): none yet
+- Standards: `ENG-050`, `ENG-060`, `SEC-010`, `OPS-050`
+- ADRs: none yet
+- Reference Implementations: none yet
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

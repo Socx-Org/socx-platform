@@ -1,5 +1,5 @@
 flowchart TB
-    internet(("Internet")) --> edge["Shared edge\n(nginx, do-nginx-infra)"]
+    internet(("Internet")) --> edge["Shared edge\n(nginx, platform-infra)"]
     edge --> svcA["Application process\n(systemd-managed)"]
     edge --> svcB["Application process\n(systemd-managed)"]
     edge --> svcC["Application process\n(systemd-managed)"]

@@ -2,9 +2,9 @@
 id: DOM-010
 title: System Landscape
 category: Domain
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -22,7 +22,7 @@ superseded_by: null
 
 ## Scope
 
-Which systems make up the SOCX platform, what each is responsible for, and how they relate to each other. Does not describe any system's internal component design (see `APP-010`, and each system's own repository) and does not describe shared hosting infrastructure as a "system" — `do-nginx-infra` is infrastructure, covered under `INF-010`/`TEC-010`, not a business system listed here.
+Which systems make up the SOCX platform, what each is responsible for, and how they relate to each other. Does not describe any system's internal component design (see `APP-010`, and each system's own repository) and does not describe shared hosting infrastructure as a "system" — `platform-infra` is infrastructure, covered under `INF-010`/`TEC-010`, not a business system listed here.
 
 ## Context
 
@@ -55,15 +55,17 @@ Once responsibilities are confirmed, any relationship between two systems (a dep
 
 Not yet assessed.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: `ENG-050`
-- ADR(s) behind this design: none yet
-- Reference implementation(s): none
-- Runbook(s): none yet
+- Standards: `ENG-050`
+- ADRs: none yet
+- Reference Implementations: none
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

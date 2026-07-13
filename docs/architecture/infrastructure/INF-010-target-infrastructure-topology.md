@@ -2,9 +2,9 @@
 id: INF-010
 title: Target Infrastructure Topology
 category: Infrastructure
-status: Draft
+status: Approved
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -36,7 +36,7 @@ Every project needs to fit a known deployment shape rather than each inventing i
 
 ```mermaid
 flowchart TB
-    internet(("Internet")) --> edge["Shared edge\n(nginx, do-nginx-infra)"]
+    internet(("Internet")) --> edge["Shared edge\n(nginx, platform-infra)"]
     edge --> svcA["Application process\n(systemd-managed)"]
     edge --> svcB["Application process\n(systemd-managed)"]
     edge --> svcC["Application process\n(systemd-managed)"]
@@ -53,15 +53,17 @@ Diagram source: `docs/diagrams/INF-010-target-infrastructure-topology.mmd`.
 
 Not yet assessed.
 
-## Related
+## Related Documents
 
-- Standard(s) this design satisfies: `OPS-010`, `OPS-020`
-- ADR(s) behind this design: none yet
-- Reference implementation(s): `reference/deployment`, `reference/nginx`, `reference/systemd` (all currently empty)
-- Runbook(s): none yet
+- Standards: `OPS-010`, `OPS-020`
+- ADRs: none yet
+- Reference Implementations: `reference/deployment`, `reference/nginx`, `reference/systemd` (all currently empty)
+- Runbooks: none yet
+- Current-State documentation: none yet
 
 ## Revision History
 
 | Version | Date | Change | Author |
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
+| 1.0 | 2026-07-13 | Approved | Socx |

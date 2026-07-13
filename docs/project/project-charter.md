@@ -8,7 +8,7 @@ It is **not** an application repository.
 
 It contains the standards, architecture, documentation, templates and operational guidance used across all SOCX applications.
 
-Application source code remains in its own repositories (for example `socx-org-uk`, `ghs`, `rms`, `do-nginx-infra`).
+Application source code remains in its own repositories (for example `socx-org-uk`, `ghs`, `rms`, `platform-infra`).
 
 ---
 

@@ -1,0 +1,19 @@
+flowchart TB
+    subgraph Governance["Engineering Source of Truth"]
+        platform["socx-platform\n(standards, architecture, ADRs, templates)"]
+    end
+    subgraph Infra["Shared Infrastructure"]
+        infra["platform-infra"]
+    end
+    subgraph Apps["Application Repositories"]
+        socx["socx-org-uk"]
+        ghs["ghs"]
+        rms["rms"]
+    end
+    platform -.governs.-> infra
+    platform -.governs.-> socx
+    platform -.governs.-> ghs
+    platform -.governs.-> rms
+    infra --> socx
+    infra --> ghs
+    infra --> rms
