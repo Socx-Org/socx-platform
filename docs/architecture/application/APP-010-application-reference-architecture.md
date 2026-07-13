@@ -4,7 +4,7 @@ title: Application Reference Architecture
 category: Application
 status: Approved
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -13,7 +13,11 @@ related:
     - ENG-060
     - SEC-010
     - OPS-050
-  adrs: []
+  adrs:
+    - ADR-060
+    - ADR-070
+    - ADR-120
+    - ADR-130
   reference: []
   runbooks: []
   current_state: []
@@ -52,7 +56,7 @@ Not yet assessed — no application in the platform has been checked against thi
 ## Related Documents
 
 - Standards: `ENG-050`, `ENG-060`, `SEC-010`, `OPS-050`
-- ADRs: none yet
+- ADRs: `ADR-060`, `ADR-070`, `ADR-120`, `ADR-130`
 - Reference Implementations: none yet
 - Runbooks: none yet
 - Current-State documentation: none yet
@@ -63,3 +67,4 @@ Not yet assessed — no application in the platform has been checked against thi
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
+| 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |

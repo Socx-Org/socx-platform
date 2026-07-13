@@ -4,13 +4,14 @@ title: System Landscape
 category: Domain
 status: Approved
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
   standards:
     - ENG-050
-  adrs: []
+  adrs:
+    - ADR-020
   reference: []
   runbooks: []
   current_state: []
@@ -58,7 +59,7 @@ Not yet assessed.
 ## Related Documents
 
 - Standards: `ENG-050`
-- ADRs: none yet
+- ADRs: `ADR-020`
 - Reference Implementations: none
 - Runbooks: none yet
 - Current-State documentation: none yet
@@ -69,3 +70,4 @@ Not yet assessed.
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
+| 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |

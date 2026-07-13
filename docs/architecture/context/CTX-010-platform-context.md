@@ -4,13 +4,16 @@ title: Platform Context
 category: Context
 status: Approved
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
   standards:
     - OPS-010
-  adrs: []
+  adrs:
+    - ADR-020
+    - ADR-050
+    - ADR-140
   reference:
     - reference/deployment
     - reference/nginx
@@ -83,7 +86,7 @@ Not yet assessed — no corresponding `docs/current-state/` document exists yet 
 ## Related Documents
 
 - Standards: `OPS-010` (environment boundary implied by the shared edge)
-- ADRs: none yet
+- ADRs: `ADR-020`, `ADR-050`, `ADR-140`
 - Reference Implementations: `reference/deployment`, `reference/nginx` (both currently empty)
 - Runbooks: none yet
 - Current-State documentation: none yet
@@ -94,3 +97,4 @@ Not yet assessed — no corresponding `docs/current-state/` document exists yet 
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
+| 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |
