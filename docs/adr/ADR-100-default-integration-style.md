@@ -1,9 +1,9 @@
 ---
 id: ADR-100
 title: Default integration style
-status: Draft
+status: Approved
 category: Integration
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -60,3 +60,4 @@ The default integration style is **synchronous HTTPS routed through the shared e
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
