@@ -4,12 +4,19 @@ title: Approved Technology Stack
 category: Technology
 status: Approved
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
   standards: []
-  adrs: []
+  adrs:
+    - ADR-040
+    - ADR-050
+    - ADR-070
+    - ADR-090
+    - ADR-120
+    - ADR-150
+    - ADR-160
   reference:
     - reference/nginx
     - reference/systemd
@@ -30,7 +37,7 @@ The platform's approved technologies and the rationale for each, so a new projec
 
 Repeatedly re-deciding "what database," "what process manager," "what CI provider" per project is wasted effort and produces inconsistent operational tooling. A single approved list, kept current, removes that decision from every new project — and gives `DAT-010`, `INF-010`, `APP-010`, and `IAM-010` a common vocabulary to cite instead of each naming technologies independently.
 
-**Open item:** the rows below reflect what can be inferred from this repository's existing structure (the `reference/` domains and related-repository naming) — they are not yet backed by an ADR and should be treated as proposed, not final, until confirmed and recorded.
+**Update (2026-07-14):** every row below is now backed by an approved ADR (`ADR-040`, `ADR-050`, `ADR-070`, `ADR-090`, `ADR-120`, `ADR-150`, `ADR-160`) and has moved from `Proposed` / `Under Evaluation` to `Approved`. The concrete technologies were confirmed against the current-state inventory (`CS-TEC-010`).
 
 ## Technology Lifecycle
 
@@ -47,13 +54,14 @@ Every row in the table below carries exactly one of four statuses:
 
 | Layer | Technology | Status | Notes | ADR |
 |---|---|---|---|---|
-| Hosting | DigitalOcean droplet(s) | Proposed | Inferred from `platform-infra` repository naming | none yet |
-| Reverse proxy / edge | nginx | Proposed | Inferred from `reference/nginx` | none yet |
-| Process management | systemd | Proposed | Inferred from `reference/systemd` | none yet |
-| CI/CD | GitHub Actions | Proposed | Inferred from `reference/github` | none yet |
-| Application language/framework | Not yet identified | Under Evaluation | No signal yet in this repository or its related repositories | none yet |
-| Primary data store | Not yet identified | Under Evaluation | No signal yet | none yet |
-| Identity provider | Not yet identified | Under Evaluation | Tied to the open per-system vs. SSO decision in `IAM-010` | none yet |
+| Hosting | DigitalOcean droplet(s) | Approved | Self-managed, no container orchestration | `ADR-040` |
+| Reverse proxy / edge | nginx | Approved | Shared edge, sole ingress | `ADR-050` |
+| Process management | systemd | Approved | Direct-execution units | `ADR-040` |
+| Infrastructure as code | Terraform | Approved | Provisions droplet, DNS, and edge | `ADR-160` |
+| CI/CD | GitHub Actions | Approved | Reusable workflow templates | `ADR-150` |
+| Application language/framework | Node.js + TypeScript + Express | Approved | Express 5 baseline; `rms` Python worker is a bounded exception | `ADR-070` |
+| Primary data store | PostgreSQL (Redis for cache/queue) | Approved | Redis is a supporting store, not a system of record | `ADR-090` |
+| Identity provider | Shared OIDC provider (product TBD) | Approved | SSO/OIDC model decided; specific product not yet selected | `ADR-120` |
 
 A row moves to `Approved` only once backed by an ADR recorded in `docs/adr/` (per `DOC-020`) — this table should never assert a technology is `Approved` without a decision record behind it.
 
@@ -64,7 +72,7 @@ Not yet assessed — this table describes an inferred, not confirmed, target; th
 ## Related Documents
 
 - Standards: none directly — this document informs other architecture documents rather than satisfying a standard itself
-- ADRs: none yet
+- ADRs: `ADR-040`, `ADR-050`, `ADR-070`, `ADR-090`, `ADR-120`, `ADR-150`, `ADR-160`
 - Reference Implementations: `reference/nginx`, `reference/systemd`, `reference/github` (all currently empty)
 - Runbooks: none yet
 - Current-State documentation: none yet
@@ -75,3 +83,4 @@ Not yet assessed — this table describes an inferred, not confirmed, target; th
 |---|---|---|---|
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
+| 1.1 | 2026-07-14 | Stack rows moved to Approved; ADR cross-references added | Socx |
