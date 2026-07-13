@@ -111,17 +111,21 @@ During execution, several originally planned deliverables were consolidated into
 
 ## Current Status
 
-| Deliverable                                           | Status         |
-| ----------------------------------------------------- | -------------- |
-| Deliverable 1 – Repository Foundation                | ✅ Complete    |
-| Deliverable 2 – Engineering Standards Handbook       | ✅ Complete    |
-| Deliverable 3 – Architecture Documentation           | ✅ Complete    |
-| Deliverable 4 – Current-State Documentation          | 🚧 In Progress |
-| Deliverable 5 – Architecture Decision Records (ADRs) | ⏳ Planned     |
-| Deliverable 6 – Reference Implementations            | ⏳ Planned     |
-| Deliverable 7 – Operational Runbooks                 | ⏳ Planned     |
-| Deliverable 8 – Automation & Tooling                 | ⏳ Planned     |
-| Deliverable 9 – Production Readiness Review          | ⏳ Planned     |
+The table below records the current status of each deliverable. A deliverable is considered **Complete** once it has successfully passed technical review, received formal approval, and been committed to the repository.
+
+## Current Status
+
+| Deliverable                                           | Status      | Version | Baseline               |
+| ----------------------------------------------------- | ----------- | ------- | ---------------------- |
+| Deliverable 1 – Repository Foundation                | ✅ Complete | 1.0     | `v0.1-foundation`    |
+| Deliverable 2 – Engineering Standards Handbook       | ✅ Complete | 1.0     | `v0.2-standards`     |
+| Deliverable 3 – Architecture Documentation           | ✅ Complete | 1.0     | `v0.3-architecture`  |
+| Deliverable 4 – Current-State Documentation          | ✅ Complete | 1.0     | `v0.4-current-state` |
+| Deliverable 5 – Architecture Decision Records (ADRs) | ⏳ Planned  | —      | —                     |
+| Deliverable 6 – Reference Implementations            | ⏳ Planned  | —      | —                     |
+| Deliverable 7 – Operational Runbooks                 | ⏳ Planned  | —      | —                     |
+| Deliverable 8 – Automation & Tooling                 | ⏳ Planned  | —      | —                     |
+| Deliverable 9 - Production Readiness Review           | ⏳ Planned  | —      | —                     |
 
 ---
 
@@ -210,15 +214,40 @@ The Architecture Documentation defines the intended platform design only. It del
 
 ---
 
-## Deliverable 4 – Current-State Documentation 🚧 In Progress
+## Deliverable 4 – Current-State Documentation ✅ Complete
 
 ### Objective
 
-Document the current ("as-is") state of the SOCX platform.
+Document the current ("as-is") state of the SOCX platform, providing an authoritative and evidence-based inventory of the deployed environment.
 
-### Expected Outcome
+### Outcome
 
-Produce an accurate inventory of the deployed platform, infrastructure, services, integrations and operational environment, providing the baseline against which future architectural change can be measured.
+The Current-State Documentation framework has been established under `docs/current-state/` using a modular, one-concept-per-document structure that mirrors the Architecture Documentation.
+
+The documentation currently covers:
+
+* Current Platform Context
+* Current System Landscape
+* Current Application Inventory
+* Current Data Inventory
+* Current Integration Inventory
+* Current Technology Inventory
+* Current Infrastructure Inventory
+* Current Identity & Access Inventory
+* Repository Inventory
+
+Supporting assets include:
+
+* Current-State Handbook (`docs/current-state/README.md`)
+* Current-State document template
+* Document lifecycle and metadata model
+* Provenance and confidence model for observed facts
+* Gap analysis against the target architecture
+* Cross-references to Architecture Documentation, Engineering Standards, ADRs, Reference Implementations and Runbooks
+
+The Current-State Documentation records observed facts only. It deliberately avoids defining target architecture, operational procedures or engineering policy, instead linking to the appropriate Architecture Documentation, Engineering Standards, Runbooks and ADRs where applicable.
+
+Together with the Engineering Standards Handbook and Architecture Documentation, it provides a complete baseline for planning, implementing and validating future changes to the SOCX platform.
 
 ---
 
@@ -272,6 +301,14 @@ Automation scripts, reusable tooling and engineering utilities that reduce manua
 
 # Long-Term Goal
 
-The completed **socx-platform** repository will provide the governance, standards, architecture, reference implementations, operational guidance and automation that define how the SOCX platform is engineered.
+The completed **socx-platform** repository will provide the governance, standards, architecture, current-state inventories, reference implementations, operational guidance and automation that define how the SOCX platform is engineered.
 
-It will serve as the authoritative engineering handbook for all current and future SOCX applications, enabling consistent design, implementation, deployment and operation across the platform.
+The completed deliverables establish the engineering foundation by documenting:
+
+* how the platform is governed (Engineering Standards),
+* what the platform is intended to become (Architecture),
+* and what is deployed today (Current-State Documentation).
+
+Future deliverables will build upon this foundation by capturing architectural decisions, providing canonical reference implementations, documenting operational procedures, and automating engineering workflows.
+
+The repository will serve as the authoritative engineering handbook for all current and future SOCX applications, enabling consistent design, implementation, deployment and operation across the platform.

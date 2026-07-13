@@ -17,7 +17,6 @@ See [docs/project/project-charter.md](docs/project/project-charter.md) for full 
 
 `examples/` holds fully filled-out, worked instances of the content types above (e.g. a completed ADR, a populated runbook) — for reference and onboarding. This is distinct from `templates/`, which holds blank scaffolds meant to be copied and filled in.
 
-
 ## Roadmap
 
 Current maturity
@@ -26,10 +25,10 @@ Current maturity
 
 ✓ Architecture
 
+✓ Current-state
+
 ⏳ Reference implementations
 
 ⏳ Runbooks
-
-⏳ Current-state
 
 ⏳ Automation

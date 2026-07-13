@@ -2,11 +2,11 @@
 id: CS-DOM-010
 title: Current System Landscape
 category: Domain
-status: Draft
+status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "0.1"
+version: "1.0"
 last_reviewed: 2026-07-13
 review_cycle: quarterly
 related:
@@ -20,7 +20,6 @@ related:
 supersedes: []
 superseded_by: null
 ---
-
 # CS-DOM-010 — Current System Landscape
 
 ## Scope
@@ -43,12 +42,12 @@ flowchart TB
     end
 ```
 
-| System | Responsibility (as self-declared) | Depends on | Data owned (Observed) | Evidence |
-|---|---|---|---|---|
-| `socx-org-uk` (`www`) | Org public website; Express API + React/Vite web + worker | Shared droplet, shared nginx edge | Unknown — no dedicated DB dependency found in its `package.json` | Observed |
-| `ghs` | Golf handicap tracking (rounds, players, handicap calculation) | PostgreSQL, Redis (per its `apps/api/package.json`) | Its own Postgres DB (name unconfirmed) | Observed |
-| `rms` | Reminder-centred notification platform; dispatch engine | PostgreSQL 16, Prisma; a **separate Python 3.12 + APScheduler worker** alongside its Node API | Its own Postgres DB (`rms_db`, per its README's quick-start instructions) | Observed |
-| `ams` | Asset management (uploads, documents, asset-ownership access control) | PostgreSQL, Redis (BullMQ) | Its own Postgres DB (name unconfirmed) | Observed |
+| System                    | Responsibility (as self-declared)                                     | Depends on                                                                                         | Data owned (Observed)                                                       | Evidence |
+| ------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | -------- |
+| `socx-org-uk` (`www`) | Org public website; Express API + React/Vite web + worker             | Shared droplet, shared nginx edge                                                                  | Unknown — no dedicated DB dependency found in its`package.json`          | Observed |
+| `ghs`                   | Golf handicap tracking (rounds, players, handicap calculation)        | PostgreSQL, Redis (per its`apps/api/package.json`)                                               | Its own Postgres DB (name unconfirmed)                                      | Observed |
+| `rms`                   | Reminder-centred notification platform; dispatch engine               | PostgreSQL 16, Prisma; a**separate Python 3.12 + APScheduler worker** alongside its Node API | Its own Postgres DB (`rms_db`, per its README's quick-start instructions) | Observed |
+| `ams`                   | Asset management (uploads, documents, asset-ownership access control) | PostgreSQL, Redis (BullMQ)                                                                         | Its own Postgres DB (name unconfirmed)                                      | Observed |
 
 All four applications currently run on the **same single droplet**, per `platform-infra`'s architecture document — there is no evidence of per-system or per-environment infrastructure isolation today (see `CS-INF-010`).
 
@@ -58,10 +57,10 @@ All four applications currently run on the **same single droplet**, per `platfor
 
 ## Gap vs. Target Architecture
 
-| Aspect | Current State | Target (`DOM-010`) | Difference | Impact |
-|---|---|---|---|---|
-| System count | 4 systems, all independently confirmed deployed | 3 systems named, all marked "TBD — confirm" for responsibility | `ams` missing entirely; the other three's responsibilities are now confirmable facts, not placeholders | `DOM-010` should be revisited using this inventory as source material — recommended, not performed here (would require editing an Approved architecture document) |
-| Responsibility clarity | High — each system's purpose is self-declared in its own README | Unconfirmed placeholders | Current state is now more complete than the target document | Low risk, but an oddity worth resolving: the "as-is" is currently more informative than the "to-be" for this aspect |
+| Aspect                 | Current State                                                    | Target (`DOM-010`)                                            | Difference                                                                                               | Impact                                                                                                                                                               |
+| ---------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| System count           | 4 systems, all independently confirmed deployed                  | 3 systems named, all marked "TBD — confirm" for responsibility | `ams` missing entirely; the other three's responsibilities are now confirmable facts, not placeholders | `DOM-010` should be revisited using this inventory as source material — recommended, not performed here (would require editing an Approved architecture document) |
+| Responsibility clarity | High — each system's purpose is self-declared in its own README | Unconfirmed placeholders                                        | Current state is now more complete than the target document                                              | Low risk, but an oddity worth resolving: the "as-is" is currently more informative than the "to-be" for this aspect                                                  |
 
 ## Related Documents
 
@@ -73,6 +72,7 @@ All four applications currently run on the **same single droplet**, per `platfor
 
 ## Revision History
 
-| Version | Date | Change | Author |
-|---|---|---|---|
-| 0.1 | 2026-07-13 | Initial draft | Socx |
+| Version | Date       | Change        | Author |
+| ------- | ---------- | ------------- | ------ |
+| 0.1     | 2026-07-13 | Initial draft | Socx   |
+| 1.0     | 2026-07-13 | Approved      | Socx   |
