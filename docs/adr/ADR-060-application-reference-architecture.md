@@ -1,9 +1,9 @@
 ---
 id: ADR-060
 title: Three-layer application reference architecture
-status: Draft
+status: Approved
 category: Application
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -68,3 +68,4 @@ Cross-cutting concerns are wired at layer edges, not scattered: configuration an
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
