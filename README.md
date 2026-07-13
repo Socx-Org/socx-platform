@@ -16,3 +16,20 @@ See [docs/project/project-charter.md](docs/project/project-charter.md) for full 
 - Architecture Decision Records (ADRs)
 
 `examples/` holds fully filled-out, worked instances of the content types above (e.g. a completed ADR, a populated runbook) — for reference and onboarding. This is distinct from `templates/`, which holds blank scaffolds meant to be copied and filled in.
+
+
+## Roadmap
+
+Current maturity
+
+✓ Standards
+
+✓ Architecture
+
+⏳ Reference implementations
+
+⏳ Runbooks
+
+⏳ Current-state
+
+⏳ Automation
