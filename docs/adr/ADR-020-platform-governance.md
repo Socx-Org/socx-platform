@@ -1,9 +1,9 @@
 ---
 id: ADR-020
 title: "Platform governance: multi-repo topology & documentation model"
-status: Draft
+status: Approved
 category: Platform & Governance
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -66,3 +66,4 @@ The platform is governed through two linked structural decisions:
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
