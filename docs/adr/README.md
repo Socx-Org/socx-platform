@@ -97,41 +97,41 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 | ID      | Title                                                    | Status   | Decision |
 | ------- | -------------------------------------------------------- | -------- | -------- |
 | ADR-010 | Record decisions as ADRs                                 | Approved | Made     |
-| ADR-020 | Platform governance: multi-repo topology & documentation model | Draft    | Made     |
-| ADR-030 | Documentation-first engineering philosophy               | Draft    | Made     |
+| ADR-020 | Platform governance: multi-repo topology & documentation model | Approved | Made     |
+| ADR-030 | Documentation-first engineering philosophy               | Approved | Made     |
 
 ### Infrastructure
 
 | ID      | Title                                                    | Status   | Decision |
 | ------- | -------------------------------------------------------- | -------- | -------- |
-| ADR-040 | Hosting & process-runtime model (droplets, systemd, no orchestration) | Draft | Open     |
-| ADR-050 | Shared nginx edge as sole ingress                        | Draft    | Made     |
+| ADR-040 | Hosting & process-runtime model (droplets, systemd, no orchestration) | Approved | Open     |
+| ADR-050 | Shared nginx edge as sole ingress                        | Approved | Made     |
 
 ### Application
 
 | ID      | Title                                    | Status   | Decision |
 | ------- | ---------------------------------------- | -------- | -------- |
-| ADR-060 | Three-layer application reference architecture | Draft    | Made     |
+| ADR-060 | Three-layer application reference architecture | Approved | Made     |
 | ADR-070 | Application language & framework          | Approved | Open     |
 
 ### Data
 
 | ID      | Title                          | Status   | Decision |
 | ------- | ------------------------------ | -------- | -------- |
-| ADR-080 | Single-writer data ownership   | Draft    | Made     |
+| ADR-080 | Single-writer data ownership   | Approved | Made     |
 | ADR-090 | Primary datastore technology   | Approved | Open     |
 
 ### Integration
 
 | ID      | Title                                        | Status   | Decision |
 | ------- | -------------------------------------------- | -------- | -------- |
-| ADR-100 | Default integration style (sync HTTPS via edge) | Draft    | Made     |
+| ADR-100 | Default integration style (sync HTTPS via edge) | Approved | Made     |
 
 ### Security & Identity
 
 | ID      | Title                                          | Status   | Decision |
 | ------- | ---------------------------------------------- | -------- | -------- |
-| ADR-110 | Service-to-service trust via scoped credentials | Draft    | Open     |
+| ADR-110 | Service-to-service trust via scoped credentials | Approved | Open     |
 | ADR-120 | End-user identity model (SSO vs per-system)     | Approved | Open     |
 | ADR-130 | Platform secret-management mechanism            | Approved | Open     |
 
@@ -139,15 +139,15 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 
 | ID      | Title                          | Status   | Decision |
 | ------- | ------------------------------ | -------- | -------- |
-| ADR-140 | Environment model              | Draft    | Made     |
-| ADR-150 | CI/CD platform (GitHub Actions) | Draft    | Open     |
-| ADR-160 | Infrastructure-as-code tooling  | Draft    | Open     |
+| ADR-140 | Environment model              | Approved | Made     |
+| ADR-150 | CI/CD platform (GitHub Actions) | Approved | Open     |
+| ADR-160 | Infrastructure-as-code tooling  | Approved | Open     |
 
 ### Engineering Process
 
 | ID      | Title                                      | Status   | Decision |
 | ------- | ------------------------------------------ | -------- | -------- |
-| ADR-170 | Trunk-based development & commit conventions | Draft    | Made     |
+| ADR-170 | Trunk-based development & commit conventions | Approved | Made     |
 
 ## Authoring a New ADR
 
