@@ -4,7 +4,7 @@ title: Approved Technology Stack
 category: Technology
 status: Approved
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -22,7 +22,8 @@ related:
     - reference/systemd
     - reference/github
   runbooks: []
-  current_state: []
+  current_state:
+    - CS-TEC-010
 supersedes: []
 superseded_by: null
 ---
@@ -67,7 +68,7 @@ A row moves to `Approved` only once backed by an ADR recorded in `docs/adr/` (pe
 
 ## Current-State Gap
 
-Not yet assessed — this table describes an inferred, not confirmed, target; there is no `docs/current-state/` entry yet to compare it against.
+Assessed against `CS-TEC-010`, which confirms the hosting, reverse-proxy, and CI choices and records divergent per-application decisions for language, datastore, and identity that this approved stack is the target to converge on.
 
 ## Related Documents
 
@@ -75,7 +76,7 @@ Not yet assessed — this table describes an inferred, not confirmed, target; th
 - ADRs: `ADR-040`, `ADR-050`, `ADR-070`, `ADR-090`, `ADR-120`, `ADR-150`, `ADR-160`
 - Reference Implementations: `reference/nginx`, `reference/systemd`, `reference/github` (all currently empty)
 - Runbooks: none yet
-- Current-State documentation: none yet
+- Current-State documentation: `CS-TEC-010`
 
 ## Revision History
 
@@ -84,3 +85,4 @@ Not yet assessed — this table describes an inferred, not confirmed, target; th
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
 | 1.1 | 2026-07-14 | Stack rows moved to Approved; ADR cross-references added | Socx |
+| 1.2 | 2026-07-14 | Added current-state cross-reference (CS-TEC-010) | Socx |

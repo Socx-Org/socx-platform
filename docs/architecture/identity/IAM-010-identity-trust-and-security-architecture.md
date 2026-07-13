@@ -4,7 +4,7 @@ title: Identity, Trust & Security Architecture
 category: Identity
 status: Approved
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -18,7 +18,8 @@ related:
   reference:
     - reference/security
   runbooks: []
-  current_state: []
+  current_state:
+    - CS-IAM-010
 supersedes: []
 superseded_by: null
 ---
@@ -45,7 +46,7 @@ As soon as more than one system needs to call another (per `INT-010`), the platf
 
 ## Current-State Gap
 
-Not yet assessed.
+See `CS-IAM-010`: today's model is independent per-system JWT authentication with no shared provider — the migration starting point for the shared SSO/OIDC target above.
 
 ## Related Documents
 
@@ -53,7 +54,7 @@ Not yet assessed.
 - ADRs: `ADR-110`, `ADR-120`, `ADR-130`
 - Reference Implementations: `reference/security` (currently empty)
 - Runbooks: none yet
-- Current-State documentation: none yet
+- Current-State documentation: `CS-IAM-010`
 
 ## Revision History
 
@@ -62,3 +63,4 @@ Not yet assessed.
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
 | 1.1 | 2026-07-14 | End-user identity resolved (ADR-120); ADR cross-references added | Socx |
+| 1.2 | 2026-07-14 | Added current-state cross-reference (CS-IAM-010) | Socx |
