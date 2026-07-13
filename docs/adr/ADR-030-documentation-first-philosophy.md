@@ -1,9 +1,9 @@
 ---
 id: ADR-030
 title: Documentation-first engineering philosophy
-status: Draft
+status: Approved
 category: Platform & Governance
-version: "0.1"
+version: "1.0"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -65,3 +65,4 @@ Governing documentation precedes the code it governs, and each deliverable is de
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-14 | Initial draft | Socx   |
+| 1.0     | 2026-07-14 | Approved      | Socx   |
