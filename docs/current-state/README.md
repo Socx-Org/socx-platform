@@ -94,15 +94,15 @@ Each document has a permanent ID: `CS-<CATEGORY>-<NUMBER>`, e.g. `CS-CTX-010`.
 
 | ID | Title | Status | Gap Status | Confidence |
 |---|---|---|---|---|
-| `REP-010` | Repository Inventory | Planned | N/A — no architecture counterpart | — |
-| `CS-CTX-010` | Current Platform Context | Planned | Not yet assessed | — |
-| `CS-DOM-010` | Current System Landscape | Planned | Not yet assessed | — |
-| `CS-APP-010` | Current Application Inventory | Planned | Not yet assessed | — |
-| `CS-DAT-010` | Current Data Inventory | Planned | Not yet assessed | — |
-| `CS-INT-010` | Current Integration Inventory | Planned | Not yet assessed | — |
-| `CS-TEC-010` | Current Technology Inventory | Planned | Not yet assessed | — |
-| `CS-INF-010` | Current Infrastructure Inventory | Planned | Not yet assessed | — |
-| `CS-IAM-010` | Current Identity & Access Inventory | Planned | Not yet assessed | — |
+| `REP-010` | Repository Inventory | Draft | N/A — no architecture counterpart | High |
+| `CS-CTX-010` | Current Platform Context | Draft | Diverges | Medium |
+| `CS-DOM-010` | Current System Landscape | Draft | Diverges | High |
+| `CS-APP-010` | Current Application Inventory | Draft | Diverges | High |
+| `CS-DAT-010` | Current Data Inventory | Draft | Diverges | Medium |
+| `CS-INT-010` | Current Integration Inventory | Draft | Diverges | Medium |
+| `CS-TEC-010` | Current Technology Inventory | Draft | Diverges | High |
+| `CS-INF-010` | Current Infrastructure Inventory | Draft | Diverges | Medium |
+| `CS-IAM-010` | Current Identity & Access Inventory | Draft | Diverges | Medium |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given document is the `status` field in its own metadata, not this table; this column (and Gap Status, and Confidence) is kept in sync as a convenience index.
 
