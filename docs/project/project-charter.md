@@ -122,7 +122,7 @@ The table below records the current status of each deliverable. A deliverable is
 | Deliverable 3 – Architecture Documentation           | ✅ Complete | 1.0     | `v0.3-architecture`  |
 | Deliverable 4 – Current-State Documentation          | ✅ Complete | 1.0     | `v0.4-current-state` |
 | Deliverable 5 – Architecture Decision Records (ADRs) | ✅ Complete | 1.0     | `v0.5-adr`           |
-| Deliverable 6 – Reference Implementations            | ⏳ Planned  | —      | —                     |
+| Deliverable 6 – Reference Implementations            | 🚧 In Progress | —      | —                     |
 | Deliverable 7 – Operational Runbooks                 | ⏳ Planned  | —      | —                     |
 | Deliverable 8 – Automation & Tooling                 | ⏳ Planned  | —      | —                     |
 | Deliverable 9 - Production Readiness Review           | ⏳ Planned  | —      | —                     |
@@ -284,7 +284,7 @@ The Architecture Decision Records capture the rationale behind the platform's si
 
 ---
 
-## Deliverable 6 – Reference Implementations
+## Deliverable 6 – Reference Implementations 🚧 In Progress
 
 ### Objective
 
