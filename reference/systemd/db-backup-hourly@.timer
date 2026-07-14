@@ -1,0 +1,16 @@
+# reference/systemd — hourly backup schedule for database %i (OPS-060.1)
+# For databases whose RPO (per the project's runbook, OPS-060.4) requires
+# tighter-than-daily backups. Enable per database:
+#   systemctl enable --now db-backup-hourly@{{DB_NAME}}.timer
+
+[Unit]
+Description=Hourly database backup for %i
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+RandomizedDelaySec=5m
+Unit=db-backup@%i.service
+
+[Install]
+WantedBy=timers.target

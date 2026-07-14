@@ -1,0 +1,38 @@
+# reference/systemd — direct-execution worker unit (ADR-040)
+# Copy to /etc/systemd/system/{{APP_NAME}}-worker.service and substitute all
+# {{PLACEHOLDER}} values. Same direct-execution rules as app-api.service.
+# Add datastore units (postgresql.service, redis-server.service) to After= as
+# the worker actually requires them.
+
+[Unit]
+Description={{APP_NAME}} worker
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{APP_USER}}
+Group={{APP_USER}}
+WorkingDirectory={{APP_DIR}}/current
+ExecStart={{NODE_BIN}} {{APP_DIR}}/current/apps/worker/dist/index.js
+Restart=on-failure
+RestartSec=5
+
+Environment=NODE_ENV=production
+Environment=SOCX_ENV={{ENVIRONMENT}}
+
+# Secrets via systemd credentials (ADR-130, SEC-010.3).
+LoadCredential=db_password:{{CREDENTIALS_DIR}}/{{APP_NAME}}/db_password
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths={{APP_DIR}}/shared
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier={{APP_NAME}}-worker
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,15 @@
+# reference/systemd — daily backup schedule for database %i (OPS-060.1)
+# Enable per database:  systemctl enable --now db-backup-daily@{{DB_NAME}}.timer
+
+[Unit]
+Description=Daily database backup for %i
+
+[Timer]
+OnCalendar=daily
+# Persistent=true runs a missed backup at next boot instead of silently skipping it.
+Persistent=true
+RandomizedDelaySec=15m
+Unit=db-backup@%i.service
+
+[Install]
+WantedBy=timers.target

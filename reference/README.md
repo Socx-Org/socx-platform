@@ -115,7 +115,7 @@ Implementation order follows the approved Deliverable 6 sequencing — the first
 
 | # | Path | Title | Status |
 |---|---|---|---|
-| 1 | `reference/systemd` | Service & Timer Units | Planned |
+| 1 | `reference/systemd` | Service & Timer Units | Draft |
 | 2 | `reference/nginx` | Edge & Site Configuration | Planned |
 | 3 | `reference/github` | CI/CD Workflows & Branch Protection | Planned |
 | 4 | `reference/security` | Secret Handling (systemd credentials) | Planned |

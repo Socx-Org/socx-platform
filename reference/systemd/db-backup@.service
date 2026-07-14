@@ -1,0 +1,22 @@
+# reference/systemd — templated database backup job (OPS-060.1)
+# Instance name (%i) is the database to back up, e.g.:
+#   systemctl start db-backup@{{DB_NAME}}.service
+# This unit owns scheduling and isolation only. The backup script itself —
+# including off-host storage (OPS-060.2) — is deployment tooling; its canonical
+# pattern belongs to reference/deployment. Restore procedure and RPO/RTO are
+# runbook content (OPS-060.4, OPS-060.5), not configuration.
+
+[Unit]
+Description=Database backup for %i
+
+[Service]
+Type=oneshot
+User={{BACKUP_USER}}
+ExecStart={{DEPLOY_DIR}}/scripts/backup-db.sh %i
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=db-backup-%i
