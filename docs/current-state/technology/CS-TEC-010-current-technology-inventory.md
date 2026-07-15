@@ -6,14 +6,15 @@ status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "2.0"
+last_reviewed: 2026-07-15
 review_cycle: quarterly
 related:
   architecture:
     - TEC-010
   standards: []
-  adrs: []
+  adrs:
+    - ADR-180
   reference: []
   runbooks: []
 supersedes: []
@@ -31,9 +32,11 @@ Read directly from each repository's `package.json`, README, and `.github/workfl
 
 ## Inventory
 
+**Platform transition (2026-07-15, `ADR-180`):** the droplet this inventory's deployment-derived rows described has been decommissioned; the new host has **no technology installed yet** (`CS-INF-020`). Repo-derived rows (frameworks, databases-as-declared, password hashing, CI workflows) are unchanged — the repositories still exist as code. The Hosting row below now describes the new host; other deployment references (e.g. `platform-infra` structure) are retained as repo-level observations.
+
 | Layer                           | Technology (observed)                                                                                                                                                                     | Where observed                                                                                                                                  | Source                       | Evidence                                                                                                                           |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Hosting                         | DigitalOcean, single droplet, Ubuntu 24.04                                                                                                                                                | `platform-infra/deployment-architecture.md`; `ghs/product-management/deployment-digitalocean-runbook.md` (filename only, not read in depth) | Config/docs file             | Observed                                                                                                                           |
+| Hosting                         | DigitalOcean, single droplet, Ubuntu 24.04 LTS — **fresh host, nothing deployed** (`ADR-180`)                                                                                          | `CS-INF-020` (provisioning attestation + DNS observation)                                                                                     | Attestation + DNS            | Attested / Observed (DNS)                                                                                                          |
 | Reverse proxy                   | nginx                                                                                                                                                                                     | `platform-infra/nginx/` structure; `deployment-architecture.md`                                                                             | Config file structure        | Observed (structure); actual directives Unknown — site config files are present but currently**empty (0 bytes)**            |
 | Process management              | systemd (target);`nvm`-wrapped systemd `ExecStart` (as currently run, per audit)                                                                                                      | `platform-infra/systemd/`; `deployment-architecture.md` §"Principle 6"                                                                     | Docs + config file structure | Observed (structure); actual unit file content Unknown — all systemd service files present are currently**empty (0 bytes)** |
 | CI/CD                           | GitHub Actions                                                                                                                                                                            | `ghs/.github/workflows/ci.yml` (10,947 bytes), `rms/.github/workflows/ci.yml` (8,341 bytes)                                                 | GitHub Actions workflow file | Observed                                                                                                                           |
@@ -58,7 +61,7 @@ Read directly from each repository's `package.json`, README, and `.github/workfl
 | Aspect                                    | Current State                                                                                                                                                | Target (`TEC-010`)                                                           | Difference                                                                                                                             | Impact                                                                                                                                                        |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Hosting/proxy/CI                          | DigitalOcean + nginx + GitHub Actions confirmed                                                                                                              | `Proposed` (inferred, unconfirmed)                                           | Current state confirms these rows                                                                                                      | Recommend`TEC-010` move these three rows from `Proposed` to `Approved` once backed by an ADR                                                            |
-| Process management                        | systemd used today, but per the audit, wrapped in fragile`nvm` shell invocations; the clean, direct-execution redesign exists only as empty scaffold files | `Proposed`, conceptually equivalent                                          | Today's systemd usage does not match the clean pattern the redesign (and implicitly`TEC-010`) assumes                                | Deploys relying on`nvm` resolving correctly in a systemd context are a known fragility — see `platform-infra`'s own "Principle 6"                        |
+| Process management                        | Nothing running — the old `nvm`-wrapped units were retired with the droplet (`ADR-180`); the target is `reference/systemd`'s direct-execution pattern | `Approved` (systemd, per `ADR-040`)                                          | New host has no units installed yet                                | The known `nvm` fragility is eliminated by decommissioning rather than remediation; the rebuild installs the clean pattern directly                        |
 | App language/data store/identity provider | Decided independently per app, and divergent (three password libraries, two ORMs/drivers)                                                                    | `Under Evaluation` — implies a single platform-wide answer is still pending | The premise of a single upcoming decision no longer matches reality — three real decisions already exist and disagree with each other | Any future platform-wide standardization (e.g. picking one password-hashing library) is now a migration across three live codebases, not a green-field choice |
 
 ## Related Documents
@@ -75,3 +78,4 @@ Read directly from each repository's `package.json`, README, and `.github/workfl
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 2.0     | 2026-07-15 | Platform transition (ADR-180): hosting/process rows updated for the fresh host; repo-derived rows unchanged | Socx   |
