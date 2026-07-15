@@ -6,15 +6,16 @@ status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "2.0"
+last_reviewed: 2026-07-15
 review_cycle: quarterly
 related:
   architecture:
     - DOM-010
   standards:
     - ENG-050
-  adrs: []
+  adrs:
+    - ADR-180
   reference: []
   runbooks: []
 supersedes: []
@@ -32,10 +33,12 @@ Which systems are actually deployed and live right now, and how they actually re
 
 ## Inventory
 
+**Platform transition (2026-07-15, `ADR-180`):** the droplet that hosted all four systems has been decommissioned and **no SOCX system is currently deployed or live**. The table below therefore records each system as it exists *in its repository* — responsibilities, dependencies, and data ownership as code, all unchanged by the transition. Deployment facts for the new host are in `CS-INF-020`.
+
 ```mermaid
 flowchart TB
-    subgraph Droplet["Single DigitalOcean Droplet — Ubuntu 24.04 (per platform-infra)"]
-        www["socx-org-uk\n(served as www)"]
+    subgraph Repos["Systems exist as repositories only — nothing deployed (ADR-180)"]
+        www["socx-org-uk\n(www)"]
         ghs["ghs"]
         rms["rms\nReminder Management System"]
         ams["ams\nAsset Manager"]
@@ -49,7 +52,7 @@ flowchart TB
 | `rms`                   | Reminder-centred notification platform; dispatch engine               | PostgreSQL 16, Prisma; a**separate Python 3.12 + APScheduler worker** alongside its Node API | Its own Postgres DB (`rms_db`, per its README's quick-start instructions) | Observed |
 | `ams`                   | Asset management (uploads, documents, asset-ownership access control) | PostgreSQL, Redis (BullMQ)                                                                         | Its own Postgres DB (name unconfirmed)                                      | Observed |
 
-All four applications currently run on the **same single droplet**, per `platform-infra`'s architecture document — there is no evidence of per-system or per-environment infrastructure isolation today (see `CS-INF-010`).
+All four applications previously ran on the same single droplet (see `CS-INF-010`, now Deprecated); that droplet is retired and none of the four is currently deployed anywhere (`ADR-180`, `CS-INF-020`).
 
 **Notable, well-evidenced fact:** `ams`'s own documentation (`docs/asset-manager.md`) explicitly states it borrowed technology and structural patterns from `rms` ("Patterns Borrowed from RMS"). This is real precedent for a shared application pattern (the concern `APP-010` formalizes) existing organically before `APP-010` was written.
 
@@ -61,6 +64,7 @@ All four applications currently run on the **same single droplet**, per `platfor
 | ---------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | System count           | 4 systems, all independently confirmed deployed                  | 3 systems named, all marked "TBD — confirm" for responsibility | `ams` missing entirely; the other three's responsibilities are now confirmable facts, not placeholders | `DOM-010` should be revisited using this inventory as source material — recommended, not performed here (would require editing an Approved architecture document) |
 | Responsibility clarity | High — each system's purpose is self-declared in its own README | Unconfirmed placeholders                                        | Current state is now more complete than the target document                                              | Low risk, but an oddity worth resolving: the "as-is" is currently more informative than the "to-be" for this aspect                                                  |
+| Deployment status | No system is live — repositories only (`ADR-180`) | `DOM-010` describes the intended landscape of running systems | The entire landscape is undeployed | Expected and intentional — the rebuild redeploys each system through the Deliverable 6 build-out; this row closes system-by-system |
 
 ## Related Documents
 
@@ -76,3 +80,4 @@ All four applications currently run on the **same single droplet**, per `platfor
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 2.0     | 2026-07-15 | Platform transition (ADR-180): no systems deployed; repo-level facts retained | Socx   |
