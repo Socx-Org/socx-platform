@@ -6,15 +6,16 @@ status: Approved
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "2.0"
+last_reviewed: 2026-07-15
 review_cycle: quarterly
 related:
   architecture:
     - CTX-010
   standards:
     - OPS-010
-  adrs: []
+  adrs:
+    - ADR-180
   reference: []
   runbooks: []
 supersedes: []
@@ -32,7 +33,9 @@ Derived from `REP-010`'s repository inventory and each application's own README/
 
 ## Inventory
 
-**Systems actually inside the boundary today** (per `REP-010` and `platform-infra`'s nginx/systemd naming): `socx-org-uk` (served as `www`), `ghs`, `rms`, `ams` — four applications, not the three named in the project charter. All four are fronted by a single shared edge, per `platform-infra`.
+**Platform transition (2026-07-15, `ADR-180`):** the droplet serving the platform has been decommissioned and **nothing currently serves traffic** — DNS resolves to the new, empty host (`CS-INF-020`), so no actor can presently interact with any SOCX system. The actor table below therefore records the *intended* actors of the repo-defined systems, unchanged by the transition; it becomes live reality again as each system is redeployed.
+
+**Systems inside the boundary** (per `REP-010`): `socx-org-uk` (`www`), `ghs`, `rms`, `ams` — four applications, not the three named in the project charter. None is currently deployed.
 
 | Actor (inferred)                       | Interacts with                          | Basis                                                                                                                                                                                                                  |
 | -------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,7 +43,7 @@ Derived from `REP-010`'s repository inventory and each application's own README/
 | Recipients of reminders/notifications  | `rms`                                 | Repo purpose statement: "reminder-centred notification platform" — Inferred                                                                                                                                           |
 | Staff managing physical/digital assets | `ams`                                 | Repo purpose statement: "asset management platform"; "asset-ownership access filter" feature seen in commit history — Inferred                                                                                        |
 | Visitors to the org's public site      | `socx-org-uk` (`www`)               | Repo name and nginx`www.socx.org.uk` binding — Inferred                                                                                                                                                             |
-| Deploy/ops automation (GitHub Actions) | All four, via SSH to the shared droplet | CI workflows present in`ghs` and `rms`; deploy flow described in `platform-infra`'s `deployment-architecture.md` — Observed (workflow files exist), Inferred (that they currently execute against production) |
+| Deploy/ops automation (GitHub Actions) | All four, via SSH to the shared droplet | CI workflows present in`ghs` and `rms` — Observed (workflow files exist). Any deploy steps targeting the retired droplet are now dead until re-pointed at the new host during the rebuild (`ADR-180`) |
 
 **Unknown:** actual end-user counts, actual organizations/clubs using `ghs`, whether `rms` and `ams` have any external (non-staff) users at all, and whether any of the four applications currently has authenticated users in production versus being pre-launch. None of this is evidenced in either repository set.
 
@@ -65,3 +68,4 @@ Derived from `REP-010`'s repository inventory and each application's own README/
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 2.0     | 2026-07-15 | Platform transition (ADR-180): nothing serving traffic; actor table reframed as intended actors | Socx   |
