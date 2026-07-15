@@ -1,5 +1,5 @@
 ---
-status: Draft            # Draft | Approved — approval authorises execution; no server change happens before that
+status: Approved         # Draft | Approved — approval authorises execution; no server change happens before that
 date: 2026-07-15
 owner: Platform Engineering
 ---
@@ -125,3 +125,4 @@ Bootstrap exits into the Deliverable 6 build-out: 6.3 `reference/nginx` (+ TLS v
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-15 | Initial draft for review | Socx   |
+| 1.0     | 2026-07-15 | Approved — execution authorised, phase by phase | Socx   |
