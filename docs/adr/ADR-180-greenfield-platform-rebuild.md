@@ -1,9 +1,9 @@
 ---
 id: ADR-180
 title: Greenfield platform rebuild on a fresh droplet
-status: Draft
+status: Approved
 category: Infrastructure
-version: "0.1"
+version: "1.0"
 date: 2026-07-15
 deciders: Platform Engineering
 related:
@@ -84,3 +84,4 @@ The platform is rebuilt **greenfield**:
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-15 | Initial draft | Socx   |
+| 1.0     | 2026-07-15 | Approved      | Socx   |
