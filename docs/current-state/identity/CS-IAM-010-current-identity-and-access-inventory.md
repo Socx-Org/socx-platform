@@ -6,8 +6,8 @@ status: Approved
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "2.0"
+last_reviewed: 2026-07-15
 review_cycle: quarterly
 related:
   architecture:
@@ -15,7 +15,8 @@ related:
   standards:
     - SEC-010
     - SEC-030
-  adrs: []
+  adrs:
+    - ADR-180
   reference: []
   runbooks: []
 supersedes: []
@@ -33,6 +34,8 @@ Read from each application's `package.json` dependencies and `.env.example` file
 
 ## Inventory
 
+**Platform transition (2026-07-15, `ADR-180`):** application-level identity facts below are repo-derived and unchanged — the code still implements what it implemented. What changed is infrastructure access: the old droplet's accounts went with it, and no application authentication is currently *live* anywhere (nothing is deployed, `CS-INF-020`).
+
 | Fact                                     | Value                                                                                                                                                                                                                             | Evidence                                                                                                |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | End-user authentication                  | Each of`ghs`, `rms`, and `ams` implements its **own, independent** JWT-based authentication (`jsonwebtoken` present in all three, with per-app `JWT_SECRET`/`JWT_REFRESH_SECRET` in `ghs`'s `.env.example`) | Observed                                                                                                |
@@ -40,7 +43,7 @@ Read from each application's `package.json` dependencies and `.env.example` file
 | Password storage                         | Three different hashing libraries across three apps (`bcryptjs` in `ghs`, `bcrypt` in `rms`, `argon2` in `ams`) — see `CS-TEC-010`                                                                                 | Observed                                                                                                |
 | Multi-factor authentication              | `ams` implements TOTP-based 2FA (`otplib`, `qrcode`); no evidence of MFA in `ghs`, `rms`, or `socx-org-uk`                                                                                                            | Observed (`ams`); Observed-absence (others)                                                           |
 | Service-to-service auth                  | No evidence of any service-to-service credential exchange — consistent with`CS-INT-010`'s finding that no cross-system calls currently exist                                                                                   | Observed (absence)                                                                                      |
-| Infrastructure/repository access control | Unknown — no CODEOWNERS file, access-control list, or team-membership record found in any repository inspected                                                                                                                   | Unknown                                                                                                 |
+| Infrastructure/repository access control | New droplet: one non-root admin user with SSH-key authentication (root-login/password-auth state to confirm at bootstrap, per `SEC-030`). Repository side unchanged: no CODEOWNERS file, access-control list, or team-membership record found                                                                                                                   | Attested (droplet, `CS-INF-020`); Unknown (repositories)                                                                                                 |
 | Secrets handling                         | `.env` / `.env.example` / `.env.production` pattern used by `ghs`; secrets read from environment variables at runtime in all apps inspected; no evidence of a dedicated secret-management service                         | Observed (`ghs`); Inferred (pattern likely shared by the others, not individually confirmed for each) |
 
 **This directly answers `IAM-010`'s open question.** `IAM-010` (architecture) leaves unresolved "whether end users authenticate once against a shared identity provider or separately per system." Current evidence gives a clear answer: **separately, per system, today** — three independent JWT implementations, no shared provider, no SSO. If single sign-on is ever wanted, it is a deliberate future migration across three already-live auth systems, not a green-field choice.
@@ -67,3 +70,4 @@ Read from each application's `package.json` dependencies and `.env.example` file
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 2.0     | 2026-07-15 | Platform transition (ADR-180): infrastructure-access rows updated for the new host; app-level facts unchanged | Socx   |
