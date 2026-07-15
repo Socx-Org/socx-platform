@@ -47,7 +47,8 @@ Current-state documents follow their own lifecycle, independent of the Engineeri
 - It moves to `status: Approved`, `version: "1.0"` only after the inventory has been verified, not merely drafted.
 - Once Approved, its `id` is permanent — never reused or renumbered.
 - A revision increments `version`: **minor** for a factual update that doesn't change the `gap_status` conclusion, **major** when `gap_status` itself changes (newly `Aligned`, or newly `Diverges`) — version history should track whether the compliance/alignment story changed, which is the single most useful signal this document type can carry.
-- `status: Deprecated` has two distinct meanings here, unlike Architecture: either the document is superseded by a refreshed inventory (`superseded_by` set), **or** the system it described has been decommissioned and no longer exists (`superseded_by: null`, retained for historical record).
+- `status: Deprecated` has two distinct meanings here, unlike Architecture: either the document is superseded by a refreshed inventory (`superseded_by` set), **or** the system it described has been decommissioned and no longer exists (`superseded_by: null`, retained for historical record). Both can apply at once — a decommissioned system with a successor inventory sets `superseded_by` (readers need routing to the current document) and states the decommissioning in the body.
+- **Supersede vs revise:** a refresh becomes a **new document** (supersession) when the *described subject itself* has been decommissioned or replaced — rewriting in place would orphan every citation of the old document's findings. Facts drifting on a *persisting* subject are **revisions** (minor/major per the rule above). Example: `CS-INF-010` → `CS-INF-020` when the droplet was replaced (`ADR-180`), while the other inventories were revised in place.
 - Every document is reviewed at least once per its stated `review_cycle` (default **quarterly** — shorter than Standards' or Architecture's annual default, since facts drift faster than rules or intent), updating `last_reviewed` even with no changes.
 
 There is no `Exceptions` mechanism here, same as Architecture — this content is neither a rule to be excepted from nor a design to be deviated from, only a fact to be corrected if wrong.
@@ -94,15 +95,16 @@ Each document has a permanent ID: `CS-<CATEGORY>-<NUMBER>`, e.g. `CS-CTX-010`.
 
 | ID | Title | Status | Gap Status | Confidence |
 |---|---|---|---|---|
-| `REP-010` | Repository Inventory | Draft | N/A — no architecture counterpart | High |
-| `CS-CTX-010` | Current Platform Context | Draft | Diverges | Medium |
-| `CS-DOM-010` | Current System Landscape | Draft | Diverges | High |
-| `CS-APP-010` | Current Application Inventory | Draft | Diverges | High |
-| `CS-DAT-010` | Current Data Inventory | Draft | Diverges | Medium |
-| `CS-INT-010` | Current Integration Inventory | Draft | Diverges | Medium |
-| `CS-TEC-010` | Current Technology Inventory | Draft | Diverges | High |
-| `CS-INF-010` | Current Infrastructure Inventory | Draft | Diverges | Medium |
-| `CS-IAM-010` | Current Identity & Access Inventory | Draft | Diverges | Medium |
+| `REP-010` | Repository Inventory | Approved | N/A — no architecture counterpart | High |
+| `CS-CTX-010` | Current Platform Context | Approved | Diverges | Medium |
+| `CS-DOM-010` | Current System Landscape | Approved | Diverges | High |
+| `CS-APP-010` | Current Application Inventory | Approved | Diverges | High |
+| `CS-DAT-010` | Current Data Inventory | Approved | Diverges | Medium |
+| `CS-INT-010` | Current Integration Inventory | Approved | Diverges | Medium |
+| `CS-TEC-010` | Current Technology Inventory | Approved | Diverges | High |
+| `CS-INF-010` | Current Infrastructure Inventory | Deprecated — superseded by `CS-INF-020` (ADR-180) | Diverges | Medium |
+| `CS-INF-020` | Current Infrastructure Inventory | Draft | Diverges | Medium |
+| `CS-IAM-010` | Current Identity & Access Inventory | Approved | Diverges | Medium |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given document is the `status` field in its own metadata, not this table; this column (and Gap Status, and Confidence) is kept in sync as a convenience index.
 
