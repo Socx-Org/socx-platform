@@ -2,12 +2,12 @@
 id: CS-INF-010
 title: Current Infrastructure Inventory
 category: Infrastructure
-status: Approved
+status: Deprecated
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "1.1"
+last_reviewed: 2026-07-15
 review_cycle: quarterly
 related:
   architecture:
@@ -19,9 +19,11 @@ related:
   reference: []
   runbooks: []
 supersedes: []
-superseded_by: null
+superseded_by: CS-INF-020
 ---
 # CS-INF-010 — Current Infrastructure Inventory
+
+> **Deprecated (2026-07-15).** The droplet this inventory describes was decommissioned per `ADR-180`; its successor is inventoried in `CS-INF-020`. This document is retained unchanged as the historical record — its findings (the `nvm` startup fragility, the monolithic `apps.conf`, the empty redesign scaffolds) are cited as evidence by `ADR-040`, `ADR-050`, `ADR-130`, `ADR-180`, and `reference/systemd`.
 
 ## Scope
 
@@ -114,3 +116,4 @@ Read from `platform-infra`'s own `deployment-architecture.md` (a 2,889-line infr
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 1.1     | 2026-07-15 | Deprecated — described droplet decommissioned (ADR-180); superseded by CS-INF-020 | Socx   |
