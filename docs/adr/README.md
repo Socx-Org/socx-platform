@@ -106,6 +106,7 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 | ------- | -------------------------------------------------------- | -------- | -------- |
 | ADR-040 | Hosting & process-runtime model (droplets, systemd, no orchestration) | Approved | Open     |
 | ADR-050 | Shared nginx edge as sole ingress                        | Approved | Made     |
+| ADR-180 | Greenfield platform rebuild on a fresh droplet           | Draft    | Made     |
 
 ### Application
 
