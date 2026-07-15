@@ -4,7 +4,7 @@ title: Target Infrastructure Topology
 category: Infrastructure
 status: Approved
 owner: Platform Engineering
-version: "1.1"
+version: "1.2"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -18,6 +18,7 @@ related:
     - ADR-130
     - ADR-140
     - ADR-160
+    - ADR-180
   reference:
     - reference/deployment
     - reference/nginx
@@ -62,7 +63,7 @@ Not yet assessed.
 ## Related Documents
 
 - Standards: `OPS-010`, `OPS-020`
-- ADRs: `ADR-040`, `ADR-050`, `ADR-100`, `ADR-130`, `ADR-140`, `ADR-160`
+- ADRs: `ADR-040`, `ADR-050`, `ADR-100`, `ADR-130`, `ADR-140`, `ADR-160`, `ADR-180`
 - Reference Implementations: `reference/deployment`, `reference/nginx`, `reference/systemd` (all currently empty)
 - Runbooks: none yet
 - Current-State documentation: none yet
@@ -74,3 +75,4 @@ Not yet assessed.
 | 0.1 | 2026-07-13 | Initial draft | Socx |
 | 1.0 | 2026-07-13 | Approved | Socx |
 | 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |
+| 1.2 | 2026-07-15 | Added ADR-180 cross-reference | Socx |
