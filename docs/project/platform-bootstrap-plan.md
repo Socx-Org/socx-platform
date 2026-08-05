@@ -96,7 +96,7 @@ Bootstrap is complete when all of the following are true:
 - **Scope honesty:** service units are verified fully (unit analysis, start, restart survival, reboot survival, credential loading, journald capture, `SOCX_ENV` present). Backup **timer wiring** is verified against a scratch database with an interim stub; full end-to-end backup verification deliberately waits for the real script (`reference/deployment`, 6.7) and the `OPS-060.3` restore test.
 - **Governed by:** `ADR-040`, `ADR-130`; `reference/systemd` Usage steps; `OPS-010.2`.
 - **Verification:** the manifest's own re-verification steps, executed and logged.
-- **Outcome:** `reference/systemd.verified` populated (`Ubuntu 24.04, systemd <version>, <method>, <date>`) → `Approved`; issue #68 closed; "(currently empty)" annotations for `reference/systemd` removed from citing documents; library ToC updated.
+- **Outcome:** `reference/systemd.verified` populated (`Ubuntu 26.04, systemd <version>, <method>, <date>`) → `Approved`; issue #68 closed; "(currently empty)" annotations for `reference/systemd` removed from citing documents; library ToC updated.
 - **Current-State impact:** `CS-INF-020` (canary unit recorded), then its promotion to `Approved` at bootstrap exit.
 - **Rollback / recovery:** the canary is disposable by design — unit, user, and release directory removed without trace.
 
@@ -126,3 +126,4 @@ Bootstrap exits into the Deliverable 6 build-out: 6.3 `reference/nginx` (+ TLS v
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-15 | Initial draft for review | Socx   |
 | 1.0     | 2026-07-15 | Approved — execution authorised, phase by phase | Socx   |
+| 1.1     | 2026-08-06 | Corrected OS-version example (Ubuntu 24.04 → 26.04) after a second droplet rebuild pre-bootstrap; no change to phases or strategy | Socx   |
