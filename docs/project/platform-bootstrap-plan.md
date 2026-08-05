@@ -20,7 +20,7 @@ This document defines strategy, phases, governance, and verification — **it de
 ## Execution Model & Controls
 
 - **Operator-executed.** The platform owner executes on the droplet; each phase's command set is prepared and reviewed before execution. No phase begins until the previous phase's verification has passed and its documentation updates have landed.
-- **Everything captured.** A chronological bootstrap log records commands and outputs. Secrets never appear in the log (`SEC-010.5`) — credential *values* are redacted; credential *placement* is recorded.
+- **Everything captured.** A chronological bootstrap log (`docs/project/platform-bootstrap-log.md`) records commands and outputs, per phase. Secrets never appear in the log (`SEC-010.5`) — credential *values* are redacted; credential *placement* is recorded.
 - **No out-of-phase changes.** Anything discovered mid-phase that isn't in this plan is recorded and scheduled, not improvised (`OPS-020.2` spirit).
 - **Standing exceptions unchanged.** The two `GEN-010.9` exceptions recorded in `ADR-180` (`OPS-020` hand-provisioning; `OPS-010.1` single tier) cover this activity; bootstrap neither widens nor closes them. Closure remains with `reference/terraform` (Deliverable 6.6), which must codify what bootstrap builds.
 
@@ -127,3 +127,4 @@ Bootstrap exits into the Deliverable 6 build-out: 6.3 `reference/nginx` (+ TLS v
 | 0.1     | 2026-07-15 | Initial draft for review | Socx   |
 | 1.0     | 2026-07-15 | Approved — execution authorised, phase by phase | Socx   |
 | 1.1     | 2026-08-06 | Corrected OS-version example (Ubuntu 24.04 → 26.04) after a second droplet rebuild pre-bootstrap; no change to phases or strategy | Socx   |
+| 1.2     | 2026-08-06 | Linked the bootstrap log (`platform-bootstrap-log.md`); Phase B0 executed | Socx   |
