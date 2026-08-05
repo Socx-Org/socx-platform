@@ -6,8 +6,8 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.1"
-last_reviewed: 2026-07-15
+version: "0.2"
+last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
   architecture:
@@ -32,18 +32,18 @@ The actual hosting, network, and configuration facts for the platform's infrastr
 
 ## Method
 
-Two sources, dated 2026-07-15: **(a)** provisioning attestation from the platform owner (droplet specification, access model, legacy-data disposition); **(b)** direct DNS observation (`dig` A-record lookups performed from an external network). **No SSH inspection of the droplet has been performed yet** — rows sourced only from attestation are marked accordingly and should be confirmed during Platform Bootstrap, at which point this inventory is revised.
+Three sources: **(a)** provisioning attestation from the platform owner, dated 2026-07-15 (droplet specification, access model, legacy-data disposition); **(b)** direct DNS observation (`dig` A-record lookups performed from an external network), dated 2026-07-15; **(c)** a second provisioning attestation, dated 2026-08-06, recording that the droplet was rebuilt a second time (Ubuntu 26.04 LTS, same reserved IP, DNS managed via Cloudflare and left unchanged) before any bootstrap execution occurred. **No SSH inspection of the droplet has been performed yet** — rows sourced only from attestation are marked accordingly and should be confirmed during Platform Bootstrap, at which point this inventory is revised.
 
 ## Inventory
 
-**Headline:** a fresh, empty host. One newly provisioned DigitalOcean droplet running Ubuntu 24.04 LTS, with DNS already pointing at it and **nothing deployed** — no applications, no reverse proxy, no databases, no TLS, no scheduled jobs, no backups.
+**Headline:** a fresh, empty host. One DigitalOcean droplet running **Ubuntu 26.04 LTS** (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped), with DNS already pointing at it and **nothing deployed** — no applications, no reverse proxy, no databases, no TLS, no scheduled jobs, no backups.
 
 ### Hosting
 
 | Fact | Value | Evidence |
 |---|---|---|
-| Provider / shape | DigitalOcean, single droplet | Attested |
-| Operating system | Ubuntu 24.04 LTS (systemd 255 — meets `reference/systemd`'s ≥ 245 prerequisite) | Attested (OS); Inferred (systemd version, from the 24.04 default) |
+| Provider / shape | DigitalOcean, single droplet (same reserved IP retained across the 2026-08-06 rebuild) | Attested |
+| Operating system | Ubuntu 26.04 LTS. Exact systemd version not yet confirmed — `reference/systemd` requires ≥ 245 (Ubuntu 24.04 shipped 255; 26.04 ships a newer release, expected to clear this floor comfortably) — to be confirmed at Bootstrap Phase B0 | Attested (OS); Unknown (exact systemd version, pending B0) |
 | Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
 | Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
 
@@ -52,7 +52,8 @@ Two sources, dated 2026-07-15: **(a)** provisioning attestation from the platfor
 | Fact | Value | Evidence |
 |---|---|---|
 | A records | `socx.org.uk`, `ghs.`, `rms.`, `ams.` → `209.97.135.128`; `www` → CNAME → apex | Observed (dig, 2026-07-15) |
-| Registrar, TTLs | Unknown | Not yet inspected |
+| DNS management | Cloudflare. The 2026-08-06 droplet rebuild retained the same IP, so no repointing was required or performed | Attested |
+| Registrar, TTLs, proxy status (orange-cloud vs DNS-only) | Unknown | Not yet inspected |
 
 ### TLS Certificates
 
@@ -82,7 +83,7 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 
 | Fact | Value | Evidence |
 |---|---|---|
-| SSH | One non-root admin user with SSH-key authentication | Attested |
+| SSH | One non-root admin user with SSH-key authentication, re-established on the 2026-08-06 rebuild. Host keys changed with the rebuild — any previously cached `known_hosts` entry for this IP from the first (24.04) provisioning is now stale and will trigger a host-key-mismatch warning on first reconnect; this is expected, not a compromise indicator | Attested |
 | Root login / password auth / firewall state | Unknown — to confirm and harden during Platform Bootstrap (`SEC-030`) | Not yet inspected |
 
 ## Gap vs. Target Architecture
@@ -106,3 +107,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | Version | Date       | Change        | Author |
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-15 | Initial draft — clean-slate baseline after greenfield rebuild decision (ADR-180) | Socx   |
+| 0.2     | 2026-08-06 | Droplet rebuilt a second time before bootstrap execution (Ubuntu 24.04 → 26.04 LTS, same reserved IP, no DNS repoint needed); added Cloudflare as confirmed DNS layer; noted SSH host-key change | Socx   |
