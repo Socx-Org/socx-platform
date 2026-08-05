@@ -6,15 +6,16 @@ status: Approved
 gap_status: N/A — no architecture counterpart
 confidence: High
 owner: Platform Engineering
-version: "1.0"
-last_reviewed: 2026-07-13
+version: "1.1"
+last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
   architecture: []
   standards:
     - ENG-050
     - ENG-060
-  adrs: []
+  adrs:
+    - ADR-180
   reference: []
   runbooks: []
 supersedes: []
@@ -37,7 +38,7 @@ Direct filesystem and `git` inspection performed in this session: `git remote -v
 | Repository                                              | Purpose (as stated by the repo itself)                                                     | Deployment target                         | Default branch                                                                                | Owner                                | Lifecycle status                                                                                                                                                                                        | Evidence |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | `socx-platform`                                       | Engineering source of truth (this repository)                                              | N/A — no application code                | `main`                                                                                      | Platform Engineering                 | Active                                                                                                                                                                                                  | Observed |
-| `platform-infra`                                      | Shared reverse-proxy/hosting infrastructure for all applications                           | Single DigitalOcean droplet, Ubuntu 24.04 | `main`                                                                                      | Unknown — no owner recorded in-repo | Active — mid-redesign (see`CS-INF-010`)                                                                                                                                                              | Observed |
+| `platform-infra`                                      | Shared reverse-proxy/hosting infrastructure for all applications                           | Single DigitalOcean droplet, Ubuntu 26.04 (rebuilt 2026-08-06 — see `CS-INF-020`) | `main`                                                                                      | Unknown — no owner recorded in-repo | Active — mid-redesign (see`CS-INF-010`)                                                                                                                                                              | Observed |
 | `socx-org-uk`                                         | Org website — served as`www.socx.org.uk`; Express API + React/Vite web + worker         | Same shared droplet                       | `main` (new org copy); `central-infra` (prior org copy — non-default branch checked out) | Unknown                              | Active                                                                                                                                                                                                  | Observed |
 | `ghs` (repo name: `golf-handicap-system`)           | Golf handicap tracking system — served as`ghs.socx.org.uk`                              | Same shared droplet                       | `main`                                                                                      | Unknown                              | Active —**not yet migrated** to the `Socx-Org` GitHub organization (still only a 1-commit placeholder there)                                                                                   | Observed |
 | `rms` (repo self-titled "Reminder Management System") | A reminder-centred notification platform — served as`rms.socx.org.uk`                   | Same shared droplet                       | `main`                                                                                      | Unknown                              | Active —**not yet migrated** to `Socx-Org` (placeholder only there)                                                                                                                            | Observed |
@@ -59,3 +60,4 @@ Direct filesystem and `git` inspection performed in this session: `git remote -v
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
+| 1.1     | 2026-08-06 | Corrected stale `platform-infra` deployment-target OS version (24.04 → 26.04, rebuilt 2026-08-06, ADR-180) | Socx |
