@@ -50,7 +50,7 @@ Key choices embodied by these units — each links to its decision record rather
 
 Assumptions that must hold before adopting these units:
 
-- **OS / systemd** — Linux with systemd ≥ 245 (`LoadCredential=` support); the platform target is Ubuntu 24.04 (ships systemd 255), per `ADR-040` and `CS-TEC-010`.
+- **OS / systemd** — Linux with systemd ≥ 245 (`LoadCredential=` support); the platform target is a current Ubuntu LTS release (currently Ubuntu 26.04 LTS, per `CS-INF-020`), per `ADR-040` and `CS-TEC-010`. Exact systemd version to be confirmed at Bootstrap Phase B0.
 - **Runtime** — Node.js (current LTS line, per `ADR-070`) installed system-wide at a fixed absolute path (`{{NODE_BIN}}`), not per-user via a version manager.
 - **Application user** — a dedicated non-root system user per application (`{{APP_USER}}`), per `SEC-030` least privilege.
 - **Deployment layout** — `{{APP_DIR}}/releases/<version>` with a `current` symlink and a `{{APP_DIR}}/shared` directory, created by deploy tooling (`reference/deployment`).
