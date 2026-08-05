@@ -3,7 +3,7 @@ id: ADR-180
 title: Greenfield platform rebuild on a fresh droplet
 status: Approved
 category: Infrastructure
-version: "1.0"
+version: "1.1"
 date: 2026-07-15
 deciders: Platform Engineering
 related:
@@ -19,6 +19,7 @@ related:
     - CS-INF-020
     - CS-DAT-010
     - CS-TEC-010
+    - REP-010
   reference: []
   runbooks: []
   adrs:
@@ -49,11 +50,13 @@ Meanwhile, the governing documentation is now complete: 19 standards, 8 architec
 The platform is rebuilt **greenfield**:
 
 1. The original droplet is **retired**. No data was migrated, snapshotted, or exported — it held no production data worth keeping (test/development data only).
-2. A **fresh Ubuntu 24.04 LTS droplet** is provisioned as the new host, and DNS for `socx.org.uk` and all subdomains is repointed to it (observed: all five hostnames resolve to the new address).
+2. A **fresh droplet on a current Ubuntu LTS release** is provisioned as the new host, and DNS for `socx.org.uk` and all subdomains resolves to it (observed: all five hostnames resolve to the host's address). The specific OS point-release is an implementation detail, not part of this decision — see the note below.
 3. The platform is rebuilt on it **strictly from the governing documents** — standards, architecture, ADRs, and the reference implementations in their approved order — via a bootstrap phase followed by the Deliverable 6 build-out. Nothing is carried over from the old host.
 4. **Interim posture, explicitly recorded as time-boxed exceptions per `GEN-010.9`:**
    - the new droplet was provisioned by hand — an `OPS-020` exception, closed when `reference/terraform` (ADR-160) imports it into managed state;
    - the single droplet serves as production with no non-production tier — an `OPS-010.1` exception, closed when the second tier is provisioned as code.
+
+**Amendment (2026-08-06):** the droplet was rebuilt a second time — Ubuntu 24.04 LTS → 26.04 LTS, same reserved IP, no DNS change required — before any bootstrap execution had occurred against it (see `CS-INF-020` v0.2). This is a factual correction to the instance detail in point 2 above, not a reversal of this ADR's decision under `DOC-020.5`: the strategy (greenfield rebuild, self-managed droplet, no data migration) is unchanged, nothing had been built on the superseded instance, and no new alternative was considered.
 
 ## Alternatives Considered
 
@@ -85,3 +88,4 @@ The platform is rebuilt **greenfield**:
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-15 | Initial draft | Socx   |
 | 1.0     | 2026-07-15 | Approved      | Socx   |
+| 1.1     | 2026-08-06 | Generalized OS point-release wording; added amendment note recording the second pre-bootstrap droplet rebuild (24.04 → 26.04 LTS) | Socx |
