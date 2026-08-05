@@ -6,7 +6,7 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.3"
+version: "0.4"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -94,8 +94,9 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | SSH policy | `PermitRootLogin yes`, `PasswordAuthentication no`, `PubkeyAuthentication yes`. **Root SSH login via key is currently permitted** — the one substantive hardening gap this inventory identifies (root's key is live because `deploy`'s key was copied from it) | Observed (B0) |
 | Firewall | UFW `inactive` | Observed (B0) |
 | SSH host keys | Changed with the 2026-08-06 rebuild — any `known_hosts` entry cached for this IP from the first (24.04) provisioning is now stale and will trigger a host-key-mismatch warning on next reconnect; expected, not a compromise indicator | Attested |
+| `deploy` sudo capability | **Currently non-functional.** `deploy` was created with `adduser --disabled-password` (no password hash exists) and added to the `sudo` group via plain `usermod -aG sudo`. Ubuntu's default `%sudo` policy requires the invoking user's own password, which `deploy` cannot supply — every `sudo` invocation as `deploy` prompts and cannot succeed. Root SSH access is therefore still required for privileged operations until this is fixed | Observed (manual testing, platform owner, 2026-08-06) |
 
-**Remediation (`SEC-030`), planned for Bootstrap Phase B1:** disable root SSH login entirely (`PermitRootLogin no`); decide the fate of the unused `ubuntu` account (recommended: disable rather than delete); enable UFW (22/80/443 only); confirm `unattended-upgrades` is active.
+**Remediation (`SEC-030`), planned for Bootstrap Phase B1, in strict order to avoid a lockout:** (1) grant `deploy` passwordless sudo via a scoped `/etc/sudoers.d/deploy` drop-in and **verify from a fresh SSH session** that `sudo` works without a password prompt; only then (2) disable root SSH login entirely (`PermitRootLogin no`); (3) decide the fate of the unused `ubuntu` account (recommended: disable rather than delete); (4) enable UFW (22/80/443 only); (5) confirm `unattended-upgrades` is active.
 
 ## Gap vs. Target Architecture
 
@@ -120,3 +121,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | 0.1     | 2026-07-15 | Initial draft — clean-slate baseline after greenfield rebuild decision (ADR-180) | Socx   |
 | 0.2     | 2026-08-06 | Droplet rebuilt a second time before bootstrap execution (Ubuntu 24.04 → 26.04 LTS, same reserved IP, no DNS repoint needed); added Cloudflare as confirmed DNS layer; noted SSH host-key change | Socx   |
 | 0.3     | 2026-08-06 | Bootstrap Phase B0 executed: systemd/OS/network/resource facts moved from Attested to Observed; corrected "one admin user" to two (ubuntu, deploy); recorded root-SSH-permitted finding for B1 remediation | Socx   |
+| 0.4     | 2026-08-06 | Recorded that `deploy`'s sudo is currently non-functional (disabled-password account, password-requiring sudo policy); reordered B1 remediation to fix and verify this before disabling root login | Socx   |

@@ -85,3 +85,14 @@ terraform: absent
 ### Outcome
 
 B0 complete. Proceeding to B1 pending approval, incorporating findings #1 and #2 into the B1 command set.
+
+---
+
+## Interim finding — `deploy` sudo non-functional (discovered 2026-08-06, between B0 and B1)
+
+While preparing for B1, the platform owner found that `sudo` from the `deploy` account always prompts for a password that cannot be supplied — `deploy` was created via `adduser --disabled-password` (no password hash) and added to the `sudo` group via plain `usermod -aG sudo`, which requires the invoking user's own password under Ubuntu's default policy. This explains B0.6's `whoami: root` — the operator was SSH'd in directly as root because `deploy` could not sudo.
+
+**Fix (pending execution):** a scoped `NOPASSWD` sudoers drop-in for `deploy` (`/etc/sudoers.d/deploy`), syntax-checked with `visudo -c` before use, verified by a `sudo whoami` test from a **separate, fresh SSH session** before any change to root's SSH login is made. This step now gates the start of B1's SSH-hardening work, precisely to avoid a lockout.
+
+**Documentation updated:** `CS-INF-020` → v0.4.
+
