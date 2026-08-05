@@ -6,8 +6,8 @@ status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "2.0"
-last_reviewed: 2026-07-15
+version: "2.1"
+last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
   architecture:
@@ -36,7 +36,7 @@ Read directly from each repository's `package.json`, README, and `.github/workfl
 
 | Layer                           | Technology (observed)                                                                                                                                                                     | Where observed                                                                                                                                  | Source                       | Evidence                                                                                                                           |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Hosting                         | DigitalOcean, single droplet, Ubuntu 24.04 LTS — **fresh host, nothing deployed** (`ADR-180`)                                                                                          | `CS-INF-020` (provisioning attestation + DNS observation)                                                                                     | Attestation + DNS            | Attested / Observed (DNS)                                                                                                          |
+| Hosting                         | DigitalOcean, single droplet, Ubuntu 26.04 LTS (rebuilt 2026-08-06, same reserved IP) — **fresh host, nothing deployed** (`ADR-180`)                                                                                          | `CS-INF-020` (provisioning attestation + DNS observation)                                                                                     | Attestation + DNS            | Attested / Observed (DNS)                                                                                                          |
 | Reverse proxy                   | nginx                                                                                                                                                                                     | `platform-infra/nginx/` structure; `deployment-architecture.md`                                                                             | Config file structure        | Observed (structure); actual directives Unknown — site config files are present but currently**empty (0 bytes)**            |
 | Process management              | systemd (target);`nvm`-wrapped systemd `ExecStart` (as currently run, per audit)                                                                                                      | `platform-infra/systemd/`; `deployment-architecture.md` §"Principle 6"                                                                     | Docs + config file structure | Observed (structure); actual unit file content Unknown — all systemd service files present are currently**empty (0 bytes)** |
 | CI/CD                           | GitHub Actions                                                                                                                                                                            | `ghs/.github/workflows/ci.yml` (10,947 bytes), `rms/.github/workflows/ci.yml` (8,341 bytes)                                                 | GitHub Actions workflow file | Observed                                                                                                                           |
@@ -79,3 +79,4 @@ Read directly from each repository's `package.json`, README, and `.github/workfl
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-13 | Approved      | Socx   |
 | 2.0     | 2026-07-15 | Platform transition (ADR-180): hosting/process rows updated for the fresh host; repo-derived rows unchanged | Socx   |
+| 2.1     | 2026-08-06 | Droplet rebuilt a second time (Ubuntu 24.04 → 26.04 LTS, same IP) before bootstrap execution | Socx   |
