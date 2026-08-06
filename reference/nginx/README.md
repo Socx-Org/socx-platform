@@ -1,6 +1,6 @@
 ---
-status: Draft
-verified: null   # required before Approved: "<nginx version>, <OS>, <method>, YYYY-MM-DD"
+status: Approved
+verified: "nginx 1.28.3 (Ubuntu), Ubuntu 26.04 LTS, on-host deployment (real production Let's Encrypt certificates issued for all four domains via certbot certonly --webroot; full site configs deployed replacing the stock default page; redirect and TLS confirmed on all four; one full public-internet-to-app path proven end-to-end via a disposable canary on ghs, then cleanly torn down), 2026-08-06"
 ---
 
 # reference/nginx — Edge & Site Configuration
@@ -32,6 +32,8 @@ Explicitly not covered here:
 - **HTTP exists only to redirect.** No application traffic is ever served over plain `:80`; the redirect is the entire content of that server block.
 - **`X-SOCX-Environment` header.** Makes the environment tier identifiable at the edge (`OPS-010.2`), complementing `reference/systemd`'s `SOCX_ENV` at the process level — two independent places to see which tier is serving a request.
 
+**Observed on-host, worth knowing:** `ssl_stapling` logs a harmless warning ("no OCSP responder URL in the certificate") against Let's Encrypt's ECDSA certificates — nginx simply skips stapling for that cert; TLS itself is unaffected. Not a defect, don't be alarmed by it.
+
 ## Compliance
 
 Deliberately short — this artefact's value is mostly architectural (realising `ADR-050`/`INF-010` and structurally preventing the `CS-INF-010` incident class), not a long list of Standards line-items:
@@ -42,7 +44,7 @@ Deliberately short — this artefact's value is mostly architectural (realising 
 
 ## Prerequisites
 
-- **nginx installed**, per `reference/systemd`'s host or equivalent (confirmed present via Bootstrap Phase B3: nginx active, serving its default page)
+- **nginx installed**, per `reference/systemd`'s host or equivalent (confirmed present via Bootstrap Phase B3)
 - **Certificates already issued** at `/etc/letsencrypt/live/{{DOMAIN}}/{fullchain,privkey}.pem` — see Usage for how to obtain them; this config does not issue them itself
 - **The application already running** on `127.0.0.1:{{APP_PORT}}` — via `reference/systemd`'s units; nginx proxies to it, it doesn't start it
 - **DNS already pointing at this host** — confirmed for all four domains (`CS-INF-020`)
@@ -53,7 +55,7 @@ Parameters: `{{APP_NAME}}`, `{{DOMAIN}}` (or `{{APEX_DOMAIN}}`/`{{WWW_DOMAIN}}` 
 
 1. Copy the relevant site file into the consuming repository/host, substituting all placeholders — grep for `{{` to confirm none remain.
 2. Copy `snippets/tls-baseline.conf` to `/etc/nginx/snippets/` (shared, not per-app).
-3. **Obtain the certificate before enabling the site**, e.g. `certbot certonly --nginx -d {{DOMAIN}}` (or `--webroot` if nginx isn't serving that domain yet) — this populates the paths the site file expects.
+3. **Obtain the certificate before enabling the full site.** Confirmed working in practice: deploy a minimal HTTP-only vhost first (just a `location /.well-known/acme-challenge/ { root {{WEBROOT}}; }`), reload, then `certbot certonly --webroot -w {{WEBROOT}} -d {{DOMAIN}}` — this never touches nginx config itself (unlike the `--nginx` authenticator), keeping certbot's job strictly to fetching certificate bytes. Only once the certificate exists at the expected path should the full site file (with its `ssl_certificate` directives) replace the minimal one — enabling it earlier fails `nginx -t` against a nonexistent cert path.
 4. Install: copy to `/etc/nginx/sites-available/`, symlink into `sites-enabled/`.
 5. **`nginx -t` before every reload, no exceptions** — a passing test is the only thing standing between one bad file and the whole edge going down (see Design Decisions).
 6. `systemctl reload nginx`.
@@ -79,6 +81,6 @@ Parameters: `{{APP_NAME}}`, `{{DOMAIN}}` (or `{{APEX_DOMAIN}}`/`{{WWW_DOMAIN}}` 
 - Standards: `OPS-010`
 - Architecture: `INF-010` (target topology this realises), `ADR-050`
 - ADRs: `ADR-050` (shared edge decision)
-- Current-State: `CS-INF-010` (the incident this structurally prevents), `CS-INF-020` (nginx already installed, Bootstrap Phase B3)
+- Current-State: `CS-INF-010` (the incident this structurally prevents), `CS-INF-020` (real on-host deployment: nginx installed Bootstrap Phase B3, full site configs and certificates deployed 2026-08-06)
 - Runbooks: none yet — certificate renewal and reload procedures are Deliverable 7 candidates
 - Automation: reload/deploy glue pending in `reference/deployment` (Deliverable 6.7)

@@ -4,7 +4,7 @@ title: Target Infrastructure Topology
 category: Infrastructure
 status: Approved
 owner: Platform Engineering
-version: "1.3"
+version: "1.4"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -65,7 +65,7 @@ See `CS-INF-020`: the target topology (shared edge → systemd-managed processes
 
 - Standards: `OPS-010`, `OPS-020`
 - ADRs: `ADR-040`, `ADR-050`, `ADR-100`, `ADR-130`, `ADR-140`, `ADR-160`, `ADR-180`
-- Reference Implementations: `reference/systemd` (Approved, verified on-host 2026-08-06); `reference/deployment`, `reference/nginx` (currently empty)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both Approved, verified on-host 2026-08-06); `reference/deployment` (currently empty)
 - Runbooks: none yet
 - Current-State documentation: `CS-INF-020`
 
@@ -78,3 +78,4 @@ See `CS-INF-020`: the target topology (shared edge → systemd-managed processes
 | 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |
 | 1.2 | 2026-07-15 | Added ADR-180 cross-reference | Socx |
 | 1.3 | 2026-08-06 | reference/systemd moved to Approved; Current-State Gap assessed against CS-INF-020 (Bootstrap Phases B0-B5) | Socx |
+| 1.4 | 2026-08-06 | reference/nginx moved to Approved (on-host deployment: real certificates, full site configs, canary-proven) | Socx |
