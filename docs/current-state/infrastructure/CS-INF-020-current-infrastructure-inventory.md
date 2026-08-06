@@ -6,7 +6,7 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.8"
+version: "0.9"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -36,7 +36,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ## Inventory
 
-**Headline:** the runtime substrate is now installed and verified (Bootstrap Phases B0–B3): nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0, and certbot are all present, active, and functionally confirmed on the **Ubuntu 26.04 LTS** droplet (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped). **Still nothing application-level deployed** — no SOCX application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
+**Headline:** the runtime substrate is installed (B0–B3) and the platform scaffolding is now in place (B4): a dedicated system user, `/opt/<app>/{releases,shared}` directory layout, and a root-only credentials directory exist for each of the four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`) on the **Ubuntu 26.04 LTS** droplet (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped). **Still nothing application-level deployed** — no application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
 
 ### Hosting
 
@@ -69,11 +69,21 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ### System Services
 
-`sshd` (ports 22, IPv4+IPv6), loopback-only `systemd-resolved`, plus (as of B3) **nginx** (port 80, externally reachable — allowed by the firewall), **PostgreSQL 16** and **Redis 8.0.5** (both local-only by default, not exposed through the firewall), and **certbot.timer**. No application units — target remains direct-execution units per `reference/systemd`. — Observed (B0 baseline; B3 additions)
+`sshd` (ports 22, IPv4+IPv6), loopback-only `systemd-resolved`, plus (as of B3) **nginx** (port 80, externally reachable — allowed by the firewall), **PostgreSQL 16** and **Redis 8.0.5** (both local-only by default, not exposed through the firewall), and **certbot.timer**. Also present, **pre-existing and vendor-provided, not installed by this bootstrap**: DigitalOcean's **`droplet-agent`** (1.4.0, `active`/`running`) and its `droplet-agent-update.timer` (hourly) — discovered while inspecting `/opt/` during B4; confirmed via `dpkg -l` and `systemctl`, not assumed. No application units yet — target remains direct-execution units per `reference/systemd`, to be added in B5. — Observed (B0 baseline; B3 additions; B4 discovery)
 
 ### Scheduled Jobs
 
-None (accordingly, **no backups run** — nothing exists yet to back up). — Attested
+None application-level (accordingly, **no backups run** — nothing exists yet to back up). `droplet-agent-update.timer` (hourly, DigitalOcean-provided) is the only timer present. — Observed (B4)
+
+### Application Scaffolding
+
+Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`):
+
+| Fact | Value | Evidence |
+|---|---|---|
+| System users | One dedicated, non-interactive account per app (system UIDs 106–109), home `/nonexistent`, shell `/usr/sbin/nologin`, password locked (`L`) — confirmed no usable password on any of the four | Observed (B4, 2026-08-06) |
+| Directory layout | `/opt/<app>/{releases,shared}`, mode `750`, owned by the app's own user:group. **`current` deliberately not created yet** — it's a symlink to a real release, and none exists until B5's canary or a later real deploy | Observed (B4, 2026-08-06) |
+| Credentials directories | `/etc/credentials/<app>/`, mode `700`, root:root — the path `reference/systemd`'s `LoadCredential=` units expect (`ADR-130`). Empty; no real secrets placed yet | Observed (B4, 2026-08-06) |
 
 ### Storage
 
@@ -112,7 +122,7 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd` (verification host prerequisite met — runtime substrate now installed), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
+- Reference Implementations: `reference/systemd` (host prerequisites, incl. per-app directory layout, now fully met — ready for B5 canary), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
 - Runbooks: none yet — the B1 access-hardening sequence (sudo fix, account lockout, firewall) is a candidate first entry for the access/break-glass runbook
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
@@ -128,3 +138,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | 0.6     | 2026-08-06 | Bootstrap Phase B1 (continued): `ubuntu` locked out, firewall active (22/80/443 only), `unattended-upgrades` confirmed active. Root-login-permitted reframed from a temporary pause to a standing, owner-directed exception with no scheduled resumption | Socx   |
 | 0.7     | 2026-08-06 | Bootstrap Phase B2 executed: OS packages patched, kernel upgraded to `7.0.0-29-generic` and confirmed running post-reboot; remaining ~20 packages confirmed as phased-rollout holdouts, not a gap; B1 hardening (sudo, firewall, ubuntu lockout) confirmed to survive the reboot | Socx   |
 | 0.8     | 2026-08-06 | Bootstrap Phase B3 executed: nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0/npm 11.17.0, and certbot installed and functionally verified. Runtime substrate now present; no application-level deployment yet | Socx   |
+| 0.9     | 2026-08-06 | Bootstrap Phase B4 executed: per-app system users, `/opt/<app>` directory layout, and root-only credentials directories created for all four systems; recorded pre-existing DigitalOcean droplet-agent discovered during inspection | Socx   |

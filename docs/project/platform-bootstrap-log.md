@@ -291,3 +291,69 @@ active, same 6 rules as B1/B2 (22/80/443 x v4/v6) -- unchanged
 
 B3 complete. Runtime substrate fully installed and verified; still no application-level deployment. Proceeding to B4 (Platform scaffolding) pending review and approval, per the mandatory GitHub workflow.
 
+---
+
+## Phase B4 — Platform scaffolding: **COMPLETE**
+
+**Executed:** 2026-08-06 · **Tracked under:** #76
+
+### Summary
+
+Created the per-application shape for all four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`): a dedicated non-interactive system user, an `/opt/<app>/{releases,shared}` directory layout (owned by that user), and a root-only `/etc/credentials/<app>/` directory per `reference/systemd`'s `LoadCredential=` expectations. `current` symlinks deliberately not created — nothing to point at until a release exists (B5).
+
+Discovered a pre-existing `/opt/digitalocean/` directory not created by any bootstrap phase — investigated and confirmed as DigitalOcean's own **Droplet Agent** (`droplet-agent` 1.4.0 + keyring, running, with an hourly update-check timer), a legitimate vendor-provided component. Recorded, not acted on.
+
+### Key command output (condensed)
+
+```
+=== B4.1 system users ===
+socx-org-uk:x:106:112::/nonexistent:/usr/sbin/nologin
+ghs:x:107:113::/nonexistent:/usr/sbin/nologin
+rms:x:108:114::/nonexistent:/usr/sbin/nologin
+ams:x:109:115::/nonexistent:/usr/sbin/nologin
+
+=== B4.2 /opt layout ===
+drwxr-x--- ams          /opt/ams
+drwxr-x--- ghs          /opt/ghs
+drwxr-x--- rms          /opt/rms
+drwxr-x--- socx-org-uk  /opt/socx-org-uk
+drwxr-xr-x root         /opt/digitalocean   <- pre-existing, not created by us
+
+=== B4.3 credentials directories ===
+drwx------ root root /etc/credentials
+drwx------ root root /etc/credentials/{ghs,rms,socx-org-uk,ams}
+
+=== B4.4 account state ===
+socx-org-uk L 2026-08-06 -1 -1 -1 -1
+ghs L 2026-08-06 -1 -1 -1 -1
+rms L 2026-08-06 -1 -1 -1 -1
+ams L 2026-08-06 -1 -1 -1 -1
+
+=== B4.5 firewall ===
+active, same 6 rules -- unchanged
+
+=== B4.6 /opt/digitalocean investigation ===
+ii  droplet-agent            1.4.0   DigitalOcean Droplet Agent
+ii  droplet-agent-keyring    2.0.0   DigitalOcean Droplet Agent Keyring
+droplet-agent.service               active   running
+droplet-agent-update.service        inactive dead (one-shot, timer-triggered)
+droplet-agent-update.timer          active   waiting (hourly)
+```
+
+### Findings
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | All four accounts/directories/credentials paths created correctly | Matches `reference/systemd`'s expected layout exactly |
+| 2 | Pre-existing `/opt/digitalocean/` | Investigated, confirmed as DigitalOcean's own Droplet Agent — legitimate, vendor-provided, not something we installed or need to remove |
+| 3 | `current` symlinks not created | Deliberate — nothing to point at until B5's canary or a later real release |
+
+### Documentation updated
+
+- `docs/current-state/infrastructure/CS-INF-020-current-infrastructure-inventory.md` → v0.9 (new "Application Scaffolding" section; System Services and Scheduled Jobs updated with the droplet-agent finding)
+- `docs/current-state/identity/CS-IAM-010-current-identity-and-access-inventory.md` → v2.3 (four new service accounts recorded)
+
+### Outcome
+
+B4 complete. All `reference/systemd` host prerequisites are now met. Proceeding to B5 (Verification canary) pending review and approval, per the mandatory GitHub workflow.
+
