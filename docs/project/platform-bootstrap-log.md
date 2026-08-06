@@ -229,3 +229,65 @@ upgradable count:       20  (+1 vs pre-reboot; ordinary apt-daily-timer index
 
 B2 complete. Proceeding to B3 (Runtime & core services) pending review and approval, per the mandatory GitHub workflow (Phase 3 — this documentation is presented for review before commit).
 
+---
+
+## Phase B3 — Runtime & core services: **COMPLETE**
+
+**Executed:** 2026-08-06 · **Tracked under:** #76
+
+### Summary
+
+Installed the approved stack: nginx (`ADR-050`), PostgreSQL 16 via the official PGDG repo (`ADR-090`), Redis via apt (`ADR-090`), Node.js via NodeSource (`ADR-070`), and certbot with its nginx plugin. All five verified functionally, not just installed — HTTP 200 from nginx, a real SQL query against PostgreSQL, `PONG` from Redis, working `node`/`npm`, `certbot --version`. Firewall re-confirmed unchanged.
+
+First round of output only showed the certbot/firewall tail (same partial-paste pattern as B2); a targeted re-check of the missing four components confirmed all had succeeded.
+
+### Key command output (condensed)
+
+```
+=== B3.2 nginx ===
+active / enabled / HTTP/1.1 200 OK
+
+=== B3.3 PostgreSQL (via PGDG) ===
+active / enabled
+PostgreSQL 16.14 (Ubuntu 16.14-1.pgdg26.04+1) on x86_64-pc-linux-gnu ...
+
+=== B3.4 Redis ===
+ii  redis-server   5:8.0.5-1   amd64   Persistent key-value database with network interface
+ii  redis-tools    5:8.0.5-1   amd64   ...
+active
+PONG
+
+=== B3.5 Node.js (via NodeSource setup_24.x) ===
+/usr/bin/node
+v24.19.0
+/usr/bin/npm
+11.17.0
+
+=== B3.6 certbot ===
+Setting up certbot (4.0.0-4) ... / python3-certbot-nginx (4.0.0-3)
+certbot.timer enabled
+certbot 4.0.0
+
+=== B3.7 firewall (re-check) ===
+active, same 6 rules as B1/B2 (22/80/443 x v4/v6) -- unchanged
+```
+
+### Findings
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | PostgreSQL via PGDG, not Ubuntu's default repo | Guarantees exactly version 16, matching `rms`'s stated requirement (`CS-DAT-010`) rather than whatever Ubuntu 26.04 happens to default to |
+| 2 | Redis is genuine Redis 8.0.5, not Valkey | Worth recording explicitly — several distros substituted Valkey after Redis Ltd.'s 2024 licensing change; Ubuntu 26.04 still ships real Redis, likely because Redis 8.0 moved back to AGPLv3. Confirmed via `dpkg -l`, not assumed from the package name |
+| 3 | NodeSource `setup_24.x` estimate confirmed correct | Installed `v24.19.0`, consistent with Node's known release cadence (new Active LTS each October on even majors) |
+| 4 | First round of output was a partial paste (certbot + firewall only) | Same pattern as B2; targeted re-check requested for just the missing four components rather than re-running installs |
+| 5 | Firewall unaffected by any of the five installs | Confirmed unchanged from B1/B2's state |
+
+### Documentation updated
+
+- `docs/current-state/infrastructure/CS-INF-020-current-infrastructure-inventory.md` → v0.8 (Reverse Proxy, TLS Certificates, System Services, Storage sections updated; Related Implementations expanded)
+- `docs/current-state/technology/CS-TEC-010-current-technology-inventory.md` → v2.2 (Hosting, Reverse proxy, Database, Cache/queue, Process management rows updated with host-level observations; fixed a stale "ADRs: none yet")
+
+### Outcome
+
+B3 complete. Runtime substrate fully installed and verified; still no application-level deployment. Proceeding to B4 (Platform scaffolding) pending review and approval, per the mandatory GitHub workflow.
+

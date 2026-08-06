@@ -6,7 +6,7 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.7"
+version: "0.8"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -36,7 +36,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ## Inventory
 
-**Headline:** a fresh, empty host, now confirmed by direct inspection (Bootstrap Phases B0–B1). One DigitalOcean droplet running **Ubuntu 26.04 LTS** (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped), with DNS already pointing at it and **nothing deployed** — no applications, no reverse proxy, no databases, no TLS, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
+**Headline:** the runtime substrate is now installed and verified (Bootstrap Phases B0–B3): nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0, and certbot are all present, active, and functionally confirmed on the **Ubuntu 26.04 LTS** droplet (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped). **Still nothing application-level deployed** — no SOCX application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
 
 ### Hosting
 
@@ -45,7 +45,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 | Provider / shape | DigitalOcean, single droplet (same reserved IP retained across the 2026-08-06 rebuild); kernel `7.0.0-29-generic` (upgraded from `7.0.0-27-generic` in Bootstrap Phase B2, confirmed running post-reboot), KVM virtualisation | Observed (B0 initial; B2 post-reboot) |
 | Operating system | Ubuntu 26.04 LTS ("resolute"); **systemd 259 (259.5-0ubuntu3) confirmed** — clears `reference/systemd`'s ≥ 245 floor comfortably | Observed (B0) |
 | Hostname / networking | Static hostname `prod-lab-01`. Public `209.97.135.128`; private networking `10.16.0.5`, `10.106.0.2`; IPv6 `2a03:b0c0:1:e0:0:1:6ca0:2001` | Observed (B0) |
-| Resources | 1 vCPU, ~956 MiB RAM, 24 GB disk (2.2 GB used) — small; worth watching once Node + PostgreSQL + Redis + nginx are all installed (Bootstrap Phase B3) | Observed (B0) |
+| Resources | 1 vCPU, ~956 MiB RAM, 24 GB disk (2.2 GB used, pre-install) — small. Node, PostgreSQL, Redis, and nginx are now all installed (Bootstrap Phase B3); disk/memory headroom has not yet been re-measured post-install — worth checking before B4 scaffolding or B8 application deployment add further load | Observed (B0 baseline; B3 install not yet re-measured) |
 | Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
 | Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
 | Time sync | NTP active, clock synchronised (`Etc/UTC`) | Observed (B0) |
@@ -61,15 +61,15 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ### TLS Certificates
 
-None issued for the new host. — Attested
+`certbot` 4.0.0 and the `python3-certbot-nginx` plugin are installed (Bootstrap Phase B3), with `certbot.timer` enabled for renewal — but **no certificate has been issued yet**. Issuance is deliberately deferred to Bootstrap Phase 6.3, once real site configuration exists for it to attach to. — Observed (B3, 2026-08-06)
 
 ### Reverse Proxy
 
-None installed. Target: nginx per `ADR-050` / `reference/nginx`. — Attested
+**nginx installed** (Bootstrap Phase B3), `active`, `enabled`, serving only its **default page** on port 80 (`HTTP/1.1 200 OK` confirmed) — no SOCX site configuration yet, per the Bootstrap Plan's deliberate sequencing (config starts from the canonical `reference/nginx`, which lands in 6.3, not hand-written ahead of it — `OPS-020.3`). — Observed (B3, 2026-08-06)
 
 ### System Services
 
-Stock Ubuntu only; no application units. Only `sshd` (ports 22, IPv4+IPv6) and loopback-only `systemd-resolved` (`127.0.0.53`/`127.0.0.54`, DNS stub resolver) are listening — nothing externally reachable beyond SSH. Target: direct-execution units per `reference/systemd`. — Observed (B0)
+`sshd` (ports 22, IPv4+IPv6), loopback-only `systemd-resolved`, plus (as of B3) **nginx** (port 80, externally reachable — allowed by the firewall), **PostgreSQL 16** and **Redis 8.0.5** (both local-only by default, not exposed through the firewall), and **certbot.timer**. No application units — target remains direct-execution units per `reference/systemd`. — Observed (B0 baseline; B3 additions)
 
 ### Scheduled Jobs
 
@@ -79,7 +79,9 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 
 | Fact | Value | Evidence |
 |---|---|---|
-| Databases | None installed — confirmed absent (`node`, `npm`, `psql`, `redis-server`, `nginx`, `certbot`, `terraform` all checked, none present) | Observed (B0) |
+| Databases | **PostgreSQL 16.14** (`Ubuntu 16.14-1.pgdg26.04+1`, from the official PGDG repository — not Ubuntu's own default version — to guarantee an exact match with `CS-DAT-010`'s observed `rms` requirement) and **Redis 8.0.5** (package genuinely named `redis-server`, not Valkey — see note below) both installed, `active`, `enabled`, and functionally verified (`psql` returned a version row; `redis-cli ping` returned `PONG`). No database, role, or dataset has been created — this is the empty engine only | Observed (B3, 2026-08-06) |
+| Redis vs. Valkey | Worth recording explicitly: several distros replaced `redis-server` with the Valkey fork after Redis Ltd.'s 2024 licensing change (RSALv2/SSPLv1, no longer OSI-open). Ubuntu 26.04 still ships genuine Redis — Redis Ltd. moved Redis 8.0 back to AGPLv3, which is presumably why. Confirmed via `dpkg -l` (`redis-server 5:8.0.5-1`), not assumed from the package name alone | Observed (B3, 2026-08-06) |
+| Node.js / npm | Node.js **v24.19.0**, npm **11.17.0**, both at `/usr/bin/` — an absolute, discoverable path, satisfying `reference/systemd`'s `{{NODE_BIN}}` prerequisite. Installed via NodeSource (Ubuntu's own apt repo carries a far older version); `setup_24.x` was used as an estimate of the current Active LTS line based on Node's release cadence, and the installed version confirms it was correct | Observed (B3, 2026-08-06) |
 | Application data | None | Attested |
 | Legacy data | The retired droplet's data was **not migrated, snapshotted, or exported** — it held no production data worth keeping (test/development only), per `ADR-180` | Attested |
 
@@ -110,7 +112,7 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd` (verification host prerequisite met), `reference/nginx`, `reference/terraform` (all pending)
+- Reference Implementations: `reference/systemd` (verification host prerequisite met — runtime substrate now installed), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
 - Runbooks: none yet — the B1 access-hardening sequence (sudo fix, account lockout, firewall) is a candidate first entry for the access/break-glass runbook
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
@@ -125,3 +127,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | 0.5     | 2026-08-06 | `deploy` passwordless sudo fixed and verified; remaining B1 hardening (root login, ubuntu account, firewall, unattended-upgrades) explicitly postponed at owner's request — recorded as a deferred task with residual risk noted, not a formal standards exception | Socx   |
 | 0.6     | 2026-08-06 | Bootstrap Phase B1 (continued): `ubuntu` locked out, firewall active (22/80/443 only), `unattended-upgrades` confirmed active. Root-login-permitted reframed from a temporary pause to a standing, owner-directed exception with no scheduled resumption | Socx   |
 | 0.7     | 2026-08-06 | Bootstrap Phase B2 executed: OS packages patched, kernel upgraded to `7.0.0-29-generic` and confirmed running post-reboot; remaining ~20 packages confirmed as phased-rollout holdouts, not a gap; B1 hardening (sudo, firewall, ubuntu lockout) confirmed to survive the reboot | Socx   |
+| 0.8     | 2026-08-06 | Bootstrap Phase B3 executed: nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0/npm 11.17.0, and certbot installed and functionally verified. Runtime substrate now present; no application-level deployment yet | Socx   |
