@@ -11,23 +11,27 @@ This workflow is mandatory for all code, documentation and infrastructure change
 
 # Repository
 
-GitHub Organisation: Socx-Org
+GitHub Organisation
+
+Socx-Org
 
 GitHub Project: Project #1
 
 #1
 
+Project #1's Status field has exactly three values: **Todo**, **In Progress**, **Done**. There is no separate "Backlog" status — Todo serves that purpose. Every reference to "Backlog" below means Status = Todo.
+
 ---
 
 # Workflow
 
-Every task follows this lifecycle.
+Every task follows this lifecycle. Only three stages (Todo, In Progress, Done) are actual Project Status values; the rest (Planning, Approved, Implementation, Review, Commit) are process checkpoints that happen while an Issue sits at one of those three statuses.
 
 Idea
 ↓
 Issue Created
 ↓
-Backlog
+Todo (Backlog)
 ↓
 Planning
 ↓
@@ -58,7 +62,7 @@ Before implementation Claude must:
 - write a clear Issue description
 - add acceptance criteria
 - add the Issue to Project #1
-- set Status = Backlog
+- set Status = Todo
 - present the implementation plan
 - wait for approval
 
@@ -107,18 +111,6 @@ Only after approval:
 Create a commit using:
 
 #<issue-number></issue> <type></type>(<scope></scope>): 
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
