@@ -100,21 +100,53 @@ While preparing for B1, the platform owner found that `sudo` from the `deploy` a
 
 ---
 
-## Phase B1 — Access hardening: **PARTIALLY EXECUTED, PAUSED**
+## Phase B1 — Access hardening: **COMPLETE, except root login (standing exception)**
 
 **Status as of 2026-08-06:**
 
 | Step | State |
 |---|---|
 | (1) `deploy` passwordless sudo | ✅ Done and verified |
-| (2) Disable root SSH login (`PermitRootLogin no`) | ⏸ Postponed — platform owner's explicit request |
-| (3) Decide `ubuntu` account's fate | ⏸ Postponed |
-| (4) Enable UFW (22/80/443 only) | ⏸ Postponed |
-| (5) Confirm `unattended-upgrades` active | ⏸ Postponed |
+| (2) Disable root SSH login (`PermitRootLogin no`) | ⏸ **Standing exception** — platform owner's explicit, reiterated direction: proceed with the rest of B1, leave root login untouched |
+| (3) Decide `ubuntu` account's fate | ✅ Done — locked (password `L`, shell `/usr/sbin/nologin`); no `authorized_keys` found (nothing to neutralize) |
+| (4) Enable UFW (22/80/443 only) | ✅ Done — active, default deny (incoming) / allow (outgoing), exactly 22/80/443 (v4+v6) |
+| (5) Confirm `unattended-upgrades` active | ✅ Done — already active in the base image before any bootstrap action; `dpkg-reconfigure` confirmed both settings `"1"` |
 
-**Reason:** the platform owner asked to postpone the remaining hardening steps for now, having just confirmed `deploy`'s sudo access works. No rationale beyond timing was given; not a response to any blocker.
+### Command output (B1 continued, verbatim)
 
-**Residual risk while paused:** root SSH login by key remains active; firewall remains inactive. Recorded in `CS-INF-020` v0.5 as a knowingly accepted, deferred task — not a formal `GEN-010.9` exception, since `SEC-030` has no specific numbered requirement mandating root-login be disabled.
+```
+=== B1.1 Ubuntu account: lock password, disable shell ===
+ubuntu L 2026-08-05 0 99999 7 -1
+=== B1.2 Ubuntu account: neutralize any SSH keys ===
+no authorized_keys file for ubuntu
+=== B1.3 Firewall: default-deny, allow 22/80/443 only ===
+Default incoming policy changed to 'deny'
+Default outgoing policy changed to 'allow'
+Rules updated / Rules updated (v6)  [x3 — 22, 80, 443]
+Firewall is active and enabled on system startup
+Status: active
+Default: deny (incoming), allow (outgoing), disabled (routed)
+To                         Action      From
+22/tcp                     ALLOW IN    Anywhere
+80/tcp                     ALLOW IN    Anywhere
+443/tcp                    ALLOW IN    Anywhere
+22/tcp (v6)                ALLOW IN    Anywhere (v6)
+80/tcp (v6)                ALLOW IN    Anywhere (v6)
+443/tcp (v6)                ALLOW IN    Anywhere (v6)
+=== B1.4 Unattended-upgrades: confirm active ===
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+```
 
-**Documentation updated:** `CS-INF-020` → v0.5.
+Full session output (including the post-firewall-enable B1.4 section) returned intact, confirming the active SSH session survived the firewall change without disruption.
+
+**Root login — standing exception, not a pause.** Reframed from the earlier "postponed" language: the owner has now twice directed that root login stay enabled — first to defer it, then explicitly excluding it while approving the rest of B1. This is recorded as a deliberate, indefinite operational choice with no scheduled resumption, not a formal `GEN-010.9` exception (`SEC-030` has no specific numbered requirement mandating root-login be disabled). **Residual risk:** root SSH login by key remains a second path to full privilege alongside `deploy`'s now-verified sudo.
+
+**Documentation updated:** `CS-INF-020` → v0.6, `CS-IAM-010` → v2.2.
+
+### Outcome
+
+B1 is functionally complete for the purpose of proceeding to B2, with root-login-permitted carried forward as a standing, recorded exception rather than a blocker.
 
