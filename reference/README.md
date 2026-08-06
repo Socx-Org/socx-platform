@@ -117,7 +117,7 @@ Implementation order follows the approved Deliverable 6 sequencing — the first
 |---|---|---|---|
 | 1 | `reference/systemd` | Service & Timer Units | Approved |
 | 2 | `reference/nginx` | Edge & Site Configuration | Approved |
-| 3 | `reference/github` | CI/CD Workflows & Branch Protection | Planned |
+| 3 | `reference/github` | CI/CD Workflows & Branch Protection | Draft |
 | 4 | `reference/security` | Secret Handling (systemd credentials) | Planned |
 | 5 | `reference/terraform` | Infrastructure as Code | Planned |
 | 6 | `reference/deployment` | Deploy & Rollback Glue | Planned |

@@ -1,0 +1,91 @@
+# reference/github — CI/CD pipeline (ADR-150, ENG-040)
+# Copy to .github/workflows/ci.yml, substitute all {{PLACEHOLDER}} values.
+#
+# Stage order (install -> lint -> test -> build) and its rationale is
+# ENG-040.2 verbatim -- GitHub Actions steps run sequentially and stop on
+# the first failure by default, so this order IS the fail-fast behavior,
+# not something extra to configure.
+#
+# Grounded in a real SOCX application's working CI (npm workspaces monorepo,
+# a Postgres service container for DB-backed tests, secrets referenced only
+# by name) -- but corrected against decisions made since that workflow was
+# written: a lint stage is added (the real one has none, despite having a
+# working `lint` script), the Node version matches the platform's actual
+# current LTS rather than a stale pin, and the deploy job drops the legacy
+# nvm/raw-SSH/systemctl choreography entirely (see the deploy job's own
+# comment below).
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Install, Lint, Test, Build
+    runs-on: ubuntu-latest
+
+    # Only include this service block if the project has a database to test
+    # against -- omit entirely for projects that don't (Expected Adaptations).
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: ${{ secrets.CI_DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.CI_DB_NAME }}
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint --workspaces --if-present
+
+      - name: Test
+        run: npm test --workspaces --if-present
+
+      - name: Build
+        run: npm run build --workspaces --if-present
+
+  # Deliberately a stub. This job's job is to prove the GATING is correct
+  # (ENG-040.4: a separate job from build/test, triggered only on push to
+  # main, never a feature branch) -- not to define real deploy mechanics.
+  # Those belong to reference/deployment (Deliverable 6.7) and land here
+  # once that reference implementation exists. Do not hand-roll deploy
+  # steps in a consuming project's copy of this file; wait for 6.7.
+  deploy:
+    name: Deploy
+    needs: [ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: "{{ENVIRONMENT}}"
+    steps:
+      - name: Deploy (placeholder)
+        run: |
+          echo "Real deploy steps are defined by reference/deployment (Deliverable 6.7)."
+          echo "This job intentionally only proves correct gating for now."
