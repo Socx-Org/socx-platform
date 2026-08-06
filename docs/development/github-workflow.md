@@ -1,4 +1,3 @@
-
 # GitHub Development Workflow
 
 ## Purpose
@@ -110,24 +109,18 @@ Only after approval:
 
 Create a commit using:
 
-#<issue-number></issue> <type></type>(<scope></scope>): 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#<issue-number></issue> <type></type>(<scope></scope>):
 
 Example
 
 #68 docs(reference): refine reference/systemd manifest
+
+* first detailed commit message
+* second detailed commit message
+
+ Deliverable: 6 - Title
+
+Status: <Draft | Approved | In Progress | Done>
 
 ---
 
