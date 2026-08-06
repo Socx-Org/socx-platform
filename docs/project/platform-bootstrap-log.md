@@ -150,3 +150,82 @@ Full session output (including the post-firewall-enable B1.4 section) returned i
 
 B1 is functionally complete for the purpose of proceeding to B2, with root-login-permitted carried forward as a standing, recorded exception rather than a blocker.
 
+---
+
+## Phase B2 — System baseline: **COMPLETE**
+
+**Executed:** 2026-08-06 · **Tracked under:** #76
+
+### Summary
+
+Applied the 6 pending package updates from B0.12, hit a routine dpkg conffile prompt on `openssh-server`'s `sshd_config` (resolved: kept local — DigitalOcean's image customization, not something we'd changed, and not worth risking against the standing root-login exception), then discovered `apt-get upgrade` alone doesn't fully patch a host — Ubuntu's conservative `upgrade` skips anything needing dependency changes, and phased rollout deliberately withholds some updates regardless. Ran `dist-upgrade` to catch the former; the latter (~19-20 packages, largely the systemd family at a coordinated version bump) is expected and left alone.
+
+A new kernel (`7.0.0-29-generic`, up from `7.0.0-27-generic`) required a reboot. Used the reboot as a deliberate opportunity to verify B1's hardening (sudo, firewall, account lockout) persists across a restart rather than just existing in the session that created it — first real test of that.
+
+### Key command output (condensed; full session output was longer)
+
+```
+=== B2.1 upgrade ===
+[6 packages applied; interactive prompt for /etc/ssh/sshd_config -> kept local version]
+=== B2.2 reboot required? ===
+*** System restart required ***
+=== B2.3 hostname ===
+prod-lab-01  (unchanged, confirmed intentional)
+=== B2.4 time sync (pre-dist-upgrade) ===
+System clock synchronized: no   <- transient, chrony had just been auto-restarted by needrestart
+=== B2.5 upgradable count ===
+23
+--- investigation round ---
+=== B2.6 apt list --upgradable ===
+23 packages, all resolute-updates pocket
+=== B2.7 chronyc tracking / timedatectl (recheck) ===
+System clock synchronized: no   <- still settling
+=== B2.8 dist-upgrade ===
+[new kernel 7.0.0-29-generic installed; GRUB updated; "Pending kernel upgrade!" from needrestart]
+=== B2.9 upgradable count ===
+19
+=== B2.10 reboot required? ===
+*** System restart required ***
+--- re-verification round ---
+=== B2.6 (re-run) apt list --upgradable ===
+19 packages: apparmor, bind9-{dnsutils,host,libs}, cloud-init(-base), libapparmor1,
+systemd family (libnss-systemd, libpam-systemd, libsystemd-shared, libsystemd0,
+libudev1, systemd, systemd-cryptsetup, systemd-resolved, systemd-sysv, udev),
+python3-software-properties, software-properties-common
+  -> all resolute-updates pocket; systemd family pinned at identical version bump
+     (259.5-0ubuntu3 -> 259.5-0ubuntu3.3), consistent with a deliberately staged
+     rollout rather than a missed/failed install
+=== B2.7 (re-run) chronyc tracking / timedatectl ===
+Stratum 3, sub-millisecond offset, Leap status: Normal
+System clock synchronized: yes   <- resolved, as expected once chrony settled
+=== B2.11 reboot ===
+sudo reboot
+=== B2.12 post-reboot verification ===
+uname -r:             7.0.0-29-generic          (new kernel loaded)
+sudo whoami (deploy):  root, no password prompt  (sudo fix survived reboot)
+ufw status verbose:    active, same 6 rules      (firewall survived reboot)
+passwd -S ubuntu:       L                        (lockout survived reboot)
+timedatectl:            synchronized: yes        (still healthy)
+reboot-required flag:   cleared
+upgradable count:       20  (+1 vs pre-reboot; ordinary apt-daily-timer index
+                             churn in the background, not a regression)
+```
+
+### Findings
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | `sshd_config` conffile prompt during upgrade | Kept local version — preserves the tested SSH policy, including the standing root-login exception; not something to risk against an unreviewed maintainer default |
+| 2 | Plain `apt-get upgrade` left packages behind | Standard Ubuntu behavior (won't add/remove packages to satisfy deps); `dist-upgrade` closed most of the gap |
+| 3 | ~19-20 packages remain permanently upgradable for now | Confirmed as Ubuntu's phased-rollout mechanism (systemd family at a coordinated pinned version), not an error; resolves automatically via `unattended-upgrades` over time — not forced |
+| 4 | `System clock synchronized: no` immediately after B2.1 | Transient — chrony was auto-restarted by needrestart as part of the upgrade; resolved on its own within the same session |
+| 5 | B1 hardening (sudo, firewall, account lockout) | All confirmed to survive a full reboot, not just present in the session that created them |
+
+### Documentation updated
+
+- `docs/current-state/infrastructure/CS-INF-020-current-infrastructure-inventory.md` → v0.7 (kernel version, patch state, phased-package explanation, reboot-persistence confirmation)
+
+### Outcome
+
+B2 complete. Proceeding to B3 (Runtime & core services) pending review and approval, per the mandatory GitHub workflow (Phase 3 — this documentation is presented for review before commit).
+

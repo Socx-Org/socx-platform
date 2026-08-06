@@ -6,7 +6,7 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.6"
+version: "0.7"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -42,14 +42,14 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 | Fact | Value | Evidence |
 |---|---|---|
-| Provider / shape | DigitalOcean, single droplet (same reserved IP retained across the 2026-08-06 rebuild); kernel `7.0.0-27-generic`, KVM virtualisation | Attested (provider); Observed (kernel/virt, B0) |
+| Provider / shape | DigitalOcean, single droplet (same reserved IP retained across the 2026-08-06 rebuild); kernel `7.0.0-29-generic` (upgraded from `7.0.0-27-generic` in Bootstrap Phase B2, confirmed running post-reboot), KVM virtualisation | Observed (B0 initial; B2 post-reboot) |
 | Operating system | Ubuntu 26.04 LTS ("resolute"); **systemd 259 (259.5-0ubuntu3) confirmed** — clears `reference/systemd`'s ≥ 245 floor comfortably | Observed (B0) |
 | Hostname / networking | Static hostname `prod-lab-01`. Public `209.97.135.128`; private networking `10.16.0.5`, `10.106.0.2`; IPv6 `2a03:b0c0:1:e0:0:1:6ca0:2001` | Observed (B0) |
 | Resources | 1 vCPU, ~956 MiB RAM, 24 GB disk (2.2 GB used) — small; worth watching once Node + PostgreSQL + Redis + nginx are all installed (Bootstrap Phase B3) | Observed (B0) |
 | Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
 | Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
 | Time sync | NTP active, clock synchronised (`Etc/UTC`) | Observed (B0) |
-| Pending OS updates | 6 packages pending (application deferred to Bootstrap Phase B2 — patching, not access control); `unattended-upgrades` 2.12ubuntu9 — **confirmed active** (`APT::Periodic::Update-Package-Lists` and `Unattended-Upgrade` both `"1"`), already configured this way by the base image prior to any bootstrap action | Observed (B0 presence; B1 activation confirmed) |
+| Pending OS updates | **Applied in Bootstrap Phase B2** (`apt-get upgrade` + `dist-upgrade`, including the kernel bump above). ~20 packages remain upgradable — confirmed to be Ubuntu's phased-rollout holdouts (the systemd package family, all pinned at an identical version bump, plus a handful of others), not a gap; they apply automatically via `unattended-upgrades` (2.12ubuntu9, confirmed active: `APT::Periodic::Update-Package-Lists` and `Unattended-Upgrade` both `"1"`) as Canonical's rollout reaches this host. Not something to force manually — doing so would defeat phasing's safety purpose | Observed (B2, 2026-08-06) |
 
 ### DNS
 
@@ -96,7 +96,7 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | SSH host keys | Changed with the 2026-08-06 rebuild — any `known_hosts` entry cached for this IP from the first (24.04) provisioning is now stale and will trigger a host-key-mismatch warning on next reconnect; expected, not a compromise indicator | Attested |
 | `deploy` sudo capability | **Fixed and verified.** A scoped, `visudo`-validated `/etc/sudoers.d/deploy` (`NOPASSWD:ALL`) was installed; `ssh deploy@<host> 'sudo whoami'` from a separate session returned `root` with no password prompt. `deploy` is now a fully functional administrative account independent of root | Observed (verified by platform owner, 2026-08-06) |
 
-**Remediation status:** steps (1) `deploy` passwordless sudo, (3) `ubuntu` lockout, (4) firewall, and (5) `unattended-upgrades` confirmation are **all done and verified** (2026-08-06). Step (2) — disabling root SSH login — is a **standing exception at the platform owner's explicit, reiterated direction**: proceed with the rest of B1, but leave root login untouched. This is not a formal `GEN-010.9` standards exception (`SEC-030` has no numbered requirement mandating root-login be disabled specifically) — it is a deliberate, indefinite operational choice, recorded here so it is never mistaken for an oversight. **Residual risk while it stands:** root SSH login by key remains a second, parallel path to full privilege alongside the now-verified `deploy` account — a wider access surface than `SEC-030.1`/`.5` least-privilege would otherwise favour. No resumption is scheduled; revisit at the owner's discretion.
+**Remediation status:** steps (1) `deploy` passwordless sudo, (3) `ubuntu` lockout, (4) firewall, and (5) `unattended-upgrades` confirmation are **all done and verified** (2026-08-06), and — following the reboot in Bootstrap Phase B2 — **all four are additionally confirmed to survive a reboot**, not just present in the live session that created them: `deploy` sudo still passwordless, firewall still active with the same rules, `ubuntu` still locked, post-reboot. Step (2) — disabling root SSH login — is a **standing exception at the platform owner's explicit, reiterated direction**: proceed with the rest of B1, but leave root login untouched. This is not a formal `GEN-010.9` standards exception (`SEC-030` has no numbered requirement mandating root-login be disabled specifically) — it is a deliberate, indefinite operational choice, recorded here so it is never mistaken for an oversight. **Residual risk while it stands:** root SSH login by key remains a second, parallel path to full privilege alongside the now-verified `deploy` account — a wider access surface than `SEC-030.1`/`.5` least-privilege would otherwise favour. No resumption is scheduled; revisit at the owner's discretion.
 
 ## Gap vs. Target Architecture
 
@@ -124,3 +124,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | 0.4     | 2026-08-06 | Recorded that `deploy`'s sudo is currently non-functional (disabled-password account, password-requiring sudo policy); reordered B1 remediation to fix and verify this before disabling root login | Socx   |
 | 0.5     | 2026-08-06 | `deploy` passwordless sudo fixed and verified; remaining B1 hardening (root login, ubuntu account, firewall, unattended-upgrades) explicitly postponed at owner's request — recorded as a deferred task with residual risk noted, not a formal standards exception | Socx   |
 | 0.6     | 2026-08-06 | Bootstrap Phase B1 (continued): `ubuntu` locked out, firewall active (22/80/443 only), `unattended-upgrades` confirmed active. Root-login-permitted reframed from a temporary pause to a standing, owner-directed exception with no scheduled resumption | Socx   |
+| 0.7     | 2026-08-06 | Bootstrap Phase B2 executed: OS packages patched, kernel upgraded to `7.0.0-29-generic` and confirmed running post-reboot; remaining ~20 packages confirmed as phased-rollout holdouts, not a gap; B1 hardening (sudo, firewall, ubuntu lockout) confirmed to survive the reboot | Socx   |
