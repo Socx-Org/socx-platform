@@ -6,7 +6,7 @@ status: Draft
 gap_status: Diverges
 confidence: Medium
 owner: Platform Engineering
-version: "0.5"
+version: "0.6"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -36,7 +36,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ## Inventory
 
-**Headline:** a fresh, empty host, now confirmed by direct inspection (Bootstrap Phase B0). One DigitalOcean droplet running **Ubuntu 26.04 LTS** (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped), with DNS already pointing at it and **nothing deployed** — no applications, no reverse proxy, no databases, no TLS, no scheduled jobs, no backups. Two access findings surfaced that were not previously attested: root SSH login is currently permitted by key, and two human accounts exist rather than one — see Access below.
+**Headline:** a fresh, empty host, now confirmed by direct inspection (Bootstrap Phases B0–B1). One DigitalOcean droplet running **Ubuntu 26.04 LTS** (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped), with DNS already pointing at it and **nothing deployed** — no applications, no reverse proxy, no databases, no TLS, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
 
 ### Hosting
 
@@ -49,7 +49,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 | Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
 | Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
 | Time sync | NTP active, clock synchronised (`Etc/UTC`) | Observed (B0) |
-| Pending OS updates | 6 packages pending; `unattended-upgrades` 2.12ubuntu9 present — activation to be confirmed in Bootstrap Phase B2 | Observed (B0) |
+| Pending OS updates | 6 packages pending (application deferred to Bootstrap Phase B2 — patching, not access control); `unattended-upgrades` 2.12ubuntu9 — **confirmed active** (`APT::Periodic::Update-Package-Lists` and `Unattended-Upgrade` both `"1"`), already configured this way by the base image prior to any bootstrap action | Observed (B0 presence; B1 activation confirmed) |
 
 ### DNS
 
@@ -85,18 +85,18 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 
 ### Access
 
-**Corrects the prior attestation of "one non-root admin user."** B0 found **two** human accounts:
+**Corrects the prior attestation of "one non-root admin user."** B0 found **two** human accounts; B1 has since locked one of them out:
 
 | Fact | Value | Evidence |
 |---|---|---|
-| Human accounts | `ubuntu` (UID 1000) — DigitalOcean's default cloud-init account, not explicitly disabled; `deploy` (UID 1001) — created by a local, untracked automation script (`create-deploy-user-on-droplet.sh`, outside this repository), granted sudo, with root's `authorized_keys` copied onto it | Observed (B0) |
+| Human accounts | `ubuntu` (UID 1000) — DigitalOcean's default cloud-init account. **Now locked**: password locked (`L`), shell set to `/usr/sbin/nologin`; no `authorized_keys` file was found for it (nothing to neutralize). `deploy` (UID 1001) — created by a local, untracked automation script (`create-deploy-user-on-droplet.sh`, outside this repository), sudo-enabled, with root's `authorized_keys` originally copied onto it | Observed (B0 discovery; B1 lockout applied and verified) |
 | Root account | Password locked (`L`) — password-based root login is impossible | Observed (B0) |
-| SSH policy | `PermitRootLogin yes`, `PasswordAuthentication no`, `PubkeyAuthentication yes`. **Root SSH login via key is currently permitted** — the one substantive hardening gap this inventory identifies (root's key is live because `deploy`'s key was copied from it) | Observed (B0) |
-| Firewall | UFW `inactive` | Observed (B0) |
+| SSH policy | `PermitRootLogin yes`, `PasswordAuthentication no`, `PubkeyAuthentication yes`. **Root SSH login via key remains permitted** — a standing, owner-directed exception (see below), not an oversight | Observed (B0) |
+| Firewall | UFW **active**: default deny (incoming), allow (outgoing); exactly `22/tcp`, `80/tcp`, `443/tcp` allowed (IPv4 + IPv6) | Observed (B1, 2026-08-06) |
 | SSH host keys | Changed with the 2026-08-06 rebuild — any `known_hosts` entry cached for this IP from the first (24.04) provisioning is now stale and will trigger a host-key-mismatch warning on next reconnect; expected, not a compromise indicator | Attested |
 | `deploy` sudo capability | **Fixed and verified.** A scoped, `visudo`-validated `/etc/sudoers.d/deploy` (`NOPASSWD:ALL`) was installed; `ssh deploy@<host> 'sudo whoami'` from a separate session returned `root` with no password prompt. `deploy` is now a fully functional administrative account independent of root | Observed (verified by platform owner, 2026-08-06) |
 
-**Remediation status:** step (1) — `deploy` passwordless sudo — is **done and verified**. Steps (2)–(5) — disabling root SSH login, deciding the `ubuntu` account's fate, enabling UFW, and confirming `unattended-upgrades` — are **explicitly postponed at the platform owner's request** (2026-08-06), not yet scheduled. This is a deferred task, not a formal `GEN-010.9` standards exception: `SEC-030` has no numbered requirement mandating root-login be disabled specifically. **Residual risk while deferred:** root SSH login by key remains active in parallel with the now-verified `deploy` path, and the firewall remains inactive — both widen the access surface beyond what `SEC-030.1`/`.5` least-privilege would otherwise favour. Accepted knowingly, to be closed when hardening resumes.
+**Remediation status:** steps (1) `deploy` passwordless sudo, (3) `ubuntu` lockout, (4) firewall, and (5) `unattended-upgrades` confirmation are **all done and verified** (2026-08-06). Step (2) — disabling root SSH login — is a **standing exception at the platform owner's explicit, reiterated direction**: proceed with the rest of B1, but leave root login untouched. This is not a formal `GEN-010.9` standards exception (`SEC-030` has no numbered requirement mandating root-login be disabled specifically) — it is a deliberate, indefinite operational choice, recorded here so it is never mistaken for an oversight. **Residual risk while it stands:** root SSH login by key remains a second, parallel path to full privilege alongside the now-verified `deploy` account — a wider access surface than `SEC-030.1`/`.5` least-privilege would otherwise favour. No resumption is scheduled; revisit at the owner's discretion.
 
 ## Gap vs. Target Architecture
 
@@ -111,7 +111,7 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
 - Reference Implementations: `reference/systemd` (verification host prerequisite met), `reference/nginx`, `reference/terraform` (all pending)
-- Runbooks: none yet — the B1 remediation (root login, `ubuntu` account, firewall) is a candidate first entry for the access/break-glass runbook
+- Runbooks: none yet — the B1 access-hardening sequence (sudo fix, account lockout, firewall) is a candidate first entry for the access/break-glass runbook
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
 ## Revision History
@@ -123,3 +123,4 @@ None (accordingly, **no backups run** — nothing exists yet to back up). — At
 | 0.3     | 2026-08-06 | Bootstrap Phase B0 executed: systemd/OS/network/resource facts moved from Attested to Observed; corrected "one admin user" to two (ubuntu, deploy); recorded root-SSH-permitted finding for B1 remediation | Socx   |
 | 0.4     | 2026-08-06 | Recorded that `deploy`'s sudo is currently non-functional (disabled-password account, password-requiring sudo policy); reordered B1 remediation to fix and verify this before disabling root login | Socx   |
 | 0.5     | 2026-08-06 | `deploy` passwordless sudo fixed and verified; remaining B1 hardening (root login, ubuntu account, firewall, unattended-upgrades) explicitly postponed at owner's request — recorded as a deferred task with residual risk noted, not a formal standards exception | Socx   |
+| 0.6     | 2026-08-06 | Bootstrap Phase B1 (continued): `ubuntu` locked out, firewall active (22/80/443 only), `unattended-upgrades` confirmed active. Root-login-permitted reframed from a temporary pause to a standing, owner-directed exception with no scheduled resumption | Socx   |
