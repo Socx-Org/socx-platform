@@ -6,7 +6,7 @@ status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "1.0"
+version: "1.1"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -20,6 +20,7 @@ related:
     - ADR-040
   reference:
     - reference/systemd
+    - reference/nginx
   runbooks: []
 supersedes:
   - CS-INF-010
@@ -37,7 +38,7 @@ Five sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ## Inventory
 
-**Headline:** Platform Bootstrap (Phases B0–B5) is complete. The runtime substrate is installed (B0–B3), platform scaffolding is in place (B4), and **the whole stack has been functionally proven end-to-end** (B5): a disposable canary service, run through `reference/systemd`'s real, unmodified unit file on `ghs`'s scaffolding, started cleanly, served HTTP, loaded two named credentials via `LoadCredential=` without ever logging their values, survived a restart, and was torn down without residue. `reference/systemd` is now `Approved`. **Still nothing application-level deployed** — no real application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is complete except one standing, owner-directed exception: root SSH login by key remains permitted — see Access below.
+**Headline:** Platform Bootstrap (Phases B0–B5) is complete, and the edge is now real. The runtime substrate is installed (B0–B3), platform scaffolding is in place (B4), and the whole stack has been functionally proven end-to-end (B5, via `reference/systemd`'s canary). Beyond bootstrap: **real production TLS certificates are issued for all four domains, real per-app nginx site configuration replaces the stock default page, and one full public-internet-to-app path (`ghs`) has been proven working over HTTPS** via a second disposable canary, then torn down. Both `reference/systemd` and `reference/nginx` are now `Approved`. **Still no real application code deployed** — `rms`, `ams`, and `www`/`socx.org.uk` correctly return `502 Bad Gateway` on their real domains, since nothing is listening on their upstream ports yet; this is the expected, honest state pending Deliverable 6.7/6.8, not a defect. No databases created, no scheduled jobs, no backups. Access hardening is complete except one standing, owner-directed exception: root SSH login by key remains permitted — see Access below.
 
 ### Hosting
 
@@ -63,11 +64,11 @@ Five sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ### TLS Certificates
 
-`certbot` 4.0.0 and the `python3-certbot-nginx` plugin are installed (Bootstrap Phase B3), with `certbot.timer` enabled for renewal — but **no certificate has been issued yet**. Issuance is deliberately deferred to Bootstrap Phase 6.3, once real site configuration exists for it to attach to. — Observed (B3, 2026-08-06)
+**Real production Let's Encrypt certificates issued for all four domains** (2026-08-06, via `certbot certonly --webroot`, which never modifies nginx config itself): `ghs.socx.org.uk`, `rms.socx.org.uk`, `ams.socx.org.uk`, and a single certificate covering both `socx.org.uk` and `www.socx.org.uk`. All ECDSA, all expiring 2026-11-04, `certbot.timer` confirmed active for automatic renewal. **Observed nuance:** nginx logs a harmless `ssl_stapling` warning against these certificates ("no OCSP responder URL") — stapling is skipped, TLS itself is unaffected; not a defect, documented in `reference/nginx`'s manifest so it isn't mistaken for one. — Observed (on-host deployment, 2026-08-06)
 
 ### Reverse Proxy
 
-**nginx installed** (Bootstrap Phase B3), `active`, `enabled`, serving only its **default page** on port 80 (`HTTP/1.1 200 OK` confirmed) — no SOCX site configuration yet, per the Bootstrap Plan's deliberate sequencing (config starts from the canonical `reference/nginx`, which lands in 6.3, not hand-written ahead of it — `OPS-020.3`). — Observed (B3, 2026-08-06)
+**Real per-app site configuration deployed** (2026-08-06), replacing the stock default page entirely — confirmed gone via a deliberately-unmatched `Host` header test (now returns a clean `404` from our own config, not nginx's default welcome content). One TLS-terminating site file per domain (`reference/nginx`'s `sites/*.conf`, unmodified except placeholder substitution), all `include`-ing the shared TLS baseline. Redirect (`80→443`) and TLS both confirmed working on all five hostnames. `rms`, `ams`, and `socx.org.uk`/`www.socx.org.uk` currently `502` on the HTTPS request itself — correct and expected, since no application is listening on their upstream ports yet. `ghs` was additionally proven end-to-end: a disposable canary (same pattern as Bootstrap B5) served a real `200` response through the full path — public internet → TLS → nginx → app — including the `X-SOCX-Environment: production` header, then was cleanly torn down, returning `ghs` to the same honest `502` state as its siblings. — Observed (on-host deployment, 2026-08-06)
 
 ### System Services
 
@@ -116,8 +117,8 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 
 | Aspect | Current State | Target (`INF-010`) | Difference | Impact |
 |---|---|---|---|---|
-| Edge, runtime, scaffolding | nginx, PostgreSQL, Redis, Node.js installed; per-app systemd pattern proven working (B0–B5) | Shared nginx edge → systemd-managed processes | Substantially closed | The mechanism is proven; what's missing is real content (site config, real releases), not capability |
-| Application deployment | No real application code deployed anywhere | Systems running behind the edge | Fully open | Deliverable 6.7/6.8 |
+| Edge, runtime, scaffolding | nginx (real config + certs, all four domains), PostgreSQL, Redis, Node.js installed; per-app systemd pattern proven working (B0–B5, then again for the edge) | Shared nginx edge → systemd-managed processes | Closed | Both `reference/systemd` and `reference/nginx` are `Approved`, verified on this host |
+| Application deployment | No real application code deployed anywhere — 3 of 4 domains correctly `502` | Systems running behind the edge | Fully open | Deliverable 6.7/6.8 |
 | Governance exceptions | Hand-provisioned; single tier | `OPS-020`; `OPS-010.1` | Two open `GEN-010.9` exceptions | Time-boxed, tracked in `ADR-180`, closed by `reference/terraform` |
 
 ## Related Documents
@@ -125,7 +126,7 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd` (**Approved** — verified end-to-end on this host, 2026-08-06), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both **Approved** — verified end-to-end on this host, 2026-08-06), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
 - Runbooks: none yet — the B1 access-hardening sequence and the B5 canary procedure are candidate first entries for Deliverable 7
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
@@ -143,3 +144,4 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 | 0.8     | 2026-08-06 | Bootstrap Phase B3 executed: nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0/npm 11.17.0, and certbot installed and functionally verified. Runtime substrate now present; no application-level deployment yet | Socx   |
 | 0.9     | 2026-08-06 | Bootstrap Phase B4 executed: per-app system users, `/opt/<app>` directory layout, and root-only credentials directories created for all four systems; recorded pre-existing DigitalOcean droplet-agent discovered during inspection | Socx   |
 | 1.0     | 2026-08-06 | Bootstrap Phase B5 executed: `reference/systemd` verified end-to-end via disposable canary (moved to Approved), then cleanly torn down; DNS nameservers and proxy-status resolved independently; post-install resource headroom measured. Moved to **Approved** — inventory verified, not merely drafted, per the Current-State lifecycle. One minor gap remains: domain registrar name specifically | Socx   |
+| 1.1     | 2026-08-06 | On-host `reference/nginx` deployment: real production TLS certificates issued for all four domains; real per-app site config deployed, replacing the stock default page; redirect/TLS confirmed on all five hostnames; `ghs` proven end-to-end via a second disposable canary, then cleanly torn down. `reference/nginx` moved to Approved | Socx   |
