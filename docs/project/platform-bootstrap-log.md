@@ -96,3 +96,25 @@ While preparing for B1, the platform owner found that `sudo` from the `deploy` a
 
 **Documentation updated:** `CS-INF-020` → v0.4.
 
+**Resolved 2026-08-06:** fix applied and verified — `ssh deploy@209.97.135.128 'sudo whoami'` from a separate session returned `root`, no password prompt. `deploy` is now a fully functional administrative account. The source script (`automation/create-deploy-user-on-droplet.sh`, outside this repository) was also updated so future droplets don't hit the same issue: it now writes the sudoers rule to a temp file, validates it with `visudo -cf` before installing, and prints the same verification reminder.
+
+---
+
+## Phase B1 — Access hardening: **PARTIALLY EXECUTED, PAUSED**
+
+**Status as of 2026-08-06:**
+
+| Step | State |
+|---|---|
+| (1) `deploy` passwordless sudo | ✅ Done and verified |
+| (2) Disable root SSH login (`PermitRootLogin no`) | ⏸ Postponed — platform owner's explicit request |
+| (3) Decide `ubuntu` account's fate | ⏸ Postponed |
+| (4) Enable UFW (22/80/443 only) | ⏸ Postponed |
+| (5) Confirm `unattended-upgrades` active | ⏸ Postponed |
+
+**Reason:** the platform owner asked to postpone the remaining hardening steps for now, having just confirmed `deploy`'s sudo access works. No rationale beyond timing was given; not a response to any blocker.
+
+**Residual risk while paused:** root SSH login by key remains active; firewall remains inactive. Recorded in `CS-INF-020` v0.5 as a knowingly accepted, deferred task — not a formal `GEN-010.9` exception, since `SEC-030` has no specific numbered requirement mandating root-login be disabled.
+
+**Documentation updated:** `CS-INF-020` → v0.5.
+
