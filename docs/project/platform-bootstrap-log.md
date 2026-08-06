@@ -357,3 +357,85 @@ droplet-agent-update.timer          active   waiting (hourly)
 
 B4 complete. All `reference/systemd` host prerequisites are now met. Proceeding to B5 (Verification canary) pending review and approval, per the mandatory GitHub workflow.
 
+---
+
+## Phase B5 — Verification canary: **COMPLETE — FINAL BOOTSTRAP PHASE**
+
+**Executed:** 2026-08-06 · **Tracked under:** #76 (this phase); #68 (`reference/systemd`'s own approval)
+
+### Summary
+
+Placed a disposable, dependency-free Node HTTP server at `/opt/ghs/releases/0.0.1-canary/apps/api/dist/index.js`, symlinked `current` to it, installed `reference/systemd`'s real `app-api.service` unmodified except for placeholder substitution, and ran it end-to-end: `systemd-analyze verify`, clean start, HTTP response, credential loading (`db_password`/`jwt_secret` via `LoadCredential=`, confirmed readable **without ever logging their values**), journald capture, and restart survival. A live restart was used rather than a second full reboot — B2 already proved this host reboots cleanly (kernel, sudo, firewall, account lockouts all survived one), so re-proving that generically wasn't necessary; this round tested *this specific unit's* configuration instead. Torn down cleanly afterward, confirmed by inspection.
+
+Independently (not via the droplet) resolved two of `CS-INF-020`'s three remaining DNS unknowns using `dig`: nameservers (`brett.ns.cloudflare.com`, `cruz.ns.cloudflare.com`) and proxy status (DNS-only — the A record resolves directly to the droplet's own IP, not a Cloudflare edge IP). The registrar's name specifically remains unresolved (`whois` returned no data) — a minor, non-blocking gap.
+
+### Key command output (condensed)
+
+```
+=== B5.1-B5.3 setup ===
+current -> releases/0.0.1-canary/apps/api/dist/index.js  [created; one diagnostic
+  `ls` in this block was run without sudo and got Permission Denied against
+  /opt/ghs's 750 permissions -- an error in the verification command, not the
+  system: the sudo mkdir/tee/chown/ln commands in the same block all succeeded,
+  confirmed conclusively by B5.4]
+systemd-analyze verify: UNIT SYNTAX OK
+  (two unrelated pre-existing warnings surfaced about stock Ubuntu units --
+  xfs_scrub_all.service / system-xfs_scrub.slice -- not ours)
+
+=== B5.4 start & verify ===
+Active: active (running); Main PID .../usr/bin/node /opt/ghs/current/apps/api/dist/index.js
+Memory: 9.8M
+journalctl: "[canary] starting on port 3000, SOCX_ENV=bootstrap-canary,
+             db_password=present and readable, jwt_secret=present and readable"
+             "[canary] listening on 3000"
+curl: socx bootstrap canary alive / env=bootstrap-canary /
+      db_password=present and readable / jwt_secret=present and readable
+
+=== B5.5 restart survival ===
+active; curl succeeds again with identical correct output
+
+=== B5.6 firewall ===
+unchanged -- same 6 rules; port 3000 correctly not exposed externally
+
+=== independent dig check (not via droplet) ===
+NS: brett.ns.cloudflare.com, cruz.ns.cloudflare.com
+A:  209.97.135.128 (direct -- confirms DNS-only, not proxied)
+whois: no data returned
+
+=== B5.7 teardown ===
+Removed .../multi-user.target.wants/ghs-api.service
+/opt/ghs/: releases/ (now empty) + shared/ only -- current symlink gone
+/etc/credentials/ghs/: empty -- dummy credentials removed
+systemctl status: "Unit ghs-api.service could not be found."  <- confirms full removal
+
+=== B5.8 post-install resource headroom ===
+Mem: 956Mi total, 206Mi used, 749Mi available
+Disk: 24G total, 3.3G used (15%), 20G available
+```
+
+### Findings
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | `reference/systemd`'s real unit works exactly as written | No modifications needed beyond documented placeholder substitution — the manifest is correct |
+| 2 | `LoadCredential=` proven end-to-end | Two named credentials loaded and confirmed readable by the app process, values never appeared in logs (`SEC-010.5`) |
+| 3 | `/opt/<app>` access control works | Incidentally confirmed: a non-owning account (`deploy`) genuinely cannot read another app's directory without `sudo` |
+| 4 | Two `systemd-analyze verify` warnings | Pre-existing, unrelated to our unit (stock Ubuntu `xfs_scrub` units) |
+| 5 | DNS nameservers + proxy status | Resolved independently via `dig`, no droplet access needed — confirms Cloudflare DNS-only (not proxied) |
+| 6 | Registrar name | Still unresolved (`whois` returned nothing) — minor, non-blocking |
+| 7 | Post-install resource headroom | Healthy: 749 MiB RAM available, 20 GB disk available. Worth re-checking once real (non-canary) applications deploy |
+| 8 | Teardown | Clean — host returned exactly to its B4 baseline state |
+
+### Documentation updated
+
+- `reference/systemd/README.md` → `status: Approved`, `verified` field populated
+- `reference/README.md` → library ToC row updated
+- `docs/architecture/technology/TEC-010-approved-technology-stack.md` → v1.4 (removed `reference/systemd` from the "currently empty" list)
+- `docs/architecture/infrastructure/INF-010-target-infrastructure-topology.md` → v1.3 (same; Current-State Gap assessed against `CS-INF-020`; added the current-state cross-reference)
+- `docs/current-state/infrastructure/CS-INF-020-current-infrastructure-inventory.md` → **v1.0, status: Approved** (DNS resolved, resources re-measured, B5 verification recorded throughout)
+- `docs/current-state/README.md` → ToC synced (`CS-INF-020` now Approved / High confidence)
+
+### Outcome — Platform Bootstrap complete
+
+All six phases (B0–B5) are done. The droplet has a hardened, patched, fully-installed runtime substrate with proven per-application scaffolding, and `reference/systemd` — the first reference implementation to pass through the full Draft → verified → Approved lifecycle — is done. Remaining work moves to the rest of the Deliverable 6 build-out: 6.3 `reference/nginx` (+ TLS), 6.4 `reference/github`, 6.5 `reference/security`, 6.6 `reference/terraform` (closes the two standing `GEN-010.9` exceptions from `ADR-180`), 6.7 `reference/deployment`, 6.8 `reference/application`, 6.9 `reference/monitoring`.
+

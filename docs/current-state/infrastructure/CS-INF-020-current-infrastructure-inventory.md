@@ -2,11 +2,11 @@
 id: CS-INF-020
 title: Current Infrastructure Inventory
 category: Infrastructure
-status: Draft
+status: Approved
 gap_status: Diverges
-confidence: Medium
+confidence: High
 owner: Platform Engineering
-version: "0.9"
+version: "1.0"
 last_reviewed: 2026-08-06
 review_cycle: quarterly
 related:
@@ -18,7 +18,8 @@ related:
   adrs:
     - ADR-180
     - ADR-040
-  reference: []
+  reference:
+    - reference/systemd
   runbooks: []
 supersedes:
   - CS-INF-010
@@ -32,11 +33,11 @@ The actual hosting, network, and configuration facts for the platform's infrastr
 
 ## Method
 
-Four sources: **(a)** provisioning attestation from the platform owner, dated 2026-07-15 (droplet specification, access model, legacy-data disposition); **(b)** direct DNS observation (`dig` A-record lookups performed from an external network), dated 2026-07-15; **(c)** a second provisioning attestation, dated 2026-08-06, recording that the droplet was rebuilt a second time (Ubuntu 26.04 LTS, same reserved IP, DNS managed via Cloudflare and left unchanged) before any bootstrap execution occurred; **(d)** direct SSH inspection via Platform Bootstrap Phase B0, dated 2026-08-05 (the droplet's own clock reading at command time), the first real observation of the live host. Rows sourced only from attestation and not yet reached by B0 are marked accordingly.
+Five sources: **(a)** provisioning attestation from the platform owner, dated 2026-07-15 (droplet specification, access model, legacy-data disposition); **(b)** direct DNS observation (`dig` A-record lookups performed from an external network), dated 2026-07-15 and 2026-08-06 (nameserver/proxy-status recheck); **(c)** a second provisioning attestation, dated 2026-08-06, recording that the droplet was rebuilt a second time (Ubuntu 26.04 LTS, same reserved IP, DNS managed via Cloudflare and left unchanged) before any bootstrap execution occurred; **(d)** direct SSH inspection via Platform Bootstrap Phases B0–B5, dated 2026-08-05/06, culminating in a functional end-to-end verification (a disposable canary service run under `reference/systemd`'s actual units, then torn down); **(e)** independent `dig`/`whois` lookups performed outside the droplet, 2026-08-06. This inventory is considered verified, not merely drafted — see Revision History. One fact remains genuinely unresolved: the domain registrar's name specifically (distinct from its nameservers, which are confirmed).
 
 ## Inventory
 
-**Headline:** the runtime substrate is installed (B0–B3) and the platform scaffolding is now in place (B4): a dedicated system user, `/opt/<app>/{releases,shared}` directory layout, and a root-only credentials directory exist for each of the four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`) on the **Ubuntu 26.04 LTS** droplet (rebuilt 2026-08-06, superseding an initial 24.04 LTS provisioning that was never bootstrapped). **Still nothing application-level deployed** — no application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is largely complete: `deploy` has verified passwordless sudo, the unused `ubuntu` account is locked out, and the firewall is active. **One item remains a standing, owner-directed exception: root SSH login by key remains permitted** — see Access below.
+**Headline:** Platform Bootstrap (Phases B0–B5) is complete. The runtime substrate is installed (B0–B3), platform scaffolding is in place (B4), and **the whole stack has been functionally proven end-to-end** (B5): a disposable canary service, run through `reference/systemd`'s real, unmodified unit file on `ghs`'s scaffolding, started cleanly, served HTTP, loaded two named credentials via `LoadCredential=` without ever logging their values, survived a restart, and was torn down without residue. `reference/systemd` is now `Approved`. **Still nothing application-level deployed** — no real application code, no SOCX-specific nginx config, no databases created, no TLS certificate issued, no scheduled jobs, no backups. Access hardening is complete except one standing, owner-directed exception: root SSH login by key remains permitted — see Access below.
 
 ### Hosting
 
@@ -45,7 +46,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 | Provider / shape | DigitalOcean, single droplet (same reserved IP retained across the 2026-08-06 rebuild); kernel `7.0.0-29-generic` (upgraded from `7.0.0-27-generic` in Bootstrap Phase B2, confirmed running post-reboot), KVM virtualisation | Observed (B0 initial; B2 post-reboot) |
 | Operating system | Ubuntu 26.04 LTS ("resolute"); **systemd 259 (259.5-0ubuntu3) confirmed** — clears `reference/systemd`'s ≥ 245 floor comfortably | Observed (B0) |
 | Hostname / networking | Static hostname `prod-lab-01`. Public `209.97.135.128`; private networking `10.16.0.5`, `10.106.0.2`; IPv6 `2a03:b0c0:1:e0:0:1:6ca0:2001` | Observed (B0) |
-| Resources | 1 vCPU, ~956 MiB RAM, 24 GB disk (2.2 GB used, pre-install) — small. Node, PostgreSQL, Redis, and nginx are now all installed (Bootstrap Phase B3); disk/memory headroom has not yet been re-measured post-install — worth checking before B4 scaffolding or B8 application deployment add further load | Observed (B0 baseline; B3 install not yet re-measured) |
+| Resources | 1 vCPU, 956 MiB RAM, 24 GB disk. Post-install (all of B0–B5): **749 MiB available** RAM (206 MiB genuinely used by running services — nginx, PostgreSQL, Redis, sshd, droplet-agent, etc.; the rest is reclaimable cache), disk **3.3 GB used / 20 GB available (15%)**. Healthy headroom for now — the 9.8 MB canary process was trivial, but a real Express app with dependencies will use meaningfully more; worth re-checking once actual applications deploy (6.7/6.8) | Observed (B0 pre-install baseline; B5 post-install remeasurement, 2026-08-06) |
 | Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
 | Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
 | Time sync | NTP active, clock synchronised (`Etc/UTC`) | Observed (B0) |
@@ -56,8 +57,9 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 | Fact | Value | Evidence |
 |---|---|---|
 | A records | `socx.org.uk`, `ghs.`, `rms.`, `ams.` → `209.97.135.128`; `www` → CNAME → apex | Observed (dig, 2026-07-15) |
-| DNS management | Cloudflare. The 2026-08-06 droplet rebuild retained the same IP, so no repointing was required or performed | Attested |
-| Registrar, TTLs, proxy status (orange-cloud vs DNS-only) | Unknown | Not yet inspected |
+| DNS management | Cloudflare. The 2026-08-06 droplet rebuild retained the same IP, so no repointing was required or performed. **Nameservers confirmed:** `brett.ns.cloudflare.com`, `cruz.ns.cloudflare.com` | Observed (`dig NS`, 2026-08-06) |
+| Proxy status | **DNS-only, not proxied.** The A record resolves directly to `209.97.135.128` (the droplet's own IP); a Cloudflare-proxied ("orange-cloud") record would instead resolve to a Cloudflare edge IP | Observed (`dig A`, 2026-08-06, inferred from direct resolution) |
+| Registrar (name), TTLs | Unknown — a `whois` lookup returned no data. Low-stakes gap: doesn't affect anything operational, since DNS management (Cloudflare) and record content are already confirmed | Not yet resolved |
 
 ### TLS Certificates
 
@@ -69,7 +71,7 @@ Four sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 ### System Services
 
-`sshd` (ports 22, IPv4+IPv6), loopback-only `systemd-resolved`, plus (as of B3) **nginx** (port 80, externally reachable — allowed by the firewall), **PostgreSQL 16** and **Redis 8.0.5** (both local-only by default, not exposed through the firewall), and **certbot.timer**. Also present, **pre-existing and vendor-provided, not installed by this bootstrap**: DigitalOcean's **`droplet-agent`** (1.4.0, `active`/`running`) and its `droplet-agent-update.timer` (hourly) — discovered while inspecting `/opt/` during B4; confirmed via `dpkg -l` and `systemctl`, not assumed. No application units yet — target remains direct-execution units per `reference/systemd`, to be added in B5. — Observed (B0 baseline; B3 additions; B4 discovery)
+`sshd` (ports 22, IPv4+IPv6), loopback-only `systemd-resolved`, plus (as of B3) **nginx** (port 80, externally reachable — allowed by the firewall), **PostgreSQL 16** and **Redis 8.0.5** (both local-only by default, not exposed through the firewall), and **certbot.timer**. Also present, **pre-existing and vendor-provided, not installed by this bootstrap**: DigitalOcean's **`droplet-agent`** (1.4.0, `active`/`running`) and its `droplet-agent-update.timer` (hourly) — discovered while inspecting `/opt/` during B4; confirmed via `dpkg -l` and `systemctl`, not assumed. No application units currently present — `reference/systemd`'s direct-execution unit was proven working via a disposable canary in Bootstrap Phase B5 (`systemd-analyze verify`, clean start, restart survival, clean teardown), then removed; the next such unit installed here will run a real application. — Observed (B0 baseline; B3 additions; B4 discovery; B5 verification)
 
 ### Scheduled Jobs
 
@@ -77,13 +79,13 @@ None application-level (accordingly, **no backups run** — nothing exists yet t
 
 ### Application Scaffolding
 
-Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`):
+Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs`, `rms`, `ams`, per `CS-DOM-010`); **the pattern was functionally proven end-to-end on `ghs` in Bootstrap Phase B5**, then reset to this clean baseline:
 
 | Fact | Value | Evidence |
 |---|---|---|
-| System users | One dedicated, non-interactive account per app (system UIDs 106–109), home `/nonexistent`, shell `/usr/sbin/nologin`, password locked (`L`) — confirmed no usable password on any of the four | Observed (B4, 2026-08-06) |
-| Directory layout | `/opt/<app>/{releases,shared}`, mode `750`, owned by the app's own user:group. **`current` deliberately not created yet** — it's a symlink to a real release, and none exists until B5's canary or a later real deploy | Observed (B4, 2026-08-06) |
-| Credentials directories | `/etc/credentials/<app>/`, mode `700`, root:root — the path `reference/systemd`'s `LoadCredential=` units expect (`ADR-130`). Empty; no real secrets placed yet | Observed (B4, 2026-08-06) |
+| System users | One dedicated, non-interactive account per app (system UIDs 106–109), home `/nonexistent`, shell `/usr/sbin/nologin`, password locked (`L`) — confirmed no usable password on any of the four. `750` on `/opt/<app>` also confirmed to correctly deny access to unrelated accounts (surfaced incidentally when a verification command run as `deploy`, without `sudo`, was correctly refused) | Observed (B4; access-control re-confirmed B5, 2026-08-06) |
+| Directory layout | `/opt/<app>/{releases,shared}`, mode `750`, owned by the app's own user:group. `current` is currently absent again — B5 created it pointing at a disposable canary release, proved the pattern works (systemd started, read, and served from it), then removed it as part of teardown. The **next** `current` symlink created here will be for a real release | Observed (B4 baseline; B5 pattern proof and clean reset, 2026-08-06) |
+| Credentials directories | `/etc/credentials/<app>/`, mode `700`, root:root — the path `reference/systemd`'s `LoadCredential=` units expect (`ADR-130`). Currently empty again — B5 placed two dummy credentials (`db_password`, `jwt_secret`) in `ghs`'s directory, confirmed both were readable via the unit's `LoadCredential=` sandbox **without their values ever appearing in logs** (`SEC-010.5`), then removed them | Observed (B4 baseline; B5 functional proof and clean reset, 2026-08-06) |
 
 ### Storage
 
@@ -114,7 +116,8 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 
 | Aspect | Current State | Target (`INF-010`) | Difference | Impact |
 |---|---|---|---|---|
-| Everything above the OS | Empty host | Shared nginx edge → systemd-managed processes, provisioned as code, two environment tiers | The entire target topology is unbuilt | Expected and intentional (`ADR-180`) — this document is the rebuild's measurement baseline; the gap closes milestone-by-milestone through the Deliverable 6 build-out |
+| Edge, runtime, scaffolding | nginx, PostgreSQL, Redis, Node.js installed; per-app systemd pattern proven working (B0–B5) | Shared nginx edge → systemd-managed processes | Substantially closed | The mechanism is proven; what's missing is real content (site config, real releases), not capability |
+| Application deployment | No real application code deployed anywhere | Systems running behind the edge | Fully open | Deliverable 6.7/6.8 |
 | Governance exceptions | Hand-provisioned; single tier | `OPS-020`; `OPS-010.1` | Two open `GEN-010.9` exceptions | Time-boxed, tracked in `ADR-180`, closed by `reference/terraform` |
 
 ## Related Documents
@@ -122,8 +125,8 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd` (host prerequisites, incl. per-app directory layout, now fully met — ready for B5 canary), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
-- Runbooks: none yet — the B1 access-hardening sequence (sudo fix, account lockout, firewall) is a candidate first entry for the access/break-glass runbook
+- Reference Implementations: `reference/systemd` (**Approved** — verified end-to-end on this host, 2026-08-06), `reference/nginx` (nginx present, awaiting SOCX config), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
+- Runbooks: none yet — the B1 access-hardening sequence and the B5 canary procedure are candidate first entries for Deliverable 7
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
 ## Revision History
@@ -139,3 +142,4 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 | 0.7     | 2026-08-06 | Bootstrap Phase B2 executed: OS packages patched, kernel upgraded to `7.0.0-29-generic` and confirmed running post-reboot; remaining ~20 packages confirmed as phased-rollout holdouts, not a gap; B1 hardening (sudo, firewall, ubuntu lockout) confirmed to survive the reboot | Socx   |
 | 0.8     | 2026-08-06 | Bootstrap Phase B3 executed: nginx, PostgreSQL 16.14, Redis 8.0.5, Node.js v24.19.0/npm 11.17.0, and certbot installed and functionally verified. Runtime substrate now present; no application-level deployment yet | Socx   |
 | 0.9     | 2026-08-06 | Bootstrap Phase B4 executed: per-app system users, `/opt/<app>` directory layout, and root-only credentials directories created for all four systems; recorded pre-existing DigitalOcean droplet-agent discovered during inspection | Socx   |
+| 1.0     | 2026-08-06 | Bootstrap Phase B5 executed: `reference/systemd` verified end-to-end via disposable canary (moved to Approved), then cleanly torn down; DNS nameservers and proxy-status resolved independently; post-install resource headroom measured. Moved to **Approved** — inventory verified, not merely drafted, per the Current-State lifecycle. One minor gap remains: domain registrar name specifically | Socx   |

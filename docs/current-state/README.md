@@ -103,7 +103,7 @@ Each document has a permanent ID: `CS-<CATEGORY>-<NUMBER>`, e.g. `CS-CTX-010`.
 | `CS-INT-010` | Current Integration Inventory | Approved | Diverges | Medium |
 | `CS-TEC-010` | Current Technology Inventory | Approved | Diverges | High |
 | `CS-INF-010` | Current Infrastructure Inventory | Deprecated — superseded by `CS-INF-020` (ADR-180) | Diverges | Medium |
-| `CS-INF-020` | Current Infrastructure Inventory | Draft | Diverges | Medium |
+| `CS-INF-020` | Current Infrastructure Inventory | Approved | Diverges | High |
 | `CS-IAM-010` | Current Identity & Access Inventory | Approved | Diverges | Medium |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for a given document is the `status` field in its own metadata, not this table; this column (and Gap Status, and Confidence) is kept in sync as a convenience index.
