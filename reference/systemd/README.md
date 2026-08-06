@@ -1,6 +1,6 @@
 ---
-status: Draft
-verified: null   # required before Approved: "<OS>, systemd <version>, <method>, YYYY-MM-DD"
+status: Approved
+verified: "Ubuntu 26.04 LTS, systemd 259 (259.5-0ubuntu3 — the 259.5-0ubuntu3.3 point release remains a phased-rollout holdout, not yet applied, per CS-INF-020), manual canary verification (disposable hello-world service on ghs's scaffolding: systemd-analyze verify, enable+start, LoadCredential= for db_password/jwt_secret confirmed readable without logging values, journald capture, HTTP response, systemctl restart survival, clean teardown), 2026-08-06"
 ---
 
 # reference/systemd — Service & Timer Units
@@ -50,7 +50,7 @@ Key choices embodied by these units — each links to its decision record rather
 
 Assumptions that must hold before adopting these units:
 
-- **OS / systemd** — Linux with systemd ≥ 245 (`LoadCredential=` support); the platform target is a current Ubuntu LTS release (currently Ubuntu 26.04 LTS, per `CS-INF-020`), per `ADR-040` and `CS-TEC-010`. Exact systemd version to be confirmed at Bootstrap Phase B0.
+- **OS / systemd** — Linux with systemd ≥ 245 (`LoadCredential=` support); the platform target is a current Ubuntu LTS release (currently Ubuntu 26.04 LTS, per `CS-INF-020`), per `ADR-040` and `CS-TEC-010`. Confirmed: systemd 259, comfortably clearing the floor.
 - **Runtime** — Node.js (current LTS line, per `ADR-070`) installed system-wide at a fixed absolute path (`{{NODE_BIN}}`), not per-user via a version manager.
 - **Application user** — a dedicated non-root system user per application (`{{APP_USER}}`), per `SEC-030` least privilege.
 - **Deployment layout** — `{{APP_DIR}}/releases/<version>` with a `current` symlink and a `{{APP_DIR}}/shared` directory, created by deploy tooling (`reference/deployment`).

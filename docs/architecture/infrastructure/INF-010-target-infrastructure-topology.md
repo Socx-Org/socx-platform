@@ -4,7 +4,7 @@ title: Target Infrastructure Topology
 category: Infrastructure
 status: Approved
 owner: Platform Engineering
-version: "1.2"
+version: "1.3"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -24,7 +24,8 @@ related:
     - reference/nginx
     - reference/systemd
   runbooks: []
-  current_state: []
+  current_state:
+    - CS-INF-020
 supersedes: []
 superseded_by: null
 ---
@@ -58,15 +59,15 @@ Diagram source: `docs/diagrams/INF-010-target-infrastructure-topology.mmd`.
 
 ## Current-State Gap
 
-Not yet assessed.
+See `CS-INF-020`: the target topology (shared edge → systemd-managed processes) is largely realised on the rebuilt droplet — nginx, the runtime substrate, and per-app systemd scaffolding are all in place and verified (Bootstrap Phases B0–B5). Not yet built: SOCX-specific nginx site configuration, TLS, application deployment itself, and the second environment tier (`OPS-010.1` exception, `ADR-180`).
 
 ## Related Documents
 
 - Standards: `OPS-010`, `OPS-020`
 - ADRs: `ADR-040`, `ADR-050`, `ADR-100`, `ADR-130`, `ADR-140`, `ADR-160`, `ADR-180`
-- Reference Implementations: `reference/deployment`, `reference/nginx`, `reference/systemd` (all currently empty)
+- Reference Implementations: `reference/systemd` (Approved, verified on-host 2026-08-06); `reference/deployment`, `reference/nginx` (currently empty)
 - Runbooks: none yet
-- Current-State documentation: none yet
+- Current-State documentation: `CS-INF-020`
 
 ## Revision History
 
@@ -76,3 +77,4 @@ Not yet assessed.
 | 1.0 | 2026-07-13 | Approved | Socx |
 | 1.1     | 2026-07-14 | Added ADR cross-references | Socx   |
 | 1.2 | 2026-07-15 | Added ADR-180 cross-reference | Socx |
+| 1.3 | 2026-08-06 | reference/systemd moved to Approved; Current-State Gap assessed against CS-INF-020 (Bootstrap Phases B0-B5) | Socx |

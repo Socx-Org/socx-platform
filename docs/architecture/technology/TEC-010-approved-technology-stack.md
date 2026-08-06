@@ -4,7 +4,7 @@ title: Approved Technology Stack
 category: Technology
 status: Approved
 owner: Platform Engineering
-version: "1.3"
+version: "1.4"
 last_reviewed: 2026-07-13
 review_cycle: annual
 related:
@@ -75,7 +75,7 @@ Assessed against `CS-TEC-010`, which confirms the hosting, reverse-proxy, and CI
 
 - Standards: none directly — this document informs other architecture documents rather than satisfying a standard itself
 - ADRs: `ADR-040`, `ADR-050`, `ADR-070`, `ADR-090`, `ADR-120`, `ADR-150`, `ADR-160`, `ADR-180`
-- Reference Implementations: `reference/nginx`, `reference/systemd`, `reference/github` (all currently empty)
+- Reference Implementations: `reference/systemd` (Approved, verified on-host 2026-08-06); `reference/nginx`, `reference/github` (currently empty)
 - Runbooks: none yet
 - Current-State documentation: `CS-TEC-010`
 
@@ -88,3 +88,4 @@ Assessed against `CS-TEC-010`, which confirms the hosting, reverse-proxy, and CI
 | 1.1 | 2026-07-14 | Stack rows moved to Approved; ADR cross-references added | Socx |
 | 1.2 | 2026-07-14 | Added current-state cross-reference (CS-TEC-010) | Socx |
 | 1.3 | 2026-07-15 | Added ADR-180 cross-reference | Socx |
+| 1.4 | 2026-08-06 | reference/systemd moved to Approved (Bootstrap Phase B5 verification) | Socx |
