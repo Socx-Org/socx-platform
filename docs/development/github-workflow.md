@@ -191,3 +191,21 @@ Never close an Issue before the commit succeeds.
 Never skip Project updates.
 
 Keep Issue descriptions and documentation synchronised with implementation.
+
+---
+
+# Recorded Exceptions
+
+Exceptions to Engineering Standards, per `GEN-010.9`–`GEN-010.10`. An exception here is a deliberate, documented deviation with a stated reason and review trigger — never a silent gap.
+
+## `ENG-010.2`, `ENG-010.5` — direct commits to `main`
+
+**Requirement:** `ENG-010.2` requires all changes via a short-lived branch and pull request, with direct pushes to `main` disabled. `ENG-010.5` requires `main` to be a protected branch, requiring an independent approving review and a passing CI status check before merge.
+
+**Actual practice:** this repository is authored via direct commits to `main` by a single contributor (the platform owner, working conversationally with an AI assistant) — every change is reviewed in that conversation before commit, but not via a GitHub pull request, and `main` currently has no branch protection or required CI status check.
+
+**Reason:** this is exactly the scenario `ENG-010.6` itself anticipates — a single-contributor repository — and the standards' own exception mechanism (`GEN-010.9`) is the correct route, not a policy debate. `reference/github` (Deliverable 6.4, `#70`) defines the canonical branch-protection configuration this repository would adopt; applying it now, mid-engagement, would block the active, ongoing authoring work with a PR+review+CI-status-check gate this repository doesn't yet have CI wired up to satisfy.
+
+**Review trigger:** revisit when `reference/github`'s branch protection is applied for real (a deliberate decision tracked in `#70`, not a mechanical step), or at the next annual standards review, **2027-08-06**, whichever comes first.
+
+**Recorded:** 2026-08-06.

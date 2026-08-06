@@ -9,7 +9,7 @@ verified: null   # required before Approved: "<method>, YYYY-MM-DD" -- see Purpo
 
 Canonical GitHub Actions pipeline and branch-protection configuration every SOCX repository adopts (`ADR-150`, `ADR-170`, `ENG-010`, `ENG-040`).
 
-**A note on `verified` for this particular reference implementation.** Unlike `reference/systemd`/`reference/nginx`, where verification meant exercising the artefact on a droplet, verifying this one for real means applying `branch-protection.json` to a real repository — which immediately changes how commits merge there going forward. Applying it to `socx-platform` itself would end this repository's own direct-to-`main` commit pattern. That's a deliberate process decision, not a mechanical verification step, and is being held as a separate, explicit choice rather than folded quietly into this authoring round. `status` stays `Draft` until that decision is made and acted on.
+**A note on `verified` for this particular reference implementation.** Unlike `reference/systemd`/`reference/nginx`, where verification meant exercising the artefact on a droplet, verifying this one for real means applying `branch-protection.json` to a real repository — which immediately changes how commits merge there going forward. Applying it to `socx-platform` itself would end this repository's own direct-to-`main` commit pattern, currently mid-engagement. That decision is deliberately deferred, at the platform owner's explicit direction, and recorded as a formal `GEN-010.9` exception against `ENG-010.2`/`.5` (see `docs/development/github-workflow.md` → Recorded Exceptions) — not a silent gap. `status` stays `Draft` until that exception is lifted and the rules are actually applied.
 
 Explicitly not covered here:
 
@@ -94,3 +94,4 @@ Parameters: `{{ENVIRONMENT}}` (the deploy job's GitHub Environment name, per `OP
 - Current-State: `CS-TEC-010` (the real `rms`/`ghs` CI workflows this was grounded in and corrected against)
 - Runbooks: none yet
 - Automation: real deploy steps pending in `reference/deployment` (Deliverable 6.7)
+- Exceptions: `docs/development/github-workflow.md` (`ENG-010.2`/`.5`, `GEN-010.9` — this repository's own current deferral of applying these rules to itself)

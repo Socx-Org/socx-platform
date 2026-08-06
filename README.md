@@ -21,6 +21,8 @@ See [docs/project/project-charter.md](docs/project/project-charter.md) for full 
 
 `examples/` holds fully filled-out, worked instances of the content types above (e.g. a completed ADR, a populated runbook) — for reference and onboarding. This is distinct from `templates/`, which holds blank scaffolds meant to be copied and filled in.
 
+This repository's own GitHub process, including a recorded `GEN-010.9` exception for how it currently handles commits to `main`, is documented in [docs/development/github-workflow.md](docs/development/github-workflow.md).
+
 ## Roadmap
 
 Current maturity
