@@ -1,0 +1,80 @@
+# reference/deployment — GitHub Actions deploy job (ADR-150, ADR-040, OPS-030)
+# Drop-in replacement for reference/github/workflows/ci.yml's `deploy:` stub
+# job -- copy this job's content over that stub, substituting the
+# {{PLACEHOLDER}} values below.
+#
+# Deliberately plain OpenSSH/SCP, not a third-party marketplace deploy
+# action -- one fewer supply-chain dependency to trust, and it matches the
+# rest of this reference implementation's point: the remote side is a
+# single tested command (deploy-release.sh), not choreography this job
+# needs to know about. Grounded in rms's real deploy.yml (SSH transfer of a
+# built artefact) but with its nvm/raw-systemctl remote choreography
+# replaced entirely by that one command.
+#
+# Version string satisfies OPS-030.1 (SemVer) and OPS-030.2 (traceable to an
+# exact commit) simultaneously: the real git tag when deploying from one,
+# otherwise 0.0.0-<short-sha> -- so an ordinary push to main doesn't need a
+# formal release tag to comply.
+
+  deploy:
+    name: Deploy
+    needs: [ci]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: "{{ENVIRONMENT}}"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # needed so `git describe --tags` can see tags
+
+      - name: Compute release version
+        id: version
+        run: |
+          if git describe --tags --exact-match >/dev/null 2>&1; then
+            VERSION="$(git describe --tags --exact-match)"
+          else
+            VERSION="0.0.0-$(git rev-parse --short HEAD)"
+          fi
+          echo "Deploying version: ${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install production dependencies
+        run: npm ci --omit=dev
+
+      - name: Build
+        run: npm run build --workspaces --if-present
+
+      - name: Package release
+        run: |
+          tar -czf release.tar.gz \
+            apps/*/dist \
+            node_modules \
+            package.json \
+            package-lock.json
+
+      - name: Deploy to droplet
+        env:
+          DROPLET_HOST: ${{ secrets.DROPLET_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          KEY_FILE="$(mktemp)"
+          trap 'rm -f "$KEY_FILE"' EXIT
+          printf '%s\n' "$DEPLOY_SSH_KEY" > "$KEY_FILE"
+          chmod 600 "$KEY_FILE"
+
+          SSH_OPTS="-i $KEY_FILE -o StrictHostKeyChecking=accept-new"
+          REMOTE="${DEPLOY_USER}@${DROPLET_HOST}"
+          REMOTE_TARBALL="/tmp/release-${VERSION}.tar.gz"
+
+          scp $SSH_OPTS release.tar.gz "${REMOTE}:${REMOTE_TARBALL}"
+          ssh $SSH_OPTS "$REMOTE" \
+            "sudo {{DEPLOY_DIR}}/scripts/deploy-release.sh {{APP_NAME}} '${VERSION}' '${REMOTE_TARBALL}'"
+          ssh $SSH_OPTS "$REMOTE" "rm -f '${REMOTE_TARBALL}'"

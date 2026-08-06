@@ -120,7 +120,7 @@ Implementation order follows the approved Deliverable 6 sequencing — the first
 | 3 | `reference/github` | CI/CD Workflows & Branch Protection | Draft |
 | 4 | `reference/security` | Secret Handling (systemd credentials) | Draft |
 | 5 | `reference/terraform` | Infrastructure as Code | Draft |
-| 6 | `reference/deployment` | Deploy & Rollback Glue | Planned |
+| 6 | `reference/deployment` | Deploy & Rollback Glue | Draft |
 | 7 | `reference/application` | Canonical Three-Layer Service | Planned |
 | 8 | `reference/monitoring` | Health Checks & Logging Configuration | Planned |
 
