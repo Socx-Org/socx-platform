@@ -58,6 +58,7 @@ Each standard has a permanent ID: `<CATEGORY>-<NUMBER>`, e.g. `ENG-010`.
 | ENG-040 | CI/CD Pipelines                       | Approved |
 | ENG-050 | Repository Structure                  | Approved |
 | ENG-060 | Naming Conventions                    | Approved |
+| ENG-070 | Development Workflow                  | Approved |
 | SEC-010 | Secrets Management                    | Approved |
 | SEC-020 | Dependency & Vulnerability Management | Approved |
 | SEC-030 | Access Control                        | Approved |
