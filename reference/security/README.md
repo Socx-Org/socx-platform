@@ -15,7 +15,7 @@ Explicitly not covered here:
 
 - **Consuming a credential once written** — `reference/systemd`
 - **Actual OIDC client registration or token exchange** — `ADR-120`'s shared identity provider doesn't exist yet as a concrete product; this document covers the at-rest handling pattern a future service-to-service credential would use, not the provider integration itself
-- **Incident response procedure for an exposed secret** — `SEC-010.4` requires rotation *and* recording the exposure in a runbook; the runbook itself is Deliverable 7. This document provides the rotation *mechanism*, not the incident process around it
+- **Incident response procedure for an exposed secret** — `SEC-010.4` requires rotation *and* recording the exposure; the rotation procedure is `docs/runbooks/maintenance/credential-rotation.md`. This document provides the underlying mechanism (`set-credential.sh`), not the operational procedure around it
 
 ## Contents
 
@@ -39,7 +39,7 @@ Explicitly not covered here:
 | SEC-010.1 | `.env.example` — every value is a placeholder; nothing here is ever a real secret |
 | SEC-010.2 | `.env.example`'s header comment — `.gitignore` entries required from repository creation, not added reactively (see Usage) |
 | SEC-010.3 | `set-credential.sh` writes only to `/etc/credentials/<app>/`, the systemd-credentials path — never hardcodes a value anywhere |
-| SEC-010.4 | `set-credential.sh` is the rotation mechanism (same command as provisioning); the incident *procedure* remains runbook content (Deliverable 7), not duplicated here |
+| SEC-010.4 | `set-credential.sh` is the rotation mechanism (same command as provisioning); `docs/runbooks/maintenance/credential-rotation.md` is the operational procedure |
 | SEC-010.5 | `set-credential.sh`'s stdin-only input and its refusal to ever print or log the value |
 | SEC-010.6 | `set-credential.sh` writes with `chmod 600`/`chown root:root`, matching `reference/systemd`'s existing root-only directory pattern |
 
@@ -88,5 +88,5 @@ Explicitly not covered here:
 - Architecture: `IAM-010` (trust model this realises at the credential-handling layer)
 - ADRs: `ADR-130` (systemd credentials), `ADR-110` (service-to-service trust — the credential type this also provisions)
 - Current-State: none directly
-- Runbooks: none yet — secret-exposure incident response is a Deliverable 7 candidate
+- Runbooks: `docs/runbooks/maintenance/credential-rotation.md` (Approved — covers both routine and exposure-triggered rotation, `SEC-010.4`)
 - Reference Implementations: `reference/systemd` (consumes what this provisions)

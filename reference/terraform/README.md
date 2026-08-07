@@ -89,5 +89,5 @@ Explicitly not covered here:
 - Architecture: `INF-010` (target topology), `TEC-010` (approved hosting/DNS technology)
 - ADRs: `ADR-160` (Terraform adopted for provisioning), `ADR-140` (environment tier model), `ADR-180` (`OPS-020` exception now closed by this module; `OPS-010.1` remains open)
 - Current-State: `CS-INF-020` (every confirmed value in `production.tfvars` traces back to this document, now including the real import)
-- Runbooks: none yet — the import procedure (including the real gotchas found) is a Deliverable 7 candidate
+- Runbooks: `docs/runbooks/maintenance/infrastructure-import.md` (Approved — the exact procedure and gotchas from this category's own real import round)
 - Reference Implementations: `reference/systemd`, `reference/nginx`, `reference/security` (all OS-level — deliberately not re-implemented here)

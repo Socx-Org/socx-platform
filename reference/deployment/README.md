@@ -56,7 +56,7 @@ Explicitly not covered here:
 | OPS-060.1 | `backup-db.sh`, invoked by `reference/systemd`'s timers |
 | OPS-060.2 | `backup-db.sh`'s `OFFHOST_TARGET` rsync step — when configured; the script itself flags the gap when it isn't |
 
-**Not satisfied by this artefact:** `OPS-030.4` (rollback exercised at least once per review cycle) is a recurring practice, not something a script can demonstrate by existing — it belongs to a runbook and a review cadence (Deliverable 7).
+**Not satisfied by this artefact:** `OPS-030.4` (rollback exercised at least once per review cycle) is a recurring practice, not something a script — or a runbook describing it once — can demonstrate by existing. `docs/runbooks/deployment/deploy-and-rollback.md` documents the procedure; the cadence itself is a review-process obligation, not a documentation one.
 
 ## Prerequisites
 
@@ -99,5 +99,5 @@ Parameters: `{{APP_NAME}}`, `{{APP_DIR}}`, `{{DEPLOY_DIR}}`, `{{ENVIRONMENT}}`, 
 - Architecture: `INF-010` (systemd-managed processes this deploys into)
 - ADRs: `ADR-040` (direct-execution runtime — no orchestration to hand deploys off to), `ADR-150` (GitHub Actions)
 - Current-State: `CS-INF-020` (the real `deploy` account this reuses), `CS-TEC-010` (the real `rms` deploy workflow this was grounded in and corrected against)
-- Runbooks: none yet — restore procedure and the recurring rollback-cadence practice (`OPS-030.4`) are Deliverable 7 candidates
+- Runbooks: `docs/runbooks/deployment/deploy-and-rollback.md` (Approved — the deploy/manual-rollback procedure). Restore procedure and the recurring rollback-cadence *practice* (`OPS-030.4` — exercising it at least once per review cycle, not a one-time document) remain open; a runbook documents the procedure but can't by itself satisfy a recurring cadence requirement
 - Reference Implementations: `reference/systemd` (the layout and units this deploys into), `reference/github` (the CI job this fills in), `reference/security` (credential pattern for Postgres/SSH access)

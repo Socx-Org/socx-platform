@@ -15,9 +15,8 @@ Explicitly not covered here:
 
 - **The health-check *content*** — `reference/application`'s `/healthz` route already satisfies `OPS-040.1` for that specific service; `http/health-router.ts` is the generalized pattern other services copy, not a second, competing implementation
 - **Log format and content** — `OPS-050.1`–`.3`, already satisfied by `reference/application`'s `logger.ts`; not redefined here
-- **Incident response procedure** — `OPS-040`'s own Scope excludes this; a runbook is Deliverable 7
+- **Incident response procedure** — `OPS-040`'s own Scope excludes this; the response procedure itself is `docs/runbooks/incident-response/app-down-alert.md` (Deliverable 7), not restated here
 - **`OPS-050.6` (central log aggregation), left an open gap, not fabricated.** No ADR has selected a log-aggregation product. Inventing one here (an ELK stack, Loki, a specific SaaS) would misrepresent an undecided architecture choice as settled — the same discipline `ADR-090` used for the still-open database backup gap. This stays flagged in Compliance as unmet, pending a future ADR.
-- **`OPS-040.4` (alert paired with a runbook)** — no runbooks exist yet (Deliverable 7); also flagged as unmet, not faked.
 
 ## Contents
 
@@ -46,8 +45,9 @@ Explicitly not covered here:
 | OPS-040.1 | `health-router.ts`'s `/healthz` |
 | OPS-040.2 | `monitoring.tf`'s `digitalocean_uptime_alert.app_down` — down detection routed to `var.alert_email` |
 | OPS-050.5 | `journald-socx.conf` — explicit `SystemMaxUse`/`MaxRetentionSec`, not left at the OS default |
+| OPS-040.4 | `docs/runbooks/incident-response/app-down-alert.md` — a real, Approved runbook paired with the `down` alert |
 
-**Not satisfied by this artefact:** `OPS-050.6` (central log aggregation — no product decided; see Purpose & Scope) and `OPS-040.4` (alert-to-runbook pairing — no runbooks exist yet, Deliverable 7).
+**Not satisfied by this artefact:** `OPS-050.6` (central log aggregation — no product decided; see Purpose & Scope).
 
 ## Prerequisites
 
@@ -84,5 +84,5 @@ Parameters: `{{ALERT_EMAIL}}` — pass as `TF_VAR_alert_email` (an environment v
 - Architecture: none directly — this realises operational process, not a target design
 - ADRs: `ADR-040` (direct-execution runtime — no orchestrator to hand liveness probing to), `ADR-160` (Terraform), `ADR-050` (edge-only exposure)
 - Current-State: `CS-INF-020` (the real droplet constraints — memory, DNS — this is grounded in)
-- Runbooks: none yet — alert response procedure is a Deliverable 7 candidate, and is what `OPS-040.4` will eventually require pairing with each alert
+- Runbooks: `docs/runbooks/incident-response/app-down-alert.md` (Approved — satisfies `OPS-040.4`'s alert-runbook pairing for the `down` alerts this category creates)
 - Reference Implementations: `reference/application` (the health-check content this generalizes), `reference/terraform` (Approved — the configuration this was actually applied alongside, real on-host 2026-08-07), `reference/nginx` (the edge every uptime check target passes through), `reference/deployment` (the health gate that already polls `/healthz` during a deploy)
