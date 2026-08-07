@@ -44,6 +44,20 @@ resource "digitalocean_uptime_alert" "app_down" {
   check_id = each.value.id
   name     = "${each.key}-down"
   type     = "down"
+  # Required by the real API despite being absent from Terraform's own
+  # schema output -- confirmed only by a real, failed apply attempt during
+  # on-host verification ("missing required field 'period'"). "5m": alert
+  # if down continuously for 5 minutes.
+  period = "5m"
+  # comparison/threshold are optional in the schema, but the real API
+  # silently applies its own server-side defaults (comparison="less_than",
+  # threshold=1) when they're left unset -- which Terraform then sees as
+  # permanent drift on every subsequent plan (it wants to null out values
+  # it never set). Declared explicitly, matching the real API default
+  # exactly, to reach an actual zero-diff state. Found the same way as
+  # `period`: a real apply, not the schema alone.
+  comparison = "less_than"
+  threshold  = 1
 
   notifications {
     email = [var.alert_email]
@@ -56,10 +70,12 @@ resource "digitalocean_uptime_alert" "app_down" {
 resource "digitalocean_uptime_alert" "app_ssl_expiry" {
   for_each = digitalocean_uptime_check.app
 
-  check_id  = each.value.id
-  name      = "${each.key}-ssl-expiry"
-  type      = "ssl_expiry"
-  threshold = 14 # days before expiry -- inferred reasonable default, not confirmed against a real alert firing
+  check_id   = each.value.id
+  name       = "${each.key}-ssl-expiry"
+  type       = "ssl_expiry"
+  threshold  = 14          # days before expiry -- inferred reasonable default, not confirmed against a real alert firing
+  period     = "5m"        # required by the real API for every alert type, not just "down" -- see app_down's comment
+  comparison = "less_than" # same real-default gap as app_down -- see its comment
 
   notifications {
     email = [var.alert_email]

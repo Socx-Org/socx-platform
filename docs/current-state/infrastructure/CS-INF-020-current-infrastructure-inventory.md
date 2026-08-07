@@ -6,8 +6,8 @@ status: Approved
 gap_status: Diverges
 confidence: High
 owner: Platform Engineering
-version: "1.1"
-last_reviewed: 2026-08-06
+version: "1.2"
+last_reviewed: 2026-08-07
 review_cycle: quarterly
 related:
   architecture:
@@ -48,8 +48,8 @@ Five sources: **(a)** provisioning attestation from the platform owner, dated 20
 | Operating system | Ubuntu 26.04 LTS ("resolute"); **systemd 259 (259.5-0ubuntu3) confirmed** — clears `reference/systemd`'s ≥ 245 floor comfortably | Observed (B0) |
 | Hostname / networking | Static hostname `prod-lab-01`. Public `209.97.135.128`; private networking `10.16.0.5`, `10.106.0.2`; IPv6 `2a03:b0c0:1:e0:0:1:6ca0:2001` | Observed (B0) |
 | Resources | 1 vCPU, 956 MiB RAM, 24 GB disk. Post-install (all of B0–B5): **749 MiB available** RAM (206 MiB genuinely used by running services — nginx, PostgreSQL, Redis, sshd, droplet-agent, etc.; the rest is reclaimable cache), disk **3.3 GB used / 20 GB available (15%)**. Healthy headroom for now — the 9.8 MB canary process was trivial, but a real Express app with dependencies will use meaningfully more; worth re-checking once actual applications deploy (6.7/6.8) | Observed (B0 pre-install baseline; B5 post-install remeasurement, 2026-08-06) |
-| Environment tier | Single box serving as production, interim — no non-production tier (`OPS-010.1` exception recorded in `ADR-180`) | Attested |
-| Provisioning method | Manual (`OPS-020` exception recorded in `ADR-180`; closed when `reference/terraform` imports the droplet) | Attested |
+| Environment tier | `prod-lab-01` still serves as production with no non-production tier under this repository's management (`OPS-010.1` exception, `ADR-180`, remains open). A full DigitalOcean account query during `reference/terraform`'s real `import` (2026-08-07) found a second, previously-undocumented droplet — `dev-lab-01` (id `564856486`, `139.59.188.136`, `lon1`, `s-1vcpu-1gb`, **Ubuntu 24.04 LTS** — an older release than `prod-lab-01`'s confirmed 26.04). Explicitly **not** adopted as the non-production tier, imported, or otherwise acted upon in that round, at the platform owner's direction — its disposition is untriaged, a separate decision | Observed (B0 attestation for `prod-lab-01`; `dev-lab-01` discovered via DigitalOcean API query, 2026-08-07) |
+| Provisioning method | `prod-lab-01`: was manual; **`OPS-020` exception now closed** — `reference/terraform` performed a real `terraform import`, reaching a genuine zero-diff `plan` against live infrastructure, 2026-08-07 (`ADR-180` amendment) | Observed (2026-08-07) |
 | Time sync | NTP active, clock synchronised (`Etc/UTC`) | Observed (B0) |
 | Pending OS updates | **Applied in Bootstrap Phase B2** (`apt-get upgrade` + `dist-upgrade`, including the kernel bump above). ~20 packages remain upgradable — confirmed to be Ubuntu's phased-rollout holdouts (the systemd package family, all pinned at an identical version bump, plus a handful of others), not a gap; they apply automatically via `unattended-upgrades` (2.12ubuntu9, confirmed active: `APT::Periodic::Update-Package-Lists` and `Unattended-Upgrade` both `"1"`) as Canonical's rollout reaches this host. Not something to force manually — doing so would defeat phasing's safety purpose | Observed (B2, 2026-08-06) |
 
@@ -57,10 +57,10 @@ Five sources: **(a)** provisioning attestation from the platform owner, dated 20
 
 | Fact | Value | Evidence |
 |---|---|---|
-| A records | `socx.org.uk`, `ghs.`, `rms.`, `ams.` → `209.97.135.128`; `www` → CNAME → apex | Observed (dig, 2026-07-15) |
-| DNS management | Cloudflare. The 2026-08-06 droplet rebuild retained the same IP, so no repointing was required or performed. **Nameservers confirmed:** `brett.ns.cloudflare.com`, `cruz.ns.cloudflare.com` | Observed (`dig NS`, 2026-08-06) |
-| Proxy status | **DNS-only, not proxied.** The A record resolves directly to `209.97.135.128` (the droplet's own IP); a Cloudflare-proxied ("orange-cloud") record would instead resolve to a Cloudflare edge IP | Observed (`dig A`, 2026-08-06, inferred from direct resolution) |
-| Registrar (name), TTLs | Unknown — a `whois` lookup returned no data. Low-stakes gap: doesn't affect anything operational, since DNS management (Cloudflare) and record content are already confirmed | Not yet resolved |
+| A records | `socx.org.uk`, `ghs.`, `rms.`, `ams.` → `209.97.135.128`; `www`, `www.ghs`, `www.rms`, `www.ams` → CNAME → their respective apex/subdomain. All 8 records confirmed via a direct Cloudflare API query (not just `dig`) during `reference/terraform`'s real `import`, including the three `www.<app>` CNAMEs `dig`-based observation alone had missed — now all 8 are Terraform-managed | Observed (`dig`, 2026-07-15; full Cloudflare API record listing, 2026-08-07) |
+| DNS management | Cloudflare. The 2026-08-06 droplet rebuild retained the same IP, so no repointing was required or performed. **Nameservers confirmed:** `brett.ns.cloudflare.com`, `cruz.ns.cloudflare.com`. Zone ID confirmed: `77791e5cb6be800c2a5c54e869f7e834` | Observed (`dig NS`, 2026-08-06; Cloudflare API, 2026-08-07) |
+| Proxy status | **DNS-only, not proxied**, on every record (confirmed for all 8 via the Cloudflare API, not inferred). TTL: `1` ("automatic") on every record | Observed (`dig A`, 2026-08-06; Cloudflare API, 2026-08-07) |
+| Registrar (name) | Unknown — a `whois` lookup returned no data. Low-stakes gap: doesn't affect anything operational, since DNS management (Cloudflare) and record content are already confirmed | Not yet resolved |
 
 ### TLS Certificates
 
@@ -126,7 +126,7 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd`, `reference/nginx` (both **Approved** — verified end-to-end on this host, 2026-08-06); `reference/security`, `reference/deployment`, `reference/application` (all **Approved** — verified end-to-end on this host via a disposable `canary-app` exercise, 2026-08-07); `reference/terraform`, `reference/monitoring` (still Draft — real `apply` deferred)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both **Approved** — verified end-to-end on this host, 2026-08-06); `reference/security`, `reference/deployment`, `reference/application` (all **Approved** — verified end-to-end on this host via a disposable `canary-app` exercise, 2026-08-07); `reference/terraform` (**Approved** — real `import` of this droplet and its DNS records, zero-diff `plan` reached, 2026-08-07); `reference/monitoring` (**Approved** — real `apply`: live uptime checks/alerts against this droplet's real domains, real journald retention config installed on this host, 2026-08-07). 7 of 8 `reference/` categories now Approved; only `reference/github` remains Draft (branch protection deliberately deferred)
 - Runbooks: none yet — the B1 access-hardening sequence and the B5 canary procedure are candidate first entries for Deliverable 7
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 
@@ -145,3 +145,4 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 | 0.9     | 2026-08-06 | Bootstrap Phase B4 executed: per-app system users, `/opt/<app>` directory layout, and root-only credentials directories created for all four systems; recorded pre-existing DigitalOcean droplet-agent discovered during inspection | Socx   |
 | 1.0     | 2026-08-06 | Bootstrap Phase B5 executed: `reference/systemd` verified end-to-end via disposable canary (moved to Approved), then cleanly torn down; DNS nameservers and proxy-status resolved independently; post-install resource headroom measured. Moved to **Approved** — inventory verified, not merely drafted, per the Current-State lifecycle. One minor gap remains: domain registrar name specifically | Socx   |
 | 1.1     | 2026-08-06 | On-host `reference/nginx` deployment: real production TLS certificates issued for all four domains; real per-app site config deployed, replacing the stock default page; redirect/TLS confirmed on all five hostnames; `ghs` proven end-to-end via a second disposable canary, then cleanly torn down. `reference/nginx` moved to Approved | Socx   |
+| 1.2     | 2026-08-07 | `reference/security`, `reference/deployment`, `reference/application` verified end-to-end via a disposable `canary-app` exercise, moved to Approved. `reference/terraform` performed a real `import` of the droplet and all 8 real DNS records (previously-unknown `www.<app>` CNAMEs included), reaching a zero-diff `plan`; `ADR-180`'s `OPS-020` exception closed. A second, previously-undocumented droplet (`dev-lab-01`) found via a full DigitalOcean API query, explicitly left untriaged | Socx   |
