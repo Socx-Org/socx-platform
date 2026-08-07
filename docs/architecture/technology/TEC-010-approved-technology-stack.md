@@ -75,7 +75,7 @@ Assessed against `CS-TEC-010`, which confirms the hosting, reverse-proxy, and CI
 
 - Standards: none directly — this document informs other architecture documents rather than satisfying a standard itself
 - ADRs: `ADR-040`, `ADR-050`, `ADR-070`, `ADR-090`, `ADR-120`, `ADR-150`, `ADR-160`, `ADR-180`
-- Reference Implementations: `reference/systemd`, `reference/nginx` (both Approved, verified on-host 2026-08-06); `reference/github` (currently empty)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both Approved, verified on-host 2026-08-06); `reference/github` (Draft — branch-protection application deliberately deferred, see `docs/development/github-workflow.md`); `reference/terraform` (Approved, real `import` of the production droplet and DNS, 2026-08-07)
 - Runbooks: none yet
 - Current-State documentation: `CS-TEC-010`
 

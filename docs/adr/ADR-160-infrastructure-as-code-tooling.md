@@ -55,7 +55,7 @@ The platform adopts **Terraform** as its infrastructure-as-code tool for provisi
 - Architecture: `INF-010`, `TEC-010`
 - Standards: `OPS-020`, `OPS-010`
 - Current-State documentation: `CS-TEC-010`, `CS-INF-010`
-- Reference Implementations: `reference/deployment`
+- Reference Implementations: `reference/deployment`, `reference/terraform` (Approved, real `import` of the production droplet and DNS, 2026-08-07)
 - Runbooks: none yet
 - ADRs: `ADR-040` (the infrastructure this provisions), `ADR-150` (where `plan`/`apply` runs)
 

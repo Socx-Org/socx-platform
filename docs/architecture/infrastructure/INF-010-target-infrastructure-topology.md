@@ -65,7 +65,7 @@ See `CS-INF-020`: the target topology (shared edge → systemd-managed processes
 
 - Standards: `OPS-010`, `OPS-020`
 - ADRs: `ADR-040`, `ADR-050`, `ADR-100`, `ADR-130`, `ADR-140`, `ADR-160`, `ADR-180`
-- Reference Implementations: `reference/systemd`, `reference/nginx` (both Approved, verified on-host 2026-08-06); `reference/deployment` (Approved, verified on-host 2026-08-07)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both Approved, verified on-host 2026-08-06); `reference/deployment`, `reference/terraform` (both Approved, verified on-host 2026-08-07)
 - Runbooks: none yet
 - Current-State documentation: `CS-INF-020`
 

@@ -3,7 +3,7 @@ id: ADR-180
 title: Greenfield platform rebuild on a fresh droplet
 status: Approved
 category: Infrastructure
-version: "1.1"
+version: "1.2"
 date: 2026-07-15
 deciders: Platform Engineering
 related:
@@ -58,6 +58,8 @@ The platform is rebuilt **greenfield**:
 
 **Amendment (2026-08-06):** the droplet was rebuilt a second time — Ubuntu 24.04 LTS → 26.04 LTS, same reserved IP, no DNS change required — before any bootstrap execution had occurred against it (see `CS-INF-020` v0.2). This is a factual correction to the instance detail in point 2 above, not a reversal of this ADR's decision under `DOC-020.5`: the strategy (greenfield rebuild, self-managed droplet, no data migration) is unchanged, nothing had been built on the superseded instance, and no new alternative was considered.
 
+**Amendment (2026-08-07):** the `OPS-020` exception in point 4 is **closed** — `reference/terraform` performed a real `terraform import` of the production droplet and all real DNS records, reaching a genuine zero-diff `plan` against live infrastructure (`reference/terraform`'s `verified` field). The `OPS-010.1` exception (single environment tier) remains **open**: no second tier was provisioned in that round, by deliberate choice, not oversight. A previously-undocumented droplet (`dev-lab-01`) was found to exist in the account during the same round's API inspection; it was explicitly left untriaged — neither adopted as the non-production tier nor otherwise acted upon — a separate decision for the platform owner.
+
 ## Alternatives Considered
 
 - **Greenfield rebuild — selected.** A clean baseline that satisfies the standards from first boot; none of the documented defects can leak forward; cheap precisely because there was no production data to protect.
@@ -71,16 +73,16 @@ The platform is rebuilt **greenfield**:
 - The other Current-State inventories are revised in place — their repo-derived facts survive the transition; only deployment-derived facts changed.
 - The fresh droplet becomes the verification host the reference-implementation `verified` gate requires; the Deliverable 6 order becomes the literal rebuild order.
 - The bootstrap procedure must be captured as it is executed — it is the seed material for the first operational runbook (Deliverable 7) and automation (Deliverable 8).
-- Two `GEN-010.9` exceptions are open and must be visibly tracked until `reference/terraform` closes them.
+- One of the two `GEN-010.9` exceptions is closed (`OPS-020`, 2026-08-07); `OPS-010.1` remains open and must stay visibly tracked until a real second tier is provisioned.
 
 ## Related Documents
 
 - Architecture: `INF-010`, `TEC-010` (targets unchanged — this ADR changes the substrate instance, not the design)
-- Standards: `OPS-010`, `OPS-020` (both under recorded exception), `OPS-060`
+- Standards: `OPS-010`, `OPS-020` (exception now closed — see 2026-08-07 amendment), `OPS-060`
 - Current-State documentation: `CS-INF-010` (evidence, deprecated), `CS-INF-020` (successor baseline), `CS-DAT-010`, `CS-TEC-010`
-- Reference Implementations: the library at `reference/` — the rebuild's source material
+- Reference Implementations: the library at `reference/` — the rebuild's source material; `reference/terraform` closed the `OPS-020` exception via a real import (2026-08-07)
 - Runbooks: none yet — the bootstrap capture seeds Deliverable 7
-- ADRs: `ADR-040` (the hosting model this instance implements), `ADR-140` (the tier model the exception is measured against), `ADR-160` (the tooling that closes both exceptions)
+- ADRs: `ADR-040` (the hosting model this instance implements), `ADR-140` (the tier model the still-open exception is measured against), `ADR-160` (the tooling that closed one exception and would close the other)
 
 ## Revision History
 
@@ -89,3 +91,4 @@ The platform is rebuilt **greenfield**:
 | 0.1     | 2026-07-15 | Initial draft | Socx   |
 | 1.0     | 2026-07-15 | Approved      | Socx   |
 | 1.1     | 2026-08-06 | Generalized OS point-release wording; added amendment note recording the second pre-bootstrap droplet rebuild (24.04 → 26.04 LTS) | Socx |
+| 1.2     | 2026-08-07 | Amendment: `OPS-020` exception closed by `reference/terraform`'s real import; `OPS-010.1` remains open | Socx |

@@ -61,9 +61,9 @@ variable "region" {
 }
 
 variable "droplet_size" {
-  description = "DigitalOcean droplet size slug. Production's actual size is inferred, not confirmed, as s-1vcpu-1gb (CS-INF-020 observed ~956 MiB RAM / 1 vCPU, matching that slug's known specification) -- verify against the real droplet before import, don't assume."
+  description = "DigitalOcean droplet size slug. Confirmed for real via the DigitalOcean API during reference/terraform's on-host verification (2026-08-07): s-1vcpu-1gb-amd -- not s-1vcpu-1gb, the earlier inferred guess based on CS-INF-020's ~956 MiB RAM observation alone (both slugs share that spec; only a live API query distinguishes them)."
   type        = string
-  default     = "s-1vcpu-1gb"
+  default     = "s-1vcpu-1gb-amd"
 }
 
 variable "droplet_image" {

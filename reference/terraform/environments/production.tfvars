@@ -14,14 +14,12 @@ apex_domain     = "socx.org.uk"
 app_subdomains  = ["ghs", "rms", "ams"]
 manage_apex_dns = true
 
-# Inferred, not confirmed -- verify against the real droplet before import.
-droplet_size = "s-1vcpu-1gb"
+# Confirmed for real via the DigitalOcean API, 2026-08-07 (droplet id 572060222).
+droplet_size = "s-1vcpu-1gb-amd"
+region       = "lon1"
 
-# Never confirmed anywhere in CS-INF-020 -- fill in from the real droplet,
-# do not guess.
-region = "{{REGION}}"
-
-# cloudflare_zone_id, ssh_key_fingerprint: fill in from the real account
-# before use -- not fabricated here.
-cloudflare_zone_id  = "{{CLOUDFLARE_ZONE_ID}}"
-ssh_key_fingerprint = "{{SSH_KEY_FINGERPRINT}}"
+# Confirmed for real via the Cloudflare API / account SSH key list, 2026-08-07.
+# Neither value is a secret (an API-readable identifier, not a credential) --
+# safe to commit, unlike do_token/cloudflare_api_token above.
+cloudflare_zone_id  = "77791e5cb6be800c2a5c54e869f7e834"
+ssh_key_fingerprint = "c2:ff:de:68:9b:c3:c6:3c:a1:a6:3c:aa:90:e9:0c:cb"

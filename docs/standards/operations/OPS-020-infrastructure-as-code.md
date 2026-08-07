@@ -48,7 +48,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/nginx`, `reference/systemd`, `reference/deployment`
+- Reference implementation(s): `reference/nginx`, `reference/systemd`, `reference/deployment`, `reference/terraform`
 - ADR(s): `ADR-040`, `ADR-150`, `ADR-160`, `ADR-180`
 - Template(s): `templates/nginx`, `templates/systemd`
 

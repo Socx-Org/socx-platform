@@ -45,7 +45,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/deployment`
+- Reference implementation(s): `reference/deployment`, `reference/terraform`
 - ADR(s): `ADR-040`, `ADR-050`, `ADR-140`, `ADR-160`, `ADR-180`
 - Template(s): none yet
 
