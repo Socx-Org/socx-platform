@@ -60,7 +60,7 @@ Not yet assessed.
 
 - Standards: `ENG-040`
 - ADRs: `ADR-050`, `ADR-080`, `ADR-100`, `ADR-110`
-- Reference Implementations: `reference/nginx` (currently empty)
+- Reference Implementations: `reference/nginx` (Approved, verified on-host 2026-08-06)
 - Runbooks: none yet
 - Current-State documentation: none yet
 

@@ -77,6 +77,8 @@ Move the Project Status to:
 
 In Progress
 
+`scripts/gh-issue-status.sh <issue-number> "In Progress"` does this without hand-crafting the GraphQL mutation and Project #1's field/option IDs each time — same script, same three states, for every Status transition in this document.
+
 Implementation should:
 
 - keep documentation updated
