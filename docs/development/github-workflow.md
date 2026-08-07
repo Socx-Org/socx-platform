@@ -6,35 +6,38 @@ All work must be tracked in GitHub before implementation begins.
 
 This workflow is mandatory for all code, documentation and infrastructure changes.
 
----
+## Applicability
 
-# Repository
+This document is the shared operational workflow governed by `ENG-070`. It lives in `socx-platform` and is followed **by reference**, not by copy, by every SOCX repository — `socx-platform` itself, `RMS`, and future application repositories (`GHS`, `AMS`). A repository's own `CLAUDE.md` should point here rather than restate this document.
 
-GitHub Organisation
+The process (Phases 1–5 below) is the same everywhere. What differs between repositories is which GitHub Project and Status model applies:
 
-Socx-Org
+| Repository work                                                        | GitHub Project                          | Status model |
+| ------------------------------------------------------------------------ | ---------------------------------------- | ------------- |
+| `socx-platform`'s own governance and deliverable tracking                | Project #1 (`socx-platform`)             | `Todo` → `In Progress` → `Done` |
+| Application-development work (any `Product: RMS`/`GHS`/`AMS` item, and Platform Evolution items) | Project #2 (`SOCX Application Modernisation`, org-level) | `Backlog` → `Ready` → `In Progress` → `In Review` → `Done` |
 
-GitHub Project: Project #1
+This split is a deliberate design decision (`ENG-070.3`, `ADR-190`), not an inconsistency: platform-governance work and application delivery are different in shape, and each Project's Status model reflects that.
 
-#1
-
-Project #1's Status field has exactly three values: **Todo**, **In Progress**, **Done**. There is no separate "Backlog" status — Todo serves that purpose. Every reference to "Backlog" below means Status = Todo.
+Everywhere below, "Backlog" means whichever of the two leftmost Status values applies to the repository doing the work (`Todo` for Project #1, `Backlog` for Project #2).
 
 ---
 
 # Workflow
 
-Every task follows this lifecycle. Only three stages (Todo, In Progress, Done) are actual Project Status values; the rest (Planning, Approved, Implementation, Review, Commit) are process checkpoints that happen while an Issue sits at one of those three statuses.
+Every task follows this lifecycle. The Status values in the table above are the only real Project Status values; the rest (Planning, Approved, Implementation, Review, Commit) are process checkpoints that happen while an Issue sits at one of those Status values.
 
 Idea
 ↓
 Issue Created
 ↓
-Todo (Backlog)
+Backlog
 ↓
 Planning
 ↓
 Approved
+↓
+Ready *(Project #2 work only — see Definition of Ready)*
 ↓
 In Progress
 ↓
@@ -43,6 +46,8 @@ Implementation
 Review
 ↓
 Approved
+↓
+In Review *(Project #2 work only)*
 ↓
 Commit
 ↓
@@ -57,15 +62,30 @@ Issue Closed
 Before implementation Claude must:
 
 - search for an existing Issue
-- create one if none exists
+- create one if none exists, using the appropriate template from `templates/github/ISSUE_TEMPLATE/`
 - write a clear Issue description
 - add acceptance criteria
-- add the Issue to Project #1
-- set Status = Todo
+- set the Issue Type (`Epic`/`Feature`/`Task`/`Bug`/`Spike`) — not a label
+- for an Epic: state its ADR dependencies and ADR Status per `ENG-070.6`
+- add the Issue to the repository's GitHub Project
+- set Status = Backlog
 - present the implementation plan
 - wait for approval
 
 No implementation should begin before approval.
+
+---
+
+# Definition of Ready
+
+Before an Issue moves to `Ready` (Project #2) or is picked up for implementation (Project #1), per `ENG-070.4`:
+
+- written acceptance criteria exist
+- ADR Status is not `New ADR Required` — any architectural dependency is resolved or explicitly accepted as non-blocking
+- identified blocking dependencies are resolved or explicitly accepted by the accountable lead
+- there is no open question requiring a decision from the accountable architect or lead
+
+If any of these fail, the Issue stays at Backlog until they are resolved — do not move it forward and note the gap instead.
 
 ---
 
@@ -77,7 +97,7 @@ Move the Project Status to:
 
 In Progress
 
-`scripts/gh-issue-status.sh <issue-number> "In Progress"` does this without hand-crafting the GraphQL mutation and Project #1's field/option IDs each time — same script, same three states, for every Status transition in this document.
+`scripts/gh-issue-status.sh <issue-number> "In Progress"` does this for Project #1 without hand-crafting the GraphQL mutation and field/option IDs each time. Project #2's Status transitions currently use direct GraphQL (its field/option IDs differ from Project #1's, and the richer five-state set is out of this script's scope).
 
 Implementation should:
 
@@ -85,6 +105,13 @@ Implementation should:
 - update ADRs where necessary
 - update reference implementations
 - avoid unrelated changes
+- where a change belongs to the platform itself rather than the application being worked on, route it through Platform Evolution instead of folding it into the current Issue (see below)
+
+---
+
+# Platform Evolution boundary
+
+Per `ENG-070.7`: if application-specific work surfaces a genuine improvement to the SOCX Engineering Platform itself — a new or amended ADR, a Standards change, a reference-implementation update, a runbook, or platform tooling — that improvement is tracked as its own Issue under the Platform Evolution epic (`Product: Platform-Wide`, Project #2) and implemented in `socx-platform`'s own repository under `socx-platform`'s own workflow (Project #1 if it's platform-governance work, or straight through this same process if it's a real code/tooling change to the platform). It is never implemented inside the application repository's Epic. Identify the dependency relationship between the application Issue and the Platform Evolution Issue rather than duplicating the work.
 
 ---
 
@@ -99,9 +126,22 @@ Instead:
 - summarise completed work
 - identify changed files
 - identify documentation updates
+- confirm the Definition of Done checklist (below) is satisfied
 - ask for review
 
 Wait for approval.
+
+---
+
+# Definition of Done
+
+Before an Issue moves to `Done`, per `ENG-070.5`:
+
+- tests pass for real (executed, not merely written)
+- documentation is updated in the same change, not deferred
+- no new `SEC-010` violation is introduced
+- compliance with the ADRs and Standards the Issue depends on is confirmed
+- the relevant runbook is updated where the change is operationally significant
 
 ---
 
@@ -109,35 +149,27 @@ Wait for approval.
 
 Only after approval:
 
-Create a commit using:
+Create a commit using the format defined in `ENG-010.4`:
 
-#<issue-number></issue> <type></type>(<scope></scope>):
+```
+#<issue-number> <type>(<scope>): <summary>
+
+* first detailed commit message
+* second detailed commit message
+```
 
 Example
 
+```
 #68 docs(reference): refine reference/systemd manifest
 
 * first detailed commit message
 * second detailed commit message
+```
 
- Deliverable: 6 - Title
+Commit Types (per `ENG-010.4`): `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`, `ci`, `perf`, `style`.
 
-Status: <Draft | Approved | In Progress | Done>
-
----
-
-Commit Types
-
-feat
-fix
-docs
-refactor
-test
-build
-ci
-perf
-style
-chore
+For repositories with real branch protection (a required status check and, where a second reviewer exists, an independent approving review — see `ENG-010.5`), the commit lands via pull request, not a direct push to `main`. See `templates/github/PULL_REQUEST_TEMPLATE.md` for the required PR body.
 
 ---
 
@@ -154,7 +186,7 @@ Close the GitHub Issue.
 Add a closing comment containing:
 
 - summary of work
-- commit hash
+- commit hash (or PR number)
 - documentation updated
 - follow-up work (if any)
 
@@ -194,6 +226,8 @@ Never skip Project updates.
 
 Keep Issue descriptions and documentation synchronised with implementation.
 
+Never restate this document or `ENG-070` inside a repository-specific `CLAUDE.md` — point at them instead (`ENG-070.9`).
+
 ---
 
 # Recorded Exceptions
@@ -220,3 +254,15 @@ The applied configuration is a deliberate, documented adaptation of `reference/g
 - `enforce_admins: false`, not `true`. `ENG-010.6` anticipates exactly this repository's shape — single-contributor — and `reference/github`'s own compliance notes already flagged that an author's own review never counts toward `required_approving_review_count`. Applied verbatim (`enforce_admins: true`), this repository would have become permanently unable to merge its own work, having no second reviewer. `enforce_admins: false` preserves the protection for anyone else (no direct push, no force-push, no unreviewed merge) while giving the actual repository admin a working bypass — confirmed for real: a direct push to `main` was attempted immediately after applying protection and succeeded with an explicit "Bypassed rule violations" warning, exactly as intended, then reverted.
 
 Direct-to-`main` commits are no longer the working pattern for this repository going forward — real PRs, real CI, real review where a second reviewer exists.
+
+## `ENG-070.9` — commit-format and Status-model drift preceding this document's generalisation
+
+**Requirement:** `ENG-070.9` requires this document and `ENG-070` to be the single referenced source every SOCX repository follows.
+
+**Actual practice:** before this document was generalised (`ADR-190`, 2026-08-08), RMS's first commits used a plain Conventional Commits header with a trailing issue reference rather than `ENG-010.4`'s issue-number prefix, and a four-state Status model was briefly drafted before being rejected in favour of the five-state model already in use on Project #2.
+
+**Reason:** this document, and the standard now governing it (`ENG-070`), did not exist yet — RMS's early work had nothing authoritative to reference beyond `socx-platform`'s own informal practice, imitated rather than pointed to.
+
+**Review trigger:** none — closed by this document's generalisation and `ENG-070`'s adoption. RMS's existing commit history is not rewritten; the format applies going forward.
+
+**Recorded and closed: 2026-08-08.**

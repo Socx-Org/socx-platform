@@ -149,6 +149,7 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 | ID      | Title                                      | Status   | Decision |
 | ------- | ------------------------------------------ | -------- | -------- |
 | ADR-170 | Trunk-based development & commit conventions | Approved | Made     |
+| ADR-190 | Standardised development workflow across SOCX repositories | Approved | Made     |
 
 ## Authoring a New ADR
 
