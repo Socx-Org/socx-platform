@@ -37,6 +37,6 @@ Current maturity
 
 🚧 Reference implementations (in progress)
 
-⏳ Runbooks
+✓ Runbooks
 
 ⏳ Automation
