@@ -3,6 +3,12 @@
 
 *.log
 
+# Node (reference/application) -- node_modules and build output are never
+# committed; package-lock.json IS committed (reproducible installs, npm ci
+# in reference/github's ci.yml) and is deliberately not listed here.
+node_modules/
+dist/
+
 # Terraform (reference/terraform) -- local provider cache and state are
 # never committed; .terraform.lock.hcl IS committed (pins provider
 # versions for reproducibility) and is deliberately not listed here.
