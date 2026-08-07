@@ -126,7 +126,7 @@ Created in Bootstrap Phase B4, for each of the four systems (`socx-org-uk`, `ghs
 - Architecture: `INF-010`
 - Standards: `OPS-010`, `OPS-020` (both under recorded exception)
 - ADRs: `ADR-180` (the transition this baselines), `ADR-040`
-- Reference Implementations: `reference/systemd`, `reference/nginx` (both **Approved** — verified end-to-end on this host, 2026-08-06), `reference/terraform`, `reference/deployment`, `reference/application` (all pending)
+- Reference Implementations: `reference/systemd`, `reference/nginx` (both **Approved** — verified end-to-end on this host, 2026-08-06); `reference/security`, `reference/deployment`, `reference/application` (all **Approved** — verified end-to-end on this host via a disposable `canary-app` exercise, 2026-08-07); `reference/terraform`, `reference/monitoring` (still Draft — real `apply` deferred)
 - Runbooks: none yet — the B1 access-hardening sequence and the B5 canary procedure are candidate first entries for Deliverable 7
 - Current-State: supersedes `CS-INF-010` (historical record of the retired droplet)
 

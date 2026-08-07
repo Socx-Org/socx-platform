@@ -42,7 +42,19 @@ TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 DUMP_FILE="${BACKUP_DIR}/${DB_NAME}-${TIMESTAMP}.sql.gz"
 
 echo "Backing up ${DB_NAME} to ${DUMP_FILE}..."
-pg_dump "$DB_NAME" | gzip > "$DUMP_FILE"
+# `if ! pipeline` (rather than a bare pipeline statement) is deliberate:
+# with pipefail, a bare `pg_dump | gzip > file` aborts the whole script via
+# set -e the instant pg_dump fails, skipping the cleanup below entirely and
+# leaving a small (~20 byte, gzip-header-only) orphaned file behind. Wrapped
+# in an `if`, set -e does not trigger on the condition, so a failed pg_dump
+# still reaches the cleanup path. Confirmed for real during this reference
+# implementation's on-host verification: a pg_dump permission error left an
+# uncleaned partial file until this was fixed.
+if ! pg_dump "$DB_NAME" | gzip > "$DUMP_FILE"; then
+  echo "ERROR: pg_dump failed for ${DB_NAME}. Removing partial dump." >&2
+  rm -f "$DUMP_FILE"
+  exit 1
+fi
 
 if [ ! -s "$DUMP_FILE" ]; then
   echo "ERROR: ${DUMP_FILE} is empty -- pg_dump likely failed. Removing." >&2

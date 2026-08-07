@@ -75,7 +75,10 @@ health_gate_pass() {
       if [ -z "$HEALTH_URL" ]; then
         return 0
       fi
-      status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 "$HEALTH_URL" || echo 000)"
+      # See deploy-release.sh's identical line for why this is `|| true`,
+      # not `|| echo 000` -- the latter double-writes onto curl's own
+      # already-correct "000" output and silently defeats the health gate.
+      status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 "$HEALTH_URL")" || true
       if [ "$status" != "000" ] && [ "$status" -lt 500 ]; then
         return 0
       fi

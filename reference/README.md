@@ -118,10 +118,10 @@ Implementation order follows the approved Deliverable 6 sequencing — the first
 | 1 | `reference/systemd` | Service & Timer Units | Approved |
 | 2 | `reference/nginx` | Edge & Site Configuration | Approved |
 | 3 | `reference/github` | CI/CD Workflows & Branch Protection | Draft |
-| 4 | `reference/security` | Secret Handling (systemd credentials) | Draft |
+| 4 | `reference/security` | Secret Handling (systemd credentials) | Approved |
 | 5 | `reference/terraform` | Infrastructure as Code | Draft |
-| 6 | `reference/deployment` | Deploy & Rollback Glue | Draft |
-| 7 | `reference/application` | Canonical Three-Layer Service | Draft |
+| 6 | `reference/deployment` | Deploy & Rollback Glue | Approved |
+| 7 | `reference/application` | Canonical Three-Layer Service | Approved |
 | 8 | `reference/monitoring` | Health Checks & Logging Configuration | Draft |
 
 Status is one of `Planned`, `Draft`, `Approved`, `Deprecated` — the authoritative status for an implementation is the `status` field in its own manifest; this column is kept in sync as a convenience index.

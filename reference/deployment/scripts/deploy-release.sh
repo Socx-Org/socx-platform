@@ -95,7 +95,16 @@ health_gate_pass() {
       if [ -z "$HEALTH_URL" ]; then
         return 0
       fi
-      status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 "$HEALTH_URL" || echo 000)"
+      # curl's own -w already writes "000" on total connection failure and
+      # exits non-zero. An `|| echo 000` fallback here concatenates onto
+      # curl's own already-written output, producing "000000" -- which is
+      # neither string-equal to "000" nor caught by anything else, so it
+      # silently passes the health gate. `|| true` avoids that (nothing
+      # extra written) while still preventing `set -e` from aborting the
+      # whole script on curl's non-zero exit. Confirmed for real during
+      # this reference implementation's on-host verification: a build that
+      # crashes on start passed this gate until this line was fixed.
+      status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 "$HEALTH_URL")" || true
       if [ "$status" != "000" ] && [ "$status" -lt 500 ]; then
         return 0
       fi

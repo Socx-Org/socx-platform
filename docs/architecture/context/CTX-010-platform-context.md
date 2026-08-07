@@ -87,7 +87,7 @@ Not yet assessed — no corresponding `docs/current-state/` document exists yet 
 
 - Standards: `OPS-010` (environment boundary implied by the shared edge)
 - ADRs: `ADR-020`, `ADR-050`, `ADR-140`
-- Reference Implementations: `reference/deployment`, `reference/nginx` (both currently empty)
+- Reference Implementations: `reference/deployment`, `reference/nginx` (both **Approved**, verified on-host)
 - Runbooks: none yet
 - Current-State documentation: none yet
 

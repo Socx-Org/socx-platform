@@ -1,6 +1,6 @@
 ---
-status: Draft
-verified: null   # required before Approved: "<method>, YYYY-MM-DD" -- see Purpose & Scope for what this round is deliberately not
+status: Approved
+verified: "On-host, real droplet (prod-lab-01): a disposable canary-app service deployed via the real deploy-release.sh (v1.0.0, health gate passed, real HTTP CRUD against a real Postgres database); a deliberately broken v1.1.x deployed to prove automatic rollback actually fires; a genuinely working v1.2.0 deployed then rolled back via rollback.sh's explicit-target path; backup-db.sh run against the real canary database with a real off-host-warning and retention-pruning check. Two real bugs found and fixed during this round (see Design Decisions): a curl exit-status/output-concatenation bug that let deploy-release.sh's and rollback.sh's health gate silently pass a fully unreachable service, and an uncleaned partial-dump-file bug in backup-db.sh on pg_dump failure. Torn down after. 2026-08-07"
 ---
 
 # reference/deployment — Deploy & Rollback Glue
@@ -9,7 +9,7 @@ verified: null   # required before Approved: "<method>, YYYY-MM-DD" -- see Purpo
 
 The mechanism connecting CI → droplet → `reference/systemd`'s versioned-release layout: how a built artefact actually gets onto the host, becomes the running version, and comes back off again if it's bad (`ADR-040`, `ADR-150`, `OPS-030`). This is the piece `reference/systemd`'s `current` symlink and `reference/github`'s deploy-job stub both pointed at but deliberately deferred.
 
-**What this is not.** This provides the deploy *mechanism* only. It does not resolve `reference/nginx`'s remaining `502`s on `rms`/`ams`/`www` — those need real application code behind them, which is `reference/application` (Deliverable 6.8), not yet built. Deploying nothing still deploys nothing, correctly.
+**What this is not.** This provides the deploy *mechanism* only. It does not by itself resolve `reference/nginx`'s remaining `502`s on `rms`/`ams`/`www` — those are real applications with real code, not `reference/application`'s illustrative widgets service; deploying the wrong app still doesn't fix a different app's 502.
 
 Explicitly not covered here:
 
@@ -19,7 +19,7 @@ Explicitly not covered here:
 - **Health endpoint implementation** — `reference/monitoring` (Deliverable 6.9); the health gate here has a working default (any HTTP response below 500) precisely because no SOCX app has a confirmed dedicated endpoint yet (`OPS-040.1`)
 - **Restore procedure, RPO/RTO** — runbook content (`OPS-060.4`, `OPS-060.5`, Deliverable 7); `backup-db.sh` is the mechanism, not the procedure around it
 
-**On `verified` for this round.** As with every other reference implementation here, authoring and on-host verification are separate, deliberately sequenced rounds. This round is authoring only: the scripts have been reviewed for shell correctness (`set -euo pipefail`, atomic symlink flips, no unquoted expansions of user-controlled values) but not yet run against the real droplet. A later round deploys a versioned canary, proves rollback by deploying a second version and rolling back, and proves `backup-db.sh` against a real database — the same pattern `reference/systemd`/`reference/nginx` already went through. `status` stays `Draft` and `verified` stays `null` until that happens.
+**On `verified`.** A disposable `canary-app` service was deployed to the real droplet through the actual scripts below — not a simulation. The exercise deliberately included a broken build (to prove automatic rollback fires, not just that it's coded to) and an explicit `rollback.sh` invocation, and surfaced two real, load-bearing bugs neither code review nor local shell linting had caught (see Design Decisions). Both are fixed and re-verified against the real failure case that exposed them. Everything created for the exercise — the systemd unit, the OS user, the database, the credentials directory — was torn down afterward; nothing about it is still running.
 
 ## Contents
 
@@ -40,6 +40,10 @@ Explicitly not covered here:
 - **`deploy-job.yml` uses plain OpenSSH, not a marketplace deploy action.** Fewer third-party actions to trust and pin; the remote side is already reduced to one tested command, so there is no choreography a dedicated action would meaningfully simplify.
 - **Grounded in `rms`'s real `deploy.yml` (SSH-transfer of a built artefact), with its remote choreography replaced.** The useful idea kept: bundling production `node_modules` into the release tarball so the host needs no npm-registry access at deploy time. Dropped entirely: `nvm`, raw `systemctl` calls scattered through the workflow — exactly the fragility `ADR-040`/`CS-INF-010` retired, now collapsed into the one `deploy-release.sh` invocation.
 - **`backup-db.sh` refuses to claim compliance it hasn't earned.** If `OFFHOST_TARGET` is unset, it says so on stderr rather than silently leaving `OPS-060.2` unmet.
+- **The health-gate's curl status check is `|| true`, never `|| echo 000`.** Found during on-host verification: curl's `-w '%{http_code}'` already writes `"000"` to stdout on total connection failure and exits non-zero. A `|| echo 000` fallback fires *in addition*, concatenating onto curl's own already-correct output into `"000000"` — a string that is neither equal to `"000"` nor meaningfully `< 500` the way the check intends, so a completely unreachable service silently passed the gate. `deploy-release.sh` and `rollback.sh` both had this; both are fixed. `|| true` avoids the double-write while still stopping `set -e`/`pipefail` from aborting the script outright on curl's non-zero exit.
+- **`backup-db.sh` wraps `pg_dump | gzip` in an explicit `if !`, not a bare pipeline statement.** Found during on-host verification: with `pipefail`, a bare pipeline aborts the whole script via `set -e` the instant `pg_dump` fails — before the script's own empty-file cleanup ever runs — leaving a small (~20 byte, gzip-header-only) orphaned file behind on every failed backup attempt. Wrapping the pipeline in an `if` lets `set -e` see a handled condition instead of an uncaught failure, so the existing cleanup path actually executes.
+- **`deploy-job.yml` installs full dependencies, builds, then prunes — not `--omit=dev` before building.** Found while actually building a real release for this verification round: `typescript` is a devDependency the build step itself needs; omitting dev dependencies *before* building silently resolves `tsc` to nothing usable and fails. `npm ci` → `npm run build` → `npm prune --omit=dev` → package, in that order.
+- **`deploy-job.yml` packages `apps/*/package.json`, not the workspace root's.** Found the same way: the root `package.json` has no `"type"` field (only the workspace member does), and Node needs a `"type": "module"` `package.json` findable by walking up from `apps/api/dist/index.js`. Shipping the root one instead didn't hard-fail — Node's module-syntax auto-detection still ran it — but with a real `MODULE_TYPELESS_PACKAGE_JSON` warning and a genuine reparse-performance cost on every start, worth fixing rather than shipping anyway.
 
 ## Compliance
 
@@ -71,7 +75,7 @@ Parameters: `{{APP_NAME}}`, `{{APP_DIR}}`, `{{DEPLOY_DIR}}`, `{{ENVIRONMENT}}`, 
 3. Configure `DROPLET_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY` as CI-provider secrets.
 4. On the host, ensure `{{APP_DIR}}/releases/` and `{{APP_DIR}}/shared/` exist (per `reference/systemd`'s Prerequisites) before the first deploy.
 5. To enable backups: create `{{BACKUP_DIR}}`, configure `{{BACKUP_USER}}`'s Postgres access, set `OFFHOST_TARGET` in the unit's environment, then enable `reference/systemd`'s timer per database.
-6. Re-verify after adapting: deploy a real versioned canary, confirm the health gate and automatic rollback both actually trigger (deliberately fail a canary build to test this), deploy a second version and use `rollback.sh` to return to the first, and run `backup-db.sh` against a real database. Record the method and date in this manifest's `verified` field.
+6. Re-verify after adapting anything in `scripts/*.sh` or `deploy-job.yml`: deploy a real versioned canary, confirm the health gate and automatic rollback both actually trigger (deliberately fail a canary build to test this — this is exactly how this round caught its two real bugs), deploy a second version and use `rollback.sh` to return to the first, and run `backup-db.sh` against a real database. Update this manifest's `verified` field to reflect the new evidence.
 
 ## Expected Adaptations
 
@@ -95,5 +99,5 @@ Parameters: `{{APP_NAME}}`, `{{APP_DIR}}`, `{{DEPLOY_DIR}}`, `{{ENVIRONMENT}}`, 
 - Architecture: `INF-010` (systemd-managed processes this deploys into)
 - ADRs: `ADR-040` (direct-execution runtime — no orchestration to hand deploys off to), `ADR-150` (GitHub Actions)
 - Current-State: `CS-INF-020` (the real `deploy` account this reuses), `CS-TEC-010` (the real `rms` deploy workflow this was grounded in and corrected against)
-- Runbooks: none yet — the on-host verification round, restore procedure, and rollback-cadence practice (`OPS-030.4`) are Deliverable 7 candidates
+- Runbooks: none yet — restore procedure and the recurring rollback-cadence practice (`OPS-030.4`) are Deliverable 7 candidates
 - Reference Implementations: `reference/systemd` (the layout and units this deploys into), `reference/github` (the CI job this fills in), `reference/security` (credential pattern for Postgres/SSH access)

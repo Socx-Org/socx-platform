@@ -59,7 +59,7 @@ Not yet assessed.
 
 - Standards: `OPS-060`, `SEC-010`
 - ADRs: `ADR-080`, `ADR-090`
-- Reference Implementations: `reference/deployment` (currently empty)
+- Reference Implementations: `reference/deployment` (Approved, verified on-host 2026-08-07 — `backup-db.sh` real `pg_dump`/restore-artifact confirmed)
 - Runbooks: none yet
 - Current-State documentation: none yet
 

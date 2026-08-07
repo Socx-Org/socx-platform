@@ -54,7 +54,7 @@ CI/CD needs one platform-wide provider so that `ENG-040` pipelines, the branch-p
 - Architecture: `TEC-010`
 - Standards: `ENG-040`, `OPS-020`, `OPS-030`
 - Current-State documentation: `CS-TEC-010`, `REP-010`
-- Reference Implementations: `reference/github`
+- Reference Implementations: `reference/github`, `reference/deployment` (the deploy job's real steps — Approved, verified on-host 2026-08-07)
 - Runbooks: none yet
 - ADRs: `ADR-170` (the status check CI provides), `ADR-040` (what pipelines deploy to), `ADR-160` (IaC the pipeline may apply)
 

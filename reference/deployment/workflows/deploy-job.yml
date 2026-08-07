@@ -43,18 +43,36 @@
           node-version: "24"
           cache: npm
 
-      - name: Install production dependencies
-        run: npm ci --omit=dev
+      # Full install (including devDependencies) is required here -- the
+      # build step needs typescript itself, which is a devDependency.
+      # Pruning happens AFTER build, not before (caught during this
+      # reference implementation's real on-host verification: an
+      # --omit=dev install before the build step silently resolves `tsc`
+      # to nothing usable and fails).
+      - name: Install dependencies
+        run: npm ci
 
       - name: Build
         run: npm run build --workspaces --if-present
 
+      - name: Prune to production dependencies
+        run: npm prune --omit=dev
+
+      # apps/*/package.json, not the workspace root's -- the root package.json
+      # has no "type" field (only the workspace member does), and Node needs
+      # a "type": "module" package.json findable by walking up from
+      # apps/api/dist/index.js. Shipping the root one instead was caught
+      # during this reference implementation's real on-host verification:
+      # Node still ran it (module-syntax auto-detection), but with a
+      # "MODULE_TYPELESS_PACKAGE_JSON" warning and a real reparse-performance
+      # cost on every start -- silent, not a hard failure, exactly the kind
+      # of thing worth getting right rather than shipping anyway.
       - name: Package release
         run: |
           tar -czf release.tar.gz \
             apps/*/dist \
+            apps/*/package.json \
             node_modules \
-            package.json \
             package-lock.json
 
       - name: Deploy to droplet
