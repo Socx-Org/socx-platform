@@ -66,7 +66,7 @@ The ORM / data-access approach is **not** settled here — it is deferred to `AD
 - Architecture: `APP-010`, `TEC-010`
 - Standards: `ENG-020` (code quality), `ENG-030` (testing)
 - Current-State documentation: `CS-TEC-010`
-- Reference Implementations: none yet — a canonical service would realise this decision
+- Reference Implementations: `reference/application` (Approved, verified on-host 2026-08-07 — Node.js/TypeScript/Express, confirmed against the real droplet's v24.19.0)
 - Runbooks: none
 - ADRs: `ADR-090` (datastore & data-access, where the ORM split is resolved)
 

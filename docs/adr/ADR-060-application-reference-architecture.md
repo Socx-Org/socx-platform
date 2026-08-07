@@ -59,7 +59,7 @@ Cross-cutting concerns are wired at layer edges, not scattered: configuration an
 - Architecture: `APP-010`
 - Standards: `ENG-050`, `ENG-060`, `SEC-010`, `OPS-050`
 - Current-State documentation: `CS-APP-010`
-- Reference Implementations: none yet — a canonical service would realise this pattern
+- Reference Implementations: `reference/application` (Approved, verified on-host 2026-08-07 — the canonical three-layer service this ADR anticipated)
 - Runbooks: none
 - ADRs: `ADR-070` (the stack the layers are built in), `ADR-080` (data ownership enforced at the data-access layer), `ADR-130` (startup secret loading)
 

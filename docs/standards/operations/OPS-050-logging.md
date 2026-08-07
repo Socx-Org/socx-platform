@@ -42,7 +42,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/monitoring`
+- Reference implementation(s): `reference/monitoring`, `reference/application` (structured JSON logger, Approved, verified on-host 2026-08-07)
 - ADR(s): `ADR-060`
 - Template(s): none yet
 

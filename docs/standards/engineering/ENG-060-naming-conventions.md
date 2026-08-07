@@ -43,7 +43,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/systemd`, `reference/nginx`
+- Reference implementation(s): `reference/systemd`, `reference/nginx`, `reference/application`
 - ADR(s): `ADR-060`
 - Template(s): `templates/systemd`
 

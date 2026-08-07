@@ -47,7 +47,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/security`
+- Reference implementation(s): `reference/security` (Approved, verified on-host 2026-08-07), `reference/application` (consumes it — `LoadCredential=` read confirmed against a real running service)
 - ADR(s): `ADR-060`, `ADR-090`, `ADR-110`, `ADR-120`, `ADR-130`
 - Template(s): `templates/systemd` (credential handling)
 

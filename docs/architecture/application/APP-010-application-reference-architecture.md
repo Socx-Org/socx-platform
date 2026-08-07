@@ -57,7 +57,7 @@ Not yet assessed — no application in the platform has been checked against thi
 
 - Standards: `ENG-050`, `ENG-060`, `SEC-010`, `OPS-050`
 - ADRs: `ADR-060`, `ADR-070`, `ADR-120`, `ADR-130`
-- Reference Implementations: none yet
+- Reference Implementations: `reference/application` (Approved, verified on-host 2026-08-07)
 - Runbooks: none yet
 - Current-State documentation: none yet
 

@@ -65,7 +65,7 @@ The platform adopts **PostgreSQL** as the approved primary relational datastore 
 - Architecture: `DAT-010`, `TEC-010`
 - Standards: `OPS-060` (backup & disaster recovery), `SEC-010` (secrets — database credentials)
 - Current-State documentation: `CS-DAT-010`
-- Reference Implementations: none yet
+- Reference Implementations: `reference/application` (Approved, verified on-host 2026-08-07 — raw `pg` against real PostgreSQL 16, ORM choice deliberately left unsettled per this ADR)
 - Runbooks: none yet — a backup/restore runbook is implied by the `OPS-060` gap
 - ADRs: `ADR-070` (application language & framework, with which the ORM choice is coupled)
 

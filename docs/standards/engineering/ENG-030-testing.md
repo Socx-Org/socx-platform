@@ -43,7 +43,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/github` (CI test stage, once populated)
+- Reference implementation(s): `reference/github` (CI test stage), `reference/application` (real unit + real-database integration tests, verified on-host 2026-08-07)
 - ADR(s): `ADR-070`
 - Template(s): `templates/github`
 

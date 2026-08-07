@@ -43,7 +43,7 @@ Per `GEN-010.9`–`GEN-010.10`.
 
 ## Related
 
-- Reference implementation(s): `reference/deployment`
+- Reference implementation(s): `reference/deployment`, `reference/application`
 - ADR(s): `ADR-020`, `ADR-060`
 - Template(s): `templates/github`
 
