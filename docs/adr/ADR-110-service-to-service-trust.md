@@ -55,7 +55,7 @@ A system calling another authenticates with a credential **scoped to that specif
 - Architecture: `IAM-010`, `INT-010`
 - Standards: `SEC-010`, `SEC-030`
 - Current-State documentation: `CS-IAM-010`, `CS-INT-010`
-- Reference Implementations: none yet
+- Reference Implementations: `reference/security` (Approved — the at-rest credential-handling pattern only; actual OIDC client registration/token exchange awaits `ADR-120`'s provider)
 - Runbooks: none yet
 - ADRs: `ADR-120` (the shared provider this reuses), `ADR-130` (where credentials are stored), `ADR-100` (the calls this secures)
 

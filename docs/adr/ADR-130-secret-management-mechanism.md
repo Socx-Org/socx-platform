@@ -57,7 +57,7 @@ The platform adopts **systemd credentials** as the primary mechanism for deliver
 - Architecture: `IAM-010`, `INF-010` (systemd runtime), `APP-010` (startup config loading)
 - Standards: `SEC-010` (secrets management)
 - Current-State documentation: `CS-IAM-010`, `CS-TEC-010`
-- Reference Implementations: `reference/security` (currently empty — would demonstrate the chosen mechanism)
+- Reference Implementations: `reference/security` (**Approved** — verified on-host 2026-08-07: real `set-credential.sh` write, atomic-write and empty-input-refusal paths, `LoadCredential=` consumption confirmed against a real running service)
 - Runbooks: none yet — secret rotation is a likely runbook once this is settled
 - ADRs: `ADR-040` (hosting & process-runtime model this depends on), `ADR-120` (identity — consumer of this mechanism), `ADR-150` (CI/CD — deploy-time injection)
 

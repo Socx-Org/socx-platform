@@ -52,7 +52,7 @@ See `CS-IAM-010`: today's model is independent per-system JWT authentication wit
 
 - Standards: `SEC-010`, `SEC-030`
 - ADRs: `ADR-110`, `ADR-120`, `ADR-130`
-- Reference Implementations: `reference/security` (currently empty)
+- Reference Implementations: `reference/security` (Approved, verified on-host 2026-08-07)
 - Runbooks: none yet
 - Current-State documentation: `CS-IAM-010`
 

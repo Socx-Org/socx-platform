@@ -1,6 +1,6 @@
 ---
-status: Draft
-verified: null   # required before Approved: "<method>, YYYY-MM-DD"
+status: Approved
+verified: "On-host, real droplet (prod-lab-01): provisioned /etc/credentials/canary-app (700, root:root), confirmed set-credential.sh's empty-input refusal and its real atomic write (600, root:root), confirmed the written value never appeared in journalctl or shell history, confirmed a real systemd unit's LoadCredential=db_password successfully consumed it at start and the app connected to a real Postgres database with it. Disposable canary-app exercise, torn down after. 2026-08-07"
 ---
 
 # reference/security — Secret Handling
