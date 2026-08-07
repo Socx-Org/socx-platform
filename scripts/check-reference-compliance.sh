@@ -72,6 +72,8 @@ while IFS= read -r manifest; do
     hits="$(grep -rlE "reference/${category}\`? \((currently empty|none yet)" "${REPO_ROOT}/docs" 2>/dev/null || true)"
     if [ -n "$hits" ]; then
       echo "FAIL: stale 'currently empty'/'none yet' annotation for Approved reference/${category} in:" >&2
+      # shellcheck disable=SC2001 # sed here is genuinely simpler than a
+      # bash-native per-line-prefix loop for a multi-line variable.
       echo "$hits" | sed 's/^/  /' >&2
       FAILED=1
     fi

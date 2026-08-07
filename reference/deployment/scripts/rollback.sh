@@ -70,6 +70,8 @@ services_active() {
 
 health_gate_pass() {
   local attempt
+  # shellcheck disable=SC2034 # attempt is the counted-loop variable; only
+  # the retry count matters, never its own value.
   for attempt in $(seq 1 "$HEALTH_RETRIES"); do
     if services_active; then
       if [ -z "$HEALTH_URL" ]; then

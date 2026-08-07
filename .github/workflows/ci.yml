@@ -1,0 +1,45 @@
+# socx-platform's own CI — deliberately not a copy of reference/github's
+# ci.yml template, which is built for a Node/TS/Express application (npm
+# workspaces, lint/test/build). This repository has no such application;
+# its real content is Markdown, shell scripts, and Terraform reference
+# configuration, so its real checks are shaped around that instead.
+#
+# The job name below ("Repository Checks") is the required status check
+# context in branch-protection.json -- keep them in sync if either changes.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Repository Checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reference implementation compliance
+        run: ./scripts/check-reference-compliance.sh
+
+      - name: Shellcheck all shell scripts
+        run: |
+          find . -type f -name "*.sh" -not -path "./.git/*" -print0 | \
+            xargs -0 shellcheck
+
+      - name: Terraform fmt check
+        working-directory: reference/terraform
+        run: terraform fmt -check -diff
+
+      - name: Terraform validate
+        working-directory: reference/terraform
+        run: |
+          terraform init -backend=false -input=false
+          terraform validate

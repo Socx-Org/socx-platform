@@ -50,6 +50,8 @@ if ! command -v gh >/dev/null 2>&1; then
 fi
 
 echo "Looking up issue #${ISSUE_NUMBER}'s Project #1 item..."
+# shellcheck disable=SC2016 # single-quoted deliberately: $owner/$name/$number
+# are GraphQL variables passed via -f/-F below, not shell variables.
 ITEM_ID="$(gh api graphql -f query='
   query($owner: String!, $name: String!, $number: Int!) {
     repository(owner: $owner, name: $name) {
@@ -68,6 +70,7 @@ if [ -z "$ITEM_ID" ]; then
 fi
 
 echo "Setting Status = ${STATUS_NAME}..."
+# shellcheck disable=SC2016 # same as above -- GraphQL variables, not shell ones.
 gh api graphql -f query='
   mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
     updateProjectV2ItemFieldValue(input: {
