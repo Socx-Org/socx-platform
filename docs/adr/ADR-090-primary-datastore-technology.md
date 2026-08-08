@@ -3,7 +3,7 @@ id: ADR-090
 title: Primary datastore technology
 status: Approved
 category: Data
-version: "1.0"
+version: "1.1"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -17,7 +17,8 @@ related:
     - CS-DAT-010
   reference: []
   runbooks: []
-  adrs: []
+  adrs:
+    - ADR-200
 supersedes: []
 superseded_by: null
 ---
@@ -45,6 +46,8 @@ The platform adopts **PostgreSQL** as the approved primary relational datastore 
 1. PostgreSQL is the system of record for relational data, making `TEC-010`'s row `Approved` and giving `DAT-010`'s ownership table a concrete storage technology.
 2. Redis is a supporting store — cache and job queue — not a system of record, and so sits outside `DAT-010`'s single-writer ownership rules.
 3. The data-access approach (standardise on **Prisma**, used by `rms` and `ams`, versus the raw `pg` driver in `ghs`, versus permitting both) is **deferred to a dedicated future ADR**, coupled with the language decision in `ADR-070`. This ADR settles the datastore, not the ORM.
+
+**Amendment (2026-08-08):** the data-access approach deferred in point 3 is now settled — see `ADR-200`. Raw SQL via a lightweight driver, behind a repository pattern, is the platform default for new work; RMS's existing Prisma usage is a recorded, deliberate exception, not required to migrate.
 
 ## Alternatives Considered
 
@@ -75,3 +78,4 @@ The platform adopts **PostgreSQL** as the approved primary relational datastore 
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-14 | Approved      | Socx   |
+| 1.1     | 2026-08-08 | Amendment: data-access approach deferred in point 3 settled by `ADR-200` | Socx   |
