@@ -120,7 +120,8 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 | ID      | Title                          | Status   | Decision |
 | ------- | ------------------------------ | -------- | -------- |
 | ADR-080 | Single-writer data ownership   | Approved | Made     |
-| ADR-090 | Primary datastore technology   | Approved | Open     |
+| ADR-090 | Primary datastore technology   | Approved | Made     |
+| ADR-200 | Data-access approach — raw SQL over an ORM, platform default | Approved | Made     |
 
 ### Integration
 
