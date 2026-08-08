@@ -171,6 +171,8 @@ Commit Types (per `ENG-010.4`): `feat`, `fix`, `docs`, `chore`, `refactor`, `tes
 
 For repositories with real branch protection (a required status check and, where a second reviewer exists, an independent approving review — see `ENG-010.5`), the commit lands via pull request, not a direct push to `main`. See `templates/github/PULL_REQUEST_TEMPLATE.md` for the required PR body.
 
+Branch protection itself — which checks are required, review counts, force-push/deletion rules — is governed by `ENG-010`/`ADR-170`/`reference/github`, not by this document: this is the workflow Claude follows *within* whatever protection a repository actually has configured (including the documented admin-bypass path where `enforce_admins: false` applies), not a restatement of the ruleset itself. Every SOCX repository is expected to have branch protection applied per `ENG-010.9` — check the repository's actual state (`gh api repos/<owner>/<repo>/branches/main/protection`, or `scripts/check-branch-protection.sh`) rather than assume it from this document.
+
 ---
 
 # Phase 5 – Completion
