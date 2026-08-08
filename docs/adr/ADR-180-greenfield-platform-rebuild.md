@@ -3,7 +3,7 @@ id: ADR-180
 title: Greenfield platform rebuild on a fresh droplet
 status: Approved
 category: Infrastructure
-version: "1.2"
+version: "1.3"
 date: 2026-07-15
 deciders: Platform Engineering
 related:
@@ -60,6 +60,8 @@ The platform is rebuilt **greenfield**:
 
 **Amendment (2026-08-07):** the `OPS-020` exception in point 4 is **closed** — `reference/terraform` performed a real `terraform import` of the production droplet and all real DNS records, reaching a genuine zero-diff `plan` against live infrastructure (`reference/terraform`'s `verified` field). The `OPS-010.1` exception (single environment tier) remains **open**: no second tier was provisioned in that round, by deliberate choice, not oversight. A previously-undocumented droplet (`dev-lab-01`) was found to exist in the account during the same round's API inspection; it was explicitly left untriaged — neither adopted as the non-production tier nor otherwise acted upon — a separate decision for the platform owner.
 
+**Amendment (2026-08-08):** `dev-lab-01` has been **decommissioned** — the platform owner destroyed it directly via the DigitalOcean portal, after real investigation (its IP matched hostnames in RMS's own pre-rebuild nginx config, strong circumstantial evidence it was the surviving remnant of the shared droplet this ADR's greenfield rebuild replaced) found no reason to keep it. This closes off `dev-lab-01` specifically as a candidate non-production tier; it does **not** resolve the `OPS-010.1` exception, which remains open pending a real decision to provision one.
+
 ## Alternatives Considered
 
 - **Greenfield rebuild — selected.** A clean baseline that satisfies the standards from first boot; none of the documented defects can leak forward; cheap precisely because there was no production data to protect.
@@ -92,3 +94,4 @@ The platform is rebuilt **greenfield**:
 | 1.0     | 2026-07-15 | Approved      | Socx   |
 | 1.1     | 2026-08-06 | Generalized OS point-release wording; added amendment note recording the second pre-bootstrap droplet rebuild (24.04 → 26.04 LTS) | Socx |
 | 1.2     | 2026-08-07 | Amendment: `OPS-020` exception closed by `reference/terraform`'s real import; `OPS-010.1` remains open | Socx |
+| 1.3     | 2026-08-08 | Amendment: `dev-lab-01` decommissioned by the platform owner; `OPS-010.1` remains open | Socx |
