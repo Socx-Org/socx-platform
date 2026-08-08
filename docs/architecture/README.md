@@ -11,6 +11,7 @@ Significant changes to the target state should be recorded as an ADR under [docs
 ```scheme
 
         - APP-010 — Application reference architecture
+        - APP-020 — Configuration management pattern
 ```
 
 An architecture document describes the target design and the reasoning behind it. It does not restate:
