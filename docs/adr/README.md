@@ -128,6 +128,7 @@ The approved ADR catalogue (Deliverable 5). `Status` reflects each ADR document'
 | ID      | Title                                        | Status   | Decision |
 | ------- | -------------------------------------------- | -------- | -------- |
 | ADR-100 | Default integration style (sync HTTPS via edge) | Approved | Made     |
+| ADR-210 | Asynchronous notification/email delivery — transactional outbox pattern | Approved | Made     |
 
 ### Security & Identity
 
