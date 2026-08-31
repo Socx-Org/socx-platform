@@ -3,7 +3,7 @@ id: ADR-070
 title: Application language & framework
 status: Approved
 category: Application
-version: "1.0"
+version: "1.1"
 date: 2026-07-14
 deciders: Platform Engineering
 related:
@@ -47,6 +47,8 @@ The platform adopts **Node.js + TypeScript + Express** as the approved applicati
 
 The ORM / data-access approach is **not** settled here — it is deferred to `ADR-090`, where the `pg`-vs-Prisma divergence is addressed alongside the datastore.
 
+**Amendment (2026-08-31):** the bounded exception in point 3, and the stack list above it, both described the `rms` worker as "Python 3.12 + APScheduler." That was never accurate — the real worker is Python 3.14, a hand-rolled poll loop; no APScheduler dependency exists in `requirements.txt` and none is imported anywhere in the worker's source (`rms#16`, also corrected in `CS-TEC-010`). The decision itself is unaffected: the worker remains a recorded, bounded exception to the Node.js + TypeScript + Express stack, whichever scheduling mechanism it uses internally.
+
 ## Alternatives Considered
 
 - **Ratify the de-facto Node.js + TypeScript + Express stack — selected.** Lowest cost; formalises what all four applications already do and lets `ENG-020`/`ENG-030` tooling target one ecosystem.
@@ -76,3 +78,4 @@ The ORM / data-access approach is **not** settled here — it is deferred to `AD
 | ------- | ---------- | ------------- | ------ |
 | 0.1     | 2026-07-13 | Initial draft | Socx   |
 | 1.0     | 2026-07-14 | Approved      | Socx   |
+| 1.1     | 2026-08-31 | Amendment: corrected the `rms` worker's description from "Python 3.12 + APScheduler" (never accurate) to "Python 3.14, a hand-rolled poll loop" (`rms#16`); the bounded-exception decision itself is unaffected | Socx   |
