@@ -78,17 +78,36 @@
       - name: Deploy to droplet
         env:
           DROPLET_HOST: ${{ secrets.DROPLET_HOST }}
+          DROPLET_HOST_KEY: ${{ secrets.DROPLET_HOST_KEY }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
           KEY_FILE="$(mktemp)"
-          trap 'rm -f "$KEY_FILE"' EXIT
+          KNOWN_HOSTS_FILE="$(mktemp)"
+          trap 'rm -f "$KEY_FILE" "$KNOWN_HOSTS_FILE"' EXIT
           printf '%s\n' "$DEPLOY_SSH_KEY" > "$KEY_FILE"
           chmod 600 "$KEY_FILE"
 
-          SSH_OPTS="-i $KEY_FILE -o StrictHostKeyChecking=accept-new"
+          # Pinned, not accept-new (found applying this template to ghs,
+          # ghs#219, Copilot review): accept-new trusts whatever host key
+          # it sees on first connection -- and on GitHub-hosted runners,
+          # every job is a fresh, ephemeral machine with an empty
+          # known_hosts, so "first connection" is really "every single
+          # deploy," not a genuine one-time bootstrap. That leaves every
+          # deploy open to a MITM'd host key with no warning at all.
+          # DROPLET_HOST_KEY is the droplet's real host key line(s) --
+          # `ssh-keyscan <host>`'s own output, captured and verified
+          # out-of-band exactly once (e.g. against the fingerprint the
+          # hosting provider's own console/API shows at droplet creation
+          # time) -- written to a known_hosts file scoped to this one job
+          # run, never the runner's own persistent known_hosts. Trusting
+          # ssh-keyscan's live output directly, with no separate stored
+          # value, would just move the same MITM window one step
+          # earlier instead of closing it.
+          printf '%s\n' "$DROPLET_HOST_KEY" > "$KNOWN_HOSTS_FILE"
+          SSH_OPTS="-i $KEY_FILE -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$KNOWN_HOSTS_FILE"
           REMOTE="${DEPLOY_USER}@${DROPLET_HOST}"
           REMOTE_TARBALL="/tmp/release-${VERSION}.tar.gz"
 
