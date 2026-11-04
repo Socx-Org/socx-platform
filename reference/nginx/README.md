@@ -1,6 +1,6 @@
 ---
 status: Approved
-verified: "nginx 1.28.3 (Ubuntu), Ubuntu 26.04 LTS, on-host deployment (real production Let's Encrypt certificates issued for all four domains via certbot certonly --webroot; full site configs deployed replacing the stock default page; redirect and TLS confirmed on all four; one full public-internet-to-app path proven end-to-end via a disposable canary on ghs, then cleanly torn down), 2026-08-06"
+verified: "nginx 1.28.3 (Ubuntu), Ubuntu 26.04 LTS, on-host deployment (real production Let's Encrypt certificates issued for all four domains via certbot certonly --webroot; full site configs deployed replacing the stock default page; redirect and TLS confirmed on all four; one full public-internet-to-app path proven end-to-end via a disposable canary on ghs, then cleanly torn down), 2026-08-06. Renewal path specifically re-verified 2026-11-04 (socx-platform#110) after the original full site configs (missing the ACME challenge location) caused all four certificates to expire simultaneously -- the templates here now carry that location forward, and a real `certbot renew` against all four domains succeeded post-fix."
 ---
 
 # reference/nginx — Edge & Site Configuration
@@ -56,6 +56,8 @@ Parameters: `{{APP_NAME}}`, `{{DOMAIN}}` (or `{{APEX_DOMAIN}}`/`{{WWW_DOMAIN}}` 
 1. Copy the relevant site file into the consuming repository/host, substituting all placeholders — grep for `{{` to confirm none remain.
 2. Copy `snippets/tls-baseline.conf` to `/etc/nginx/snippets/` (shared, not per-app).
 3. **Obtain the certificate before enabling the full site.** Confirmed working in practice: deploy a minimal HTTP-only vhost first (just a `location /.well-known/acme-challenge/ { root {{WEBROOT}}; }`), reload, then `certbot certonly --webroot -w {{WEBROOT}} -d {{DOMAIN}}` — this never touches nginx config itself (unlike the `--nginx` authenticator), keeping certbot's job strictly to fetching certificate bytes. Only once the certificate exists at the expected path should the full site file (with its `ssl_certificate` directives) replace the minimal one — enabling it earlier fails `nginx -t` against a nonexistent cert path.
+
+   **The full site file's own port-80 block already carries the same `location /.well-known/acme-challenge/` forward (`socx-platform#110`)** — this isn't optional cleanup, it's what every renewal *after* the first one depends on. `certbot.timer` keeps running against this same webroot indefinitely; dropping the location when swapping to the full config breaks every subsequent renewal identically (confirmed directly: a real incident where all four domains' certificates expired simultaneously, because the full config template shipped without it for months before anyone noticed).
 4. Install: copy to `/etc/nginx/sites-available/`, symlink into `sites-enabled/`.
 5. **`nginx -t` before every reload, no exceptions** — a passing test is the only thing standing between one bad file and the whole edge going down (see Design Decisions).
 6. `systemctl reload nginx`.
