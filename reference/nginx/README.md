@@ -51,7 +51,7 @@ Deliberately short — this artefact's value is mostly architectural (realising 
 
 ## Usage
 
-Parameters: `{{APP_NAME}}`, `{{DOMAIN}}` (or `{{APEX_DOMAIN}}`/`{{WWW_DOMAIN}}` for `www.conf`), `{{APP_PORT}}`, `{{ENVIRONMENT}}` (per `OPS-010` tier), `{{WEBROOT}}` (socx-platform#110 -- the ACME challenge webroot every site file's permanent config now serves directly, not just the bootstrap vhost; confirmed as `/var/www/html` in production, per `/etc/letsencrypt/renewal/{{DOMAIN}}.conf`'s own `webroot_path`).
+Parameters: `{{APP_NAME}}`, `{{DOMAIN}}` (or `{{APEX_DOMAIN}}`/`{{WWW_DOMAIN}}` for `www.conf`), `{{APP_PORT}}`, `{{ENVIRONMENT}}` (per `OPS-010` tier), `{{WEBROOT}}` (socx-platform#110 -- the ACME challenge webroot every site file's permanent config now serves directly, not just the bootstrap vhost; confirmed as `/var/www/html` in production, per each certificate's own `webroot_path` entry under `/etc/letsencrypt/renewal/` -- the renewal filename is certbot's own `cert_name`, not necessarily a literal `{{DOMAIN}}`/`{{APEX_DOMAIN}}` match, e.g. `www.conf`'s apex+www cert is named `socx.org.uk.conf`).
 
 1. Copy the relevant site file into the consuming repository/host, substituting all placeholders — grep for `{{` to confirm none remain.
 2. Copy `snippets/tls-baseline.conf` to `/etc/nginx/snippets/` (shared, not per-app).
